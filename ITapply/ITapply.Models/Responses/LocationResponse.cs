@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace ITapply.Models.Responses
 {
-    public class UserResponse
+    public class LocationResponse
     {
         public int Id { get; set; }
 
-        public string Email { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
 
-        public DateTime RegistrationDate { get; set; }
-
-        public bool IsActive { get; set; }
+        public string Country { get; set; } = string.Empty;
     }
 }

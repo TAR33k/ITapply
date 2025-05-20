@@ -16,13 +16,12 @@ namespace ITapply.Services.Database
         [ForeignKey("CandidateId")]
         public Candidate Candidate { get; set; }
 
-        [Required]
         public int? LocationId { get; set; }
         [ForeignKey("LocationId")]
-        public Location Location { get; set; }
+        public Location? Location { get; set; }
 
-        public EmploymentType EmploymentType { get; set; }
+        public EmploymentType? EmploymentType { get; set; }
 
-        public Remote Remote { get; set; }
+        public Remote? Remote { get; set; }
     }
 }

@@ -120,7 +120,7 @@ namespace ITapply.Services.Database
                 entity.HasMany(r => r.UserRoles)
                     .WithOne(ur => ur.Role)
                     .HasForeignKey(ur => ur.RoleId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // ======== Candidate entity configuration ========
@@ -140,7 +140,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(c => c.Location)
                     .WithMany(l => l.Candidates)
                     .HasForeignKey(c => c.LocationId)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.NoAction)
                     .IsRequired(false);
                 
                 // Candidate - WorkExperience relationship (1:N)
@@ -177,7 +177,7 @@ namespace ITapply.Services.Database
                 entity.HasMany(c => c.Reviews)
                     .WithOne(r => r.Candidate)
                     .HasForeignKey(r => r.CandidateId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // ======== Employer entity configuration ========
@@ -192,7 +192,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(e => e.Location)
                     .WithMany(l => l.Employers)
                     .HasForeignKey(e => e.LocationId)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.NoAction)
                     .IsRequired(false);
                 
                 // Employer - JobPosting relationship (1:N)
@@ -205,7 +205,7 @@ namespace ITapply.Services.Database
                 entity.HasMany(e => e.ReceivedReviews)
                     .WithOne(r => r.Employer)
                     .HasForeignKey(r => r.EmployerId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
                 
                 // Employer - EmployerSkill relationship (1:N)
                 entity.HasMany(e => e.EmployerSkills)
@@ -231,7 +231,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(j => j.Location)
                     .WithMany(l => l.JobPostings)
                     .HasForeignKey(j => j.LocationId)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.NoAction)
                     .IsRequired(false);
                 
                 // JobPosting - JobPostingSkill relationship (1:N)
@@ -244,7 +244,7 @@ namespace ITapply.Services.Database
                 entity.HasMany(j => j.Applications)
                     .WithOne(a => a.JobPosting)
                     .HasForeignKey(a => a.JobPostingId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // ======== Application entity configuration ========
@@ -256,11 +256,23 @@ namespace ITapply.Services.Database
                 // Ensure each candidate can apply only once to the same job posting
                 entity.HasIndex(a => new { a.CandidateId, a.JobPostingId }).IsUnique();
                 
+                // Application - Candidate relationship (N:1)
+                entity.HasOne(a => a.Candidate)
+                    .WithMany(c => c.Applications)
+                    .HasForeignKey(a => a.CandidateId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Application - JobPosting relationship (N:1)
+                entity.HasOne(a => a.JobPosting)
+                    .WithMany(j => j.Applications)
+                    .HasForeignKey(a => a.JobPostingId)
+                    .OnDelete(DeleteBehavior.NoAction);
+                
                 // Application - CVDocument relationship (N:1)
                 entity.HasOne(a => a.CVDocument)
                     .WithMany()
                     .HasForeignKey(a => a.CVDocumentId)
-                    .OnDelete(DeleteBehavior.Restrict); // Don't delete the CV when application is deleted
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // ======== Skill entity configuration ========
@@ -272,19 +284,19 @@ namespace ITapply.Services.Database
                 entity.HasMany(s => s.CandidateSkills)
                     .WithOne(cs => cs.Skill)
                     .HasForeignKey(cs => cs.SkillId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
                 
                 // Skill - JobPostingSkill relationship (1:N)
                 entity.HasMany(s => s.JobPostingSkills)
                     .WithOne(jps => jps.Skill)
                     .HasForeignKey(jps => jps.SkillId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
                 
                 // Skill - EmployerSkill relationship (1:N)
                 entity.HasMany(s => s.EmployerSkills)
                     .WithOne(es => es.Skill)
                     .HasForeignKey(es => es.SkillId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // ======== CandidateSkill entity configuration ========
@@ -332,6 +344,18 @@ namespace ITapply.Services.Database
                 entity.HasIndex(r => r.ModerationStatus);
                 entity.HasIndex(r => r.ReviewDate);
                 entity.HasIndex(r => r.Rating);
+
+                // Review - Candidate relationship (N:1)
+                entity.HasOne(r => r.Candidate)
+                    .WithMany(c => c.Reviews)
+                    .HasForeignKey(r => r.CandidateId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Review - Employer relationship (N:1)
+                entity.HasOne(r => r.Employer)
+                    .WithMany(e => e.ReceivedReviews)
+                    .HasForeignKey(r => r.EmployerId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // ======== Preferences entity configuration ========
@@ -345,7 +369,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(p => p.Location)
                     .WithMany()
                     .HasForeignKey(p => p.LocationId)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.NoAction)
                     .IsRequired(false);
             });
 

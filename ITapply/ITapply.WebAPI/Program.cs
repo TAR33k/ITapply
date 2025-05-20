@@ -1,7 +1,14 @@
 using ITapply.Services.Database;
+using ITapply.Services.Interfaces;
+using ITapply.Services.Services;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<ILocationService, LocationService>();
+
+builder.Services.AddMapster();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ITapplyDbContext>(options => 
