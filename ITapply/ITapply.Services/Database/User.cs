@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ITapply.Services.Database
 {
@@ -13,29 +10,25 @@ namespace ITapply.Services.Database
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string FirstName { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(50)]
-        public string LastName { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(50)]
-        public string Username { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(100)]
+        [StringLength(256)]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; } // Using email as the primary identifier/username
 
-        [MaxLength(20)]
-        [Phone]
-        public string? PhoneNumber { get; set; }
-        public string PasswordHash { get; set; } = string.Empty;
-        public string PasswordSalt { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? LastLoginAt { get; set; }
+        [Required]
+        [StringLength(512)]
+        public string PasswordHash { get; set; }
+
+        [Required]
+        [StringLength(128)]
+        public string PasswordSalt { get; set; }
+
+        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+
+        public bool IsActive { get; set; } = true;
+
+        // Navigation properties
+        public Candidate Candidate { get; set; }
+        public Employer Employer { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }
