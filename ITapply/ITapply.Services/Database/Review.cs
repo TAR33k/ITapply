@@ -40,6 +40,6 @@ namespace ITapply.Services.Database
         public ModerationStatus ModerationStatus { get; set; } = ModerationStatus.Pending; // Default status
 
         [Required]
-        public DateTime ReviewDate { get; set; } = DateTime.UtcNow;
+        public DateTime ReviewDate { get; set; } = DateTime.Now;
     }
 }

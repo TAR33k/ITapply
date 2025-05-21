@@ -1,5 +1,6 @@
 ﻿using ITapply.Models.SearchObjects;
 using ITapply.Services.Database;
+using ITapply.Services.Interfaces;
 using MapsterMapper;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ using System.Threading.Tasks;
 namespace ITapply.Services.Services
 {
     public abstract class BaseCRUDService<T, TSearch, TEntity, TInsert, TUpdate> 
-        : BaseService<T, TSearch, TEntity> where T : class where TSearch : BaseSearchObject where TEntity : class, new() where TInsert : class where TUpdate : class
+        : BaseService<T, TSearch, TEntity>, ICRUDService<T, TSearch, TInsert, TUpdate> 
+        where T : class where TSearch : BaseSearchObject where TEntity : class, new() where TInsert : class where TUpdate : class
     {
         protected readonly ITapplyDbContext _context;
         protected readonly IMapper _mapper;

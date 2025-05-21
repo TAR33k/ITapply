@@ -22,7 +22,7 @@ namespace ITapply.Services.Database
         public JobPosting JobPosting { get; set; }
 
         [Required]
-        public DateTime ApplicationDate { get; set; } = DateTime.UtcNow;
+        public DateTime ApplicationDate { get; set; } = DateTime.Now;
 
         [Required]
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Applied; // Default status

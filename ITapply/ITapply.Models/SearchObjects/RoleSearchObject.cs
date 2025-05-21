@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ITapply.Models.SearchObjects
 {
-    public class LocationSearchObject : BaseSearchObject
+    public class RoleSearchObject : BaseSearchObject
     {
-        public string City { get; set; } = string.Empty;
-        public string Country { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

@@ -1,0 +1,110 @@
+﻿using ITapply.Models.Requests;
+using ITapply.Models.Responses;
+using ITapply.Models.SearchObjects;
+using ITapply.Services.Database;
+using ITapply.Services.Interfaces;
+using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ITapply.Services.Services
+{
+    public class UserService
+        : BaseCRUDService<UserResponse, UserSearchObject, User, UserInsertRequest, UserUpdateRequest>, IUserService
+    {
+        private const int SaltSize = 16;
+        private const int KeySize = 32;
+        private const int Iterations = 10000;
+        protected readonly ITapplyDbContext _context;
+
+        public UserService(ITapplyDbContext context, IMapper mapper) : base(context, mapper)
+        {
+            _context = context;
+        }
+
+        protected override IQueryable<User> ApplyFilter(IQueryable<User> query, UserSearchObject search)
+        {
+            if (!string.IsNullOrEmpty(search.Email))
+            {
+                query = query.Where(l => l.Email.Contains(search.Email));
+            }
+            if (search.IsActive != null)
+            {
+                query = query.Where(l => l.IsActive == search.IsActive);
+            }
+            if (search.RegistrationDate != null)
+            {
+                query = query.Where(l => l.RegistrationDate == search.RegistrationDate);
+            }
+
+            return query;
+        }
+
+        private string HashPassword(string password, out byte[] salt)
+        {
+            salt = new byte[SaltSize];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+
+            using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations))
+            {
+                return Convert.ToBase64String(pbkdf2.GetBytes(KeySize));
+            }
+        }
+        
+        private bool VerifyPassword(string password, string passwordHash, string passwordSalt)
+        {
+            var salt = Convert.FromBase64String(passwordSalt);
+            var hash = Convert.FromBase64String(passwordHash);
+            var hashBytes = new Rfc2898DeriveBytes(password, salt, Iterations).GetBytes(KeySize);
+            return hash.SequenceEqual(hashBytes);
+        }
+
+        protected override async Task BeforeInsert(User entity, UserInsertRequest request)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+            {
+                throw new InvalidOperationException("A user with this email already exists.");
+            }
+
+            byte[] salt;
+            entity.PasswordHash = HashPassword(request.Password, out salt);
+            entity.PasswordSalt = Convert.ToBase64String(salt);
+        }
+
+        protected override async Task BeforeUpdate(User entity, UserUpdateRequest request)
+        {
+            // Check for duplicate email (excluding current user)
+            if (await _context.Users.AnyAsync(u => u.Email == request.Email && u.Id != entity.Id))
+            {
+                throw new InvalidOperationException("A user with this email already exists.");
+            }
+
+            if (!string.IsNullOrEmpty(request.Password))
+            {
+                byte[] salt;
+                entity.PasswordHash = HashPassword(request.Password, out salt);
+                entity.PasswordSalt = Convert.ToBase64String(salt);
+            }
+        }
+
+        public async Task<UserResponse?> Login(UserLoginRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            if (user == null)
+                return null;
+
+            if (!VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
+                return null;
+
+            return MapToResponse(user);
+        }
+    }
+}

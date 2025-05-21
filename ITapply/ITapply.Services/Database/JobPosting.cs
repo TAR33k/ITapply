@@ -53,7 +53,7 @@ namespace ITapply.Services.Database
         public DateTime ApplicationDeadline { get; set; }
 
         [Required]
-        public DateTime PostedDate { get; set; } = DateTime.UtcNow;
+        public DateTime PostedDate { get; set; } = DateTime.Now;
 
         [Required]
         public JobPostingStatus Status { get; set; } = JobPostingStatus.Active; // Default status

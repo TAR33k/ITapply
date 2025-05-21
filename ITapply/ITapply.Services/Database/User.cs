@@ -22,7 +22,7 @@ namespace ITapply.Services.Database
         [StringLength(128)]
         public string PasswordSalt { get; set; }
 
-        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
         public bool IsActive { get; set; } = true;
 

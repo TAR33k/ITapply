@@ -26,6 +26,6 @@ namespace ITapply.Services.Database
         public bool IsMain { get; set; } = false;
 
         [Required]
-        public DateTime UploadDate { get; set; } = DateTime.UtcNow;
+        public DateTime UploadDate { get; set; } = DateTime.Now;
     }
 }
