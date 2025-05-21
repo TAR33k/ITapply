@@ -25,6 +25,11 @@ namespace ITapply.Services.Services
 
         protected override IQueryable<UserRole> ApplyFilter(IQueryable<UserRole> query, UserRoleSearchObject search)
         {
+            query = query.Include(ur => ur.Role)
+                        .Include(ur => ur.User)
+                            .ThenInclude(u => u.UserRoles)
+                                .ThenInclude(ur => ur.Role);
+
             if (search.UserId != null)
             {
                 query = query.Where(l => l.UserId == search.UserId);
@@ -43,7 +48,11 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeInsert(UserRole entity, UserRoleInsertRequest request)
         {
-            var user = await _context.Users.FindAsync(request.UserId);
+            var user = await _context.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == request.UserId);
+                
             if (user == null)
                 throw new InvalidOperationException("Invalid user");
 
@@ -51,14 +60,20 @@ namespace ITapply.Services.Services
             if (role == null)
                 throw new InvalidOperationException("Invalid role");
 
-            var userRole = await _context.UserRoles.AnyAsync(u => u.RoleId == request.RoleId && u.UserId == request.UserId);
-            if (role == null)
-                throw new InvalidOperationException("User already has " + role.Name + " role.");
+            var existingUserRole = await _context.UserRoles
+                .AnyAsync(u => u.RoleId == request.RoleId && u.UserId == request.UserId);
+                
+            if (existingUserRole)
+                throw new InvalidOperationException($"User already has {role.Name} role.");
         }
 
         protected override async Task BeforeUpdate(UserRole entity, UserRoleUpdateRequest request)
         {
-            var user = await _context.Users.FindAsync(request.UserId);
+            var user = await _context.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == request.UserId);
+                
             if (user == null)
                 throw new InvalidOperationException("Invalid user");
 
@@ -66,9 +81,23 @@ namespace ITapply.Services.Services
             if (role == null)
                 throw new InvalidOperationException("Invalid role");
 
-            var userRole = await _context.UserRoles.AnyAsync(u => u.RoleId == request.RoleId && u.UserId == request.UserId && u.Id != entity.Id);
-            if (role == null)
-                throw new InvalidOperationException("User already has " + role.Name + " role.");
+            var existingUserRole = await _context.UserRoles
+                .AnyAsync(u => u.RoleId == request.RoleId && u.UserId == request.UserId && u.Id != entity.Id);
+                
+            if (existingUserRole)
+                throw new InvalidOperationException($"User already has {role.Name} role.");
+        }
+
+        public override async Task<UserRoleResponse> GetByIdAsync(int id)
+        {
+            var entity = await _context.UserRoles
+                .Include(ur => ur.Role)
+                .Include(ur => ur.User)
+                    .ThenInclude(u => u.UserRoles)
+                        .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(ur => ur.Id == id);
+
+            return entity != null ? MapToResponse(entity) : null;
         }
     }
 }

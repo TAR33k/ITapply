@@ -97,7 +97,11 @@ namespace ITapply.Services.Services
 
         public async Task<UserResponse?> Login(UserLoginRequest request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await _context.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
+                
             if (user == null)
                 return null;
 
@@ -105,6 +109,22 @@ namespace ITapply.Services.Services
                 return null;
 
             return MapToResponse(user);
+        }
+
+        protected override UserResponse MapToResponse(User entity)
+        {
+            var response = _mapper.Map<UserResponse>(entity);
+            
+            // Ensure roles are properly loaded
+            if (entity.UserRoles != null)
+            {
+                response.Roles = entity.UserRoles
+                    .Where(ur => ur.Role != null)
+                    .Select(ur => _mapper.Map<RoleResponse>(ur.Role))
+                    .ToList();
+            }
+            
+            return response;
         }
     }
 }
