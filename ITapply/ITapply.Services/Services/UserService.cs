@@ -1,4 +1,5 @@
-﻿using ITapply.Models.Requests;
+﻿using ITapply.Models.Exceptions;
+using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
 using ITapply.Services.Database;
@@ -71,7 +72,7 @@ namespace ITapply.Services.Services
         {
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
             {
-                throw new InvalidOperationException("A user with this email already exists.");
+                throw new UserException("A user with this email already exists.");
             }
 
             byte[] salt;
@@ -84,7 +85,7 @@ namespace ITapply.Services.Services
             // Check for duplicate email (excluding current user)
             if (await _context.Users.AnyAsync(u => u.Email == request.Email && u.Id != entity.Id))
             {
-                throw new InvalidOperationException("A user with this email already exists.");
+                throw new UserException("A user with this email already exists.");
             }
 
             if (!string.IsNullOrEmpty(request.Password))

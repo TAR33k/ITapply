@@ -2,6 +2,7 @@ using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using ITapply.Services.Services;
 using ITapply.WebAPI.Authentication;
+using ITapply.WebAPI.Filters;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,11 @@ builder.Services.AddDbContext<ITapplyDbContext>(options =>
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(c =>
+{
+    c.Filters.Add<ExceptionFilter>();
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

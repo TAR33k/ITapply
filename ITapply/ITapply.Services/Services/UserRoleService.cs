@@ -1,4 +1,5 @@
-﻿using ITapply.Models.Requests;
+﻿using ITapply.Models.Exceptions;
+using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
 using ITapply.Services.Database;
@@ -54,17 +55,17 @@ namespace ITapply.Services.Services
                 .FirstOrDefaultAsync(u => u.Id == request.UserId);
                 
             if (user == null)
-                throw new InvalidOperationException("Invalid user");
+                throw new UserException("Invalid user");
 
             var role = await _context.Roles.FindAsync(request.RoleId);
             if (role == null)
-                throw new InvalidOperationException("Invalid role");
+                throw new UserException("Invalid role");
 
             var existingUserRole = await _context.UserRoles
                 .AnyAsync(u => u.RoleId == request.RoleId && u.UserId == request.UserId);
                 
             if (existingUserRole)
-                throw new InvalidOperationException($"User already has {role.Name} role.");
+                throw new UserException($"User already has {role.Name} role.");
         }
 
         protected override async Task BeforeUpdate(UserRole entity, UserRoleUpdateRequest request)
@@ -75,17 +76,17 @@ namespace ITapply.Services.Services
                 .FirstOrDefaultAsync(u => u.Id == request.UserId);
                 
             if (user == null)
-                throw new InvalidOperationException("Invalid user");
+                throw new UserException("Invalid user");
 
             var role = await _context.Roles.FindAsync(request.RoleId);
             if (role == null)
-                throw new InvalidOperationException("Invalid role");
+                throw new UserException("Invalid role");
 
             var existingUserRole = await _context.UserRoles
                 .AnyAsync(u => u.RoleId == request.RoleId && u.UserId == request.UserId && u.Id != entity.Id);
                 
             if (existingUserRole)
-                throw new InvalidOperationException($"User already has {role.Name} role.");
+                throw new UserException($"User already has {role.Name} role.");
         }
 
         public override async Task<UserRoleResponse> GetByIdAsync(int id)

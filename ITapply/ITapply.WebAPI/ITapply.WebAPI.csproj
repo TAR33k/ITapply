@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -17,10 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ITapply.Models\ITapply.Models.csproj" />
     <ProjectReference Include="..\ITapply.Services\ITapply.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Filters\" />
   </ItemGroup>
 
 </Project>
