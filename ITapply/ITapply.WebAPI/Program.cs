@@ -1,3 +1,4 @@
+using Azure.Core;
 using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using ITapply.Services.Services;
@@ -7,6 +8,11 @@ using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Numerics;
+using System.Reflection.Emit;
+using System.Security.Cryptography;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +60,38 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ITapplyDbContext>();
-    dbContext.Database.EnsureCreated();
+    if (dbContext.Database.EnsureCreated())
+    {
+        dbContext.Database.Migrate();
+
+        if (!dbContext.Roles.Any())
+        {
+            dbContext.Roles.AddRange(
+                new Role { Name = "Administrator" },
+                new Role { Name = "Candidate" },
+                new Role { Name = "Employer" }
+            );
+            dbContext.SaveChanges();
+        }
+
+        if (!dbContext.Users.Any())
+        {
+            dbContext.Users.Add(CreateUser("admin@example.com", "admin"));
+            dbContext.Users.Add(CreateUser("candidate@example.com", "candidate"));
+            dbContext.Users.Add(CreateUser("employer@example.com", "employer"));
+            dbContext.SaveChanges();
+        }
+
+        if (!dbContext.UserRoles.Any())
+        {
+            dbContext.UserRoles.AddRange(
+                new UserRole { UserId = 1, RoleId = 1 },
+                new UserRole { UserId = 2, RoleId = 2 },
+                new UserRole { UserId = 3, RoleId = 3 }
+            );
+            dbContext.SaveChanges();
+        }
+    }
 }
 
 if (app.Environment.IsDevelopment())
@@ -70,3 +107,33 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static User CreateUser(string email, string password)
+{
+    byte[] salt;
+    string userHashedPassword = HashPassword(password, out salt);
+    string userSalt = Convert.ToBase64String(salt);
+
+    return new User
+    {
+        Email = email,
+        PasswordHash = userHashedPassword,
+        PasswordSalt = userSalt,
+        RegistrationDate = DateTime.UtcNow,
+        IsActive = true
+    };
+}
+
+static string HashPassword(string password, out byte[] salt)
+{
+    salt = new byte[16];
+    using (var rng = new RNGCryptoServiceProvider())
+    {
+        rng.GetBytes(salt);
+    }
+
+    using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000))
+    {
+        return Convert.ToBase64String(pbkdf2.GetBytes(32));
+    }
+}
