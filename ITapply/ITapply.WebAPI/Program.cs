@@ -20,6 +20,11 @@ builder.Services.AddTransient<ILocationService, LocationService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IUserRoleService, UserRoleService>();
+builder.Services.AddTransient<ISkillService, SkillService>();
+builder.Services.AddTransient<ICandidateService, CandidateService>();
+builder.Services.AddTransient<IEmployerService, EmployerService>();
+builder.Services.AddTransient<IJobPostingService, JobPostingService>();
+builder.Services.AddTransient<IApplicationService, ApplicationService>();
 
 builder.Services.AddMapster();
 

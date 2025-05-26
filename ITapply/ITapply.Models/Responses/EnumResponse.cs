@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ITapply.Services.Database
+namespace ITapply.Models.Responses
 {
-    public class Enums
+    public class EnumResponse
     {
         public enum ExperienceLevel
         {

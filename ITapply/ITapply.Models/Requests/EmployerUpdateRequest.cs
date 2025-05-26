@@ -1,19 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using static ITapply.Models.Responses.EnumResponse;
 
-namespace ITapply.Services.Database
+namespace ITapply.Models.Requests
 {
-    public class Employer
+    public class EmployerUpdateRequest
     {
-        [Key]
-        [ForeignKey("User")] // One-to-one relationship with User
-        public int Id { get; set; }
-
-        public User User { get; set; }
-
         [Required]
         [StringLength(200)]
         public string CompanyName { get; set; }
@@ -47,18 +43,8 @@ namespace ITapply.Services.Database
         [StringLength(20)]
         public string ContactPhone { get; set; }
 
-        [Required]
-        public VerificationStatus VerificationStatus { get; set; } = VerificationStatus.Pending; // Default status
-
         public int? LocationId { get; set; }
-        [ForeignKey("LocationId")]
-        public Location Location { get; set; }
 
         public byte[]? Logo { get; set; }
-
-        // Navigation properties
-        public ICollection<JobPosting> JobPostings { get; set; }
-        public ICollection<Review> ReceivedReviews { get; set; } // Reviews about this employer
-        public ICollection<EmployerSkill> EmployerSkills { get; set; } // Technologies used by this employer
     }
-}
+} 
