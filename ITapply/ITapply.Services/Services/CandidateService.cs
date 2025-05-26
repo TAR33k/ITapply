@@ -100,6 +100,8 @@ namespace ITapply.Services.Services
                 }
             }
 
+            entity.User = user;
+
             await base.BeforeInsert(entity, request);
         }
 

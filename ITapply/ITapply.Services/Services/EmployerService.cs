@@ -116,6 +116,7 @@ namespace ITapply.Services.Services
             }
 
             entity.VerificationStatus = VerificationStatus.Pending;
+            entity.User = user;
 
             await base.BeforeInsert(entity, request);
         }

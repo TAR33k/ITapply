@@ -25,4 +25,4 @@ namespace ITapply.Models.Responses
         public DateTime RegistrationDate { get; set; }
         public bool IsActive { get; set; }
     }
-} 
+}
