@@ -96,13 +96,15 @@ namespace ITapply.Services.Database
                 entity.HasOne(u => u.Candidate)
                     .WithOne(c => c.User)
                     .HasForeignKey<Candidate>(c => c.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired(false);
                 
                 // User - Employer relationship (1:1)
                 entity.HasOne(u => u.Employer)
                     .WithOne(e => e.User)
                     .HasForeignKey<Employer>(e => e.Id)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired(false);
 
                 // User - UserRole relationship (1:N)
                 entity.HasMany(u => u.UserRoles)

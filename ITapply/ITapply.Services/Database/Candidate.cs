@@ -9,9 +9,9 @@ namespace ITapply.Services.Database
     public class Candidate
     {
         [Key]
-        [ForeignKey("User")] // One-to-one relationship with User
         public int Id { get; set; }
 
+        [Required]
         public User User { get; set; }
 
         [Required]
