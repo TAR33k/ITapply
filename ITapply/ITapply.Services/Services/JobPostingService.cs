@@ -22,6 +22,15 @@ namespace ITapply.Services.Services
         {
         }
 
+        public override IQueryable<JobPosting> AddInclude(IQueryable<JobPosting> query, JobPostingSearchObject? search = null)
+        {
+            return query = query
+                .Include(jp => jp.Employer)
+                .Include(jp => jp.Location)
+                .Include(jp => jp.JobPostingSkills)
+                    .ThenInclude(jps => jps.Skill);
+        }
+
         public async Task<List<JobPostingResponse>> GetRecommendedJobsForCandidateAsync(int candidateId, int count = 5)
         {
             // -------------------------
@@ -42,7 +51,7 @@ namespace ITapply.Services.Services
             entity.Status = status;
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<JobPostingResponse>(entity);
+            return MapToResponse(entity);
         }
 
         public override async Task<PagedResult<JobPostingResponse>> GetAsync(JobPostingSearchObject search)
@@ -72,7 +81,7 @@ namespace ITapply.Services.Services
                 return null;
             }
 
-            var result = _mapper.Map<JobPostingResponse>(entity);
+            var result = MapToResponse(entity);
 
             result.ApplicationCount = await _context.Applications
                 .CountAsync(a => a.JobPostingId == id);
@@ -82,12 +91,6 @@ namespace ITapply.Services.Services
 
         protected override IQueryable<JobPosting> ApplyFilter(IQueryable<JobPosting> query, JobPostingSearchObject search)
         {
-            query = query
-                .Include(jp => jp.Employer)
-                .Include(jp => jp.Location)
-                .Include(jp => jp.JobPostingSkills)
-                    .ThenInclude(jps => jps.Skill);
-
             if (!string.IsNullOrEmpty(search.Title))
             {
                 query = query.Where(jp => jp.Title.Contains(search.Title));
@@ -252,6 +255,31 @@ namespace ITapply.Services.Services
             }
 
             await base.AfterUpdate(entity, request);
+        }
+
+        protected override JobPostingResponse MapToResponse(JobPosting entity)
+        {
+            var response = _mapper.Map<JobPostingResponse>(entity);
+
+            if (entity.Employer != null)
+            {
+                response.EmployerName = entity.Employer.CompanyName;
+            }
+
+            if (entity.Location != null)
+            {
+                response.LocationName = $"{entity.Location.City}, {entity.Location.Country}";
+            }
+
+            if (entity.JobPostingSkills != null)
+            {
+                response.Skills = entity.JobPostingSkills
+                    .Where(ur => ur.Skill != null)
+                    .Select(ur => _mapper.Map<SkillResponse>(ur.Skill))
+                    .ToList();
+            }
+
+            return response;
         }
     }
 } 

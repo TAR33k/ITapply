@@ -24,13 +24,16 @@ namespace ITapply.Services.Services
             _context = context;
         }
 
-        protected override IQueryable<UserRole> ApplyFilter(IQueryable<UserRole> query, UserRoleSearchObject search)
+        public override IQueryable<UserRole> AddInclude(IQueryable<UserRole> query, UserRoleSearchObject? search = null)
         {
-            query = query.Include(ur => ur.Role)
+            return query = query.Include(ur => ur.Role)
                         .Include(ur => ur.User)
                             .ThenInclude(u => u.UserRoles)
                                 .ThenInclude(ur => ur.Role);
+        }
 
+        protected override IQueryable<UserRole> ApplyFilter(IQueryable<UserRole> query, UserRoleSearchObject search)
+        {
             if (search.UserId != null)
             {
                 query = query.Where(l => l.UserId == search.UserId);
@@ -94,11 +97,26 @@ namespace ITapply.Services.Services
             var entity = await _context.UserRoles
                 .Include(ur => ur.Role)
                 .Include(ur => ur.User)
-                    .ThenInclude(u => u.UserRoles)
-                        .ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(ur => ur.Id == id);
 
             return entity != null ? MapToResponse(entity) : null;
+        }
+
+        protected override UserRoleResponse MapToResponse(UserRole entity)
+        {
+            var response = _mapper.Map<UserRoleResponse>(entity);
+
+            if (entity.User != null)
+            {
+                response.UserEmail = entity.User.Email;
+            }
+
+            if (entity.Role != null)
+            {
+                response.RoleName = entity.Role.Name;
+            }
+
+            return response;
         }
     }
 }

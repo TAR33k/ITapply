@@ -27,7 +27,10 @@ namespace ITapply.Services.Services
         public virtual async Task<PagedResult<T>> GetAsync(TSearch search)
         {
             var query = _context.Set<TEntity>().AsQueryable();
+
             query = ApplyFilter(query, search);
+
+            query = AddInclude(query, search);
 
             int? totalCount = null;
 
@@ -54,6 +57,11 @@ namespace ITapply.Services.Services
             var entity = await _context.Set<TEntity>().FindAsync(id);
 
             return entity != null ? MapToResponse(entity) : null;
+        }
+
+        public virtual IQueryable<TEntity> AddInclude(IQueryable<TEntity> query, TSearch? search = null)
+        {
+            return query;
         }
 
         protected virtual IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query, TSearch search)

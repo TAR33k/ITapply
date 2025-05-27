@@ -21,10 +21,28 @@ namespace ITapply.Services.Services
         {
         }
 
+        public override IQueryable<Candidate> AddInclude(IQueryable<Candidate> query, CandidateSearchObject? search = null)
+        {
+            return query = query.Include(c => c.User).Include(c => c.Location);
+        }
+
+        public override async Task<CandidateResponse?> GetByIdAsync(int id)
+        {
+            var entity = await _context.Candidates
+                .Include(a => a.User)
+                .Include(a => a.Location)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return MapToResponse(entity);
+        }
+
         protected override IQueryable<Candidate> ApplyFilter(IQueryable<Candidate> query, CandidateSearchObject search)
         {
-            query = query.Include(c => c.User).Include(c => c.Location);
-
             if (!string.IsNullOrEmpty(search.FirstName))
             {
                 query = query.Where(c => c.FirstName.Contains(search.FirstName));
@@ -107,6 +125,25 @@ namespace ITapply.Services.Services
             }
 
             await base.BeforeUpdate(entity, request);
+        }
+
+        protected override CandidateResponse MapToResponse(Candidate entity)
+        {
+            var response = _mapper.Map<CandidateResponse>(entity);
+
+            if (entity.User != null)
+            {
+                response.Email = entity.User.Email;
+                response.RegistrationDate = entity.User.RegistrationDate;
+                response.IsActive = entity.User.IsActive;
+            }
+
+            if (entity.Location != null)
+            {
+                response.LocationName = $"{entity.Location.City}, {entity.Location.Country}";
+            }
+
+            return response;
         }
     }
 } 

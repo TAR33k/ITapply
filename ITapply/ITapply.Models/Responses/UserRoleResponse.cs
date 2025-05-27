@@ -15,10 +15,10 @@ namespace ITapply.Models.Responses
 
         public int UserId { get; set; }
 
-        public UserResponse User { get; set; }
+        public string UserEmail { get; set; } = string.Empty;
 
         public int RoleId { get; set; }
 
-        public RoleResponse Role { get; set; }
+        public string RoleName { get; set; } = string.Empty;
     }
 }

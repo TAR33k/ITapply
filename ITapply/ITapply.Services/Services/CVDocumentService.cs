@@ -22,6 +22,25 @@ namespace ITapply.Services.Services
         {
         }
 
+        public override IQueryable<CVDocument> AddInclude(IQueryable<CVDocument> query, CVDocumentSearchObject? search = null)
+        {
+            return query = query.Include(x => x.Candidate);
+        }
+
+        public override async Task<CVDocumentResponse?> GetByIdAsync(int id)
+        {
+            var entity = await _context.CVDocuments
+                .Include(a => a.Candidate)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return MapToResponse(entity);
+        }
+
         protected override IQueryable<CVDocument> ApplyFilter(IQueryable<CVDocument> query, CVDocumentSearchObject search)
         {
             if (search.CandidateId.HasValue)

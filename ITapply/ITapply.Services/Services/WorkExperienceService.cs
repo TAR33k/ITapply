@@ -20,10 +20,27 @@ namespace ITapply.Services.Services
         {
         }
 
+        public override IQueryable<WorkExperience> AddInclude(IQueryable<WorkExperience> query, WorkExperienceSearchObject? search = null)
+        {
+            return query = query.Include(x => x.Candidate);
+        }
+
+        public override async Task<WorkExperienceResponse?> GetByIdAsync(int id)
+        {
+            var entity = await _context.WorkExperiences
+                .Include(a => a.Candidate)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return MapToResponse(entity);
+        }
+
         protected override IQueryable<WorkExperience> ApplyFilter(IQueryable<WorkExperience> query, WorkExperienceSearchObject search)
         {
-            query = query.Include(x => x.Candidate);
-
             if (search.CandidateId.HasValue)
                 query = query.Where(x => x.CandidateId == search.CandidateId);
 

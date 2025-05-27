@@ -33,7 +33,7 @@ namespace ITapply.Services.Services
             entity.Status = status;
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<ApplicationResponse>(entity);
+            return MapToResponse(entity);
         }
 
         public async Task<bool> HasAppliedAsync(int candidateId, int jobPostingId)
@@ -63,18 +63,21 @@ namespace ITapply.Services.Services
                 return null;
             }
 
-            return _mapper.Map<ApplicationResponse>(entity);
+            return MapToResponse(entity);
         }
 
-        protected override IQueryable<Application> ApplyFilter(IQueryable<Application> query, ApplicationSearchObject search)
+        public override IQueryable<Application> AddInclude(IQueryable<Application> query, ApplicationSearchObject? search = null)
         {
-            query = query
+            return query = query
                 .Include(a => a.Candidate)
                     .ThenInclude(c => c.User)
                 .Include(a => a.JobPosting)
                     .ThenInclude(jp => jp.Employer)
                 .Include(a => a.CVDocument);
+        }
 
+        protected override IQueryable<Application> ApplyFilter(IQueryable<Application> query, ApplicationSearchObject search)
+        {
             if (search.CandidateId.HasValue)
             {
                 query = query.Where(a => a.CandidateId == search.CandidateId);
@@ -154,6 +157,38 @@ namespace ITapply.Services.Services
             entity.Status = ApplicationStatus.Applied;
 
             await base.BeforeInsert(entity, request);
+        }
+
+        protected override ApplicationResponse MapToResponse(Application entity)
+        {
+            var response = _mapper.Map<ApplicationResponse>(entity);
+
+            if (entity.Candidate != null)
+            {
+                response.CandidateName = $"{entity.Candidate.FirstName} {entity.Candidate.LastName}";
+
+                if (entity.Candidate.User != null)
+                {
+                    response.CandidateEmail = entity.Candidate.User.Email;
+                }
+            }
+
+            if (entity.JobPosting != null)
+            {
+                response.JobTitle = entity.JobPosting.Title;
+
+                if (entity.JobPosting.Employer != null)
+                {
+                    response.CompanyName = entity.JobPosting.Employer.CompanyName;
+                }
+            }
+
+            if (entity.CVDocument != null)
+            {
+                response.CVDocumentName = entity.CVDocument.FileName;
+            }
+
+            return response;
         }
     }
 } 

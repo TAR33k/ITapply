@@ -22,10 +22,28 @@ namespace ITapply.Services.Services
         {
         }
 
+        public override IQueryable<Review> AddInclude(IQueryable<Review> query, ReviewSearchObject? search = null)
+        {
+            return query = query.Include(x => x.Candidate).Include(x => x.Employer);
+        }
+
+        public override async Task<ReviewResponse?> GetByIdAsync(int id)
+        {
+            var entity = await _context.Reviews
+                .Include(jp => jp.Candidate)
+                .Include(jp => jp.Employer)
+                .FirstOrDefaultAsync(jp => jp.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return MapToResponse(entity);
+        }
+
         protected override IQueryable<Review> ApplyFilter(IQueryable<Review> query, ReviewSearchObject search)
         {
-            query = query.Include(x => x.Candidate).Include(x => x.Employer);
-
             if (search.CandidateId.HasValue)
                 query = query.Where(x => x.CandidateId == search.CandidateId);
 
@@ -115,6 +133,11 @@ namespace ITapply.Services.Services
             if (entity.Candidate != null)
             {
                 response.CandidateName = $"{entity.Candidate.FirstName} {entity.Candidate.LastName}";
+            }
+
+            if (entity.Employer != null)
+            {
+                response.CompanyName = entity.Employer.CompanyName;
             }
             
             return response;

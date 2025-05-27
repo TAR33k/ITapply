@@ -22,6 +22,26 @@ namespace ITapply.Services.Services
         {
         }
 
+        public override IQueryable<Employer> AddInclude(IQueryable<Employer> query, EmployerSearchObject? search = null)
+        {
+            return query = query.Include(e => e.User).Include(e => e.Location);
+        }
+
+        public override async Task<EmployerResponse?> GetByIdAsync(int id)
+        {
+            var entity = await _context.Employers
+                .Include(a => a.User)
+                .Include(a => a.Location)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return MapToResponse(entity);
+        }
+
         public async Task<EmployerResponse> UpdateVerificationStatusAsync(int id, VerificationStatus status)
         {
             var entity = await _context.Employers.FindAsync(id);
@@ -33,13 +53,11 @@ namespace ITapply.Services.Services
             entity.VerificationStatus = status;
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<EmployerResponse>(entity);
+            return MapToResponse(entity);
         }
 
         protected override IQueryable<Employer> ApplyFilter(IQueryable<Employer> query, EmployerSearchObject search)
         {
-            query = query.Include(e => e.User).Include(e => e.Location);
-
             if (!string.IsNullOrEmpty(search.CompanyName))
             {
                 query = query.Where(e => e.CompanyName.Contains(search.CompanyName));
@@ -123,6 +141,25 @@ namespace ITapply.Services.Services
             }
 
             await base.BeforeUpdate(entity, request);
+        }
+
+        protected override EmployerResponse MapToResponse(Employer entity)
+        {
+            var response = _mapper.Map<EmployerResponse>(entity);
+
+            if (entity.User != null)
+            {
+                response.Email = entity.User.Email;
+                response.RegistrationDate = entity.User.RegistrationDate;
+                response.IsActive = entity.User.IsActive;
+            }
+
+            if (entity.Location != null)
+            {
+                response.LocationName = $"{entity.Location.City}, {entity.Location.Country}";
+            }
+
+            return response;
         }
     }
 } 

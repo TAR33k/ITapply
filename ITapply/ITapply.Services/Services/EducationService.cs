@@ -21,10 +21,27 @@ namespace ITapply.Services.Services
         {
         }
 
+        public override IQueryable<Education> AddInclude(IQueryable<Education> query, EducationSearchObject? search = null)
+        {
+            return query = query.Include(x => x.Candidate); ;
+        }
+
+        public override async Task<EducationResponse?> GetByIdAsync(int id)
+        {
+            var entity = await _context.Educations
+                .Include(a => a.Candidate)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return MapToResponse(entity);
+        }
+
         protected override IQueryable<Education> ApplyFilter(IQueryable<Education> query, EducationSearchObject search)
         {
-            query = query.Include(x => x.Candidate);
-
             if (search.CandidateId.HasValue)
                 query = query.Where(x => x.CandidateId == search.CandidateId);
 

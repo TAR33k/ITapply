@@ -28,6 +28,26 @@ namespace ITapply.Services.Services
             _context = context;
         }
 
+        public override IQueryable<User> AddInclude(IQueryable<User> query, UserSearchObject? search = null)
+        {
+            return query = query.Include(x => x.UserRoles).ThenInclude(x => x.Role);
+        }
+
+        public override async Task<UserResponse?> GetByIdAsync(int id)
+        {
+            var entity = await _context.Users
+                .Include(a => a.UserRoles)
+                    .ThenInclude(c => c.Role)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return MapToResponse(entity);
+        }
+
         protected override IQueryable<User> ApplyFilter(IQueryable<User> query, UserSearchObject search)
         {
             if (!string.IsNullOrEmpty(search.Email))
@@ -82,7 +102,6 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeUpdate(User entity, UserUpdateRequest request)
         {
-            // Check for duplicate email (excluding current user)
             if (await _context.Users.AnyAsync(u => u.Email == request.Email && u.Id != entity.Id))
             {
                 throw new UserException("A user with this email already exists.");
@@ -116,7 +135,6 @@ namespace ITapply.Services.Services
         {
             var response = _mapper.Map<UserResponse>(entity);
             
-            // Ensure roles are properly loaded
             if (entity.UserRoles != null)
             {
                 response.Roles = entity.UserRoles
