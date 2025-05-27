@@ -17,7 +17,7 @@ namespace ITapply.Services.Database
         public DbSet<Application> Applications { get; set; }
         public DbSet<CandidateSkill> CandidateSkills { get; set; }
         public DbSet<CVDocument> CVDocuments { get; set; }
-        public DbSet<Education> EducationEntries { get; set; }
+        public DbSet<Education> Educations { get; set; }
         public DbSet<EmployerSkill> EmployerSkills { get; set; }
         public DbSet<JobPosting> JobPostings { get; set; }
         public DbSet<JobPostingSkill> JobPostingSkills { get; set; }
