@@ -40,10 +40,10 @@ namespace ITapply.Services.Database
         public string Availability { get; set; }
 
         [StringLength(2000)]
-        public string InternalNotes { get; set; } // For Employer's internal use
+        public string? InternalNotes { get; set; } // For Employer's internal use
 
         [StringLength(2000)]
-        public string EmployerMessage { get; set; } // Message from Employer to Candidate
+        public string? EmployerMessage { get; set; } // Message from Employer to Candidate
 
         public bool ReceiveNotifications { get; set; } = true;
     }
