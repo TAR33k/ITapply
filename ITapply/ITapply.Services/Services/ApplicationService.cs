@@ -27,7 +27,7 @@ namespace ITapply.Services.Services
             var entity = await _context.Applications.FindAsync(id);
             if (entity == null)
             {
-                throw new Exception($"Application with ID {id} not found");
+                throw new UserException($"Application with ID {id} not found");
             }
 
             entity.Status = status;
@@ -150,7 +150,7 @@ namespace ITapply.Services.Services
                 throw new UserException("You have already applied to this job posting");
             }
 
-            entity.ApplicationDate = DateTime.UtcNow;
+            entity.ApplicationDate = DateTime.Now;
             entity.Status = ApplicationStatus.Applied;
 
             await base.BeforeInsert(entity, request);

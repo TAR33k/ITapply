@@ -22,16 +22,6 @@ namespace ITapply.Services.Services
         {
         }
 
-        public async Task<EmployerResponse> GetByUserIdAsync(int userId)
-        {
-            var entity = await _context.Employers
-                .Include(e => e.User)
-                .Include(e => e.Location)
-                .FirstOrDefaultAsync(e => e.Id == userId);
-
-            return _mapper.Map<EmployerResponse>(entity);
-        }
-
         public async Task<EmployerResponse> UpdateVerificationStatusAsync(int id, VerificationStatus status)
         {
             var entity = await _context.Employers.FindAsync(id);

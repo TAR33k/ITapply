@@ -124,7 +124,7 @@ static User CreateUser(string email, string password)
         Email = email,
         PasswordHash = userHashedPassword,
         PasswordSalt = userSalt,
-        RegistrationDate = DateTime.UtcNow,
+        RegistrationDate = DateTime.Now,
         IsActive = true
     };
 }

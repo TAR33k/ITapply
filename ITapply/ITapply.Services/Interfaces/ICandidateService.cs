@@ -11,6 +11,5 @@ namespace ITapply.Services.Interfaces
 {
     public interface ICandidateService : ICRUDService<CandidateResponse, CandidateSearchObject, CandidateInsertRequest, CandidateUpdateRequest>
     {
-        Task<CandidateResponse> GetByUserIdAsync(int userId);
     }
 } 

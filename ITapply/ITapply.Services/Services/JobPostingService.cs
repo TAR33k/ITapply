@@ -238,7 +238,7 @@ namespace ITapply.Services.Services
                     var skill = await _context.Skills.FindAsync(skillId);
                     if (skill == null)
                     {
-                        throw new Exception($"Skill with ID {skillId} not found");
+                        throw new UserException($"Skill with ID {skillId} not found");
                     }
 
                     _context.JobPostingSkills.Add(new JobPostingSkill

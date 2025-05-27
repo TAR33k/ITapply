@@ -12,7 +12,6 @@ namespace ITapply.Services.Interfaces
 {
     public interface IEmployerService : ICRUDService<EmployerResponse, EmployerSearchObject, EmployerInsertRequest, EmployerUpdateRequest>
     {
-        Task<EmployerResponse> GetByUserIdAsync(int userId);
         Task<EmployerResponse> UpdateVerificationStatusAsync(int id, VerificationStatus status);
     }
 } 

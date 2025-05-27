@@ -19,29 +19,13 @@ namespace ITapply.WebAPI.Controllers
         [HttpGet("recommended/{candidateId}")]
         public async Task<ActionResult<List<JobPostingResponse>>> GetRecommendedJobs(int candidateId, [FromQuery] int count = 5)
         {
-            try
-            {
-                var result = await _jobPostingService.GetRecommendedJobsForCandidateAsync(candidateId, count);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _jobPostingService.GetRecommendedJobsForCandidateAsync(candidateId, count);
         }
 
         [HttpPut("{id}/status")]
         public async Task<ActionResult<JobPostingResponse>> UpdateStatus(int id, [FromQuery] JobPostingStatus status)
         {
-            try
-            {
-                var result = await _jobPostingService.UpdateStatusAsync(id, status);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _jobPostingService.UpdateStatusAsync(id, status);
         }
     }
 } 

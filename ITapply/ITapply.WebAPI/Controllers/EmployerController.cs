@@ -16,30 +16,10 @@ namespace ITapply.WebAPI.Controllers
             _employerService = employerService;
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<EmployerResponse>> GetByUserId(int userId)
-        {
-            var result = await _employerService.GetByUserIdAsync(userId);
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
         [HttpPut("{id}/verification-status")]
         public async Task<ActionResult<EmployerResponse>> UpdateVerificationStatus(int id, [FromQuery] VerificationStatus status)
         {
-            try
-            {
-                var result = await _employerService.UpdateVerificationStatusAsync(id, status);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _employerService.UpdateVerificationStatusAsync(id, status);
         }
     }
 } 

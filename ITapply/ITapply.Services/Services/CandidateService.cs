@@ -21,16 +21,6 @@ namespace ITapply.Services.Services
         {
         }
 
-        public async Task<CandidateResponse> GetByUserIdAsync(int userId)
-        {
-            var entity = await _context.Candidates
-                .Include(c => c.User)
-                .Include(c => c.Location)
-                .FirstOrDefaultAsync(c => c.Id == userId);
-
-            return _mapper.Map<CandidateResponse>(entity);
-        }
-
         protected override IQueryable<Candidate> ApplyFilter(IQueryable<Candidate> query, CandidateSearchObject search)
         {
             query = query.Include(c => c.User).Include(c => c.Location);

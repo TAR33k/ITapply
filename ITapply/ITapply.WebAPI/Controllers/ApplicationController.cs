@@ -19,29 +19,13 @@ namespace ITapply.WebAPI.Controllers
         [HttpPut("{id}/status")]
         public async Task<ActionResult<ApplicationResponse>> UpdateStatus(int id, [FromQuery] ApplicationStatus status)
         {
-            try
-            {
-                var result = await _applicationService.UpdateStatusAsync(id, status);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _applicationService.UpdateStatusAsync(id, status);
         }
 
         [HttpGet("check")]
         public async Task<ActionResult<bool>> HasApplied([FromQuery] int candidateId, [FromQuery] int jobPostingId)
         {
-            try
-            {
-                var result = await _applicationService.HasAppliedAsync(candidateId, jobPostingId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _applicationService.HasAppliedAsync(candidateId, jobPostingId);
         }
     }
 } 
