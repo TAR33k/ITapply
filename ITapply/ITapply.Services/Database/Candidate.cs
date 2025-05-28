@@ -43,7 +43,7 @@ namespace ITapply.Services.Database
         // Navigation properties
         public Preferences? Preferences { get; set; }
         public ICollection<WorkExperience> WorkExperiences { get; set; }
-        public ICollection<Education> EducationEntries { get; set; }
+        public ICollection<Education> Educations { get; set; }
         public ICollection<CandidateSkill> CandidateSkills { get; set; } // Skills possessed by the candidate
         public ICollection<CVDocument> CVDocuments { get; set; }
         public ICollection<Application> Applications { get; set; }

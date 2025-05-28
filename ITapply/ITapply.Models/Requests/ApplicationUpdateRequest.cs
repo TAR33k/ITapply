@@ -10,13 +10,13 @@ namespace ITapply.Models.Requests
 {
     public class ApplicationUpdateRequest
     {
-        [Required]
+        [Required(ErrorMessage = "Application status is required.")]
         public ApplicationStatus Status { get; set; }
 
-        [StringLength(2000)]
+        [StringLength(2000, ErrorMessage = "Internal notes cannot exceed 2000 characters.")]
         public string InternalNotes { get; set; }
 
-        [StringLength(2000)]
+        [StringLength(2000, ErrorMessage = "Employer message cannot exceed 2000 characters.")]
         public string EmployerMessage { get; set; }
     }
 } 

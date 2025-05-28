@@ -7,19 +7,18 @@ using System.Threading.Tasks;
 
 namespace ITapply.Models.Requests
 {
-    public class CVDocumentInsertRequest
+    public class CandidateSkillInsertRequest
     {
         [Required(ErrorMessage = "Candidate ID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Candidate ID must be a positive number.")]
         public int CandidateId { get; set; }
 
-        [Required(ErrorMessage = "File name is required.")]
-        [StringLength(255, ErrorMessage = "File name cannot exceed 255 characters.")]
-        public string FileName { get; set; }
+        [Required(ErrorMessage = "Skill ID is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Skill ID must be a positive number.")]
+        public int SkillId { get; set; }
 
-        [Required(ErrorMessage = "File content is required.")]
-        public byte[] FileContent { get; set; }
-
-        public bool IsMain { get; set; } = false;
+        [Required(ErrorMessage = "Skill level is required.")]
+        [Range(1, 5, ErrorMessage = "Skill level must be between 1 and 5.")]
+        public int Level { get; set; }
     }
 } 

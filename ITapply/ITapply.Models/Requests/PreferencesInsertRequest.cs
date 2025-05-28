@@ -4,22 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ITapply.Models.Responses.EnumResponse;
 
 namespace ITapply.Models.Requests
 {
-    public class CVDocumentInsertRequest
+    public class PreferencesInsertRequest
     {
         [Required(ErrorMessage = "Candidate ID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Candidate ID must be a positive number.")]
         public int CandidateId { get; set; }
 
-        [Required(ErrorMessage = "File name is required.")]
-        [StringLength(255, ErrorMessage = "File name cannot exceed 255 characters.")]
-        public string FileName { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Location ID must be a positive number.")]
+        public int? LocationId { get; set; }
 
-        [Required(ErrorMessage = "File content is required.")]
-        public byte[] FileContent { get; set; }
+        public EmploymentType? EmploymentType { get; set; }
 
-        public bool IsMain { get; set; } = false;
+        public Remote? Remote { get; set; }
     }
 } 

@@ -9,20 +9,23 @@ namespace ITapply.Models.Requests
 {
     public class ApplicationInsertRequest
     {
-        [Required]
+        [Required(ErrorMessage = "Candidate ID is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Candidate ID must be a positive number.")]
         public int CandidateId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Job Posting ID is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Job Posting ID must be a positive number.")]
         public int JobPostingId { get; set; }
 
-        [StringLength(5000)]
+        [StringLength(5000, ErrorMessage = "Cover letter cannot exceed 5000 characters.")]
         public string CoverLetter { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "CV Document ID is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "CV Document ID must be a positive number.")]
         public int CVDocumentId { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Availability information is required.")]
+        [StringLength(100, ErrorMessage = "Availability information cannot exceed 100 characters.")]
         public string Availability { get; set; }
 
         public bool ReceiveNotifications { get; set; } = true;

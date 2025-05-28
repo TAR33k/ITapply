@@ -152,7 +152,7 @@ namespace ITapply.Services.Database
                     .OnDelete(DeleteBehavior.Cascade);
                 
                 // Candidate - Education relationship (1:N)
-                entity.HasMany(c => c.EducationEntries)
+                entity.HasMany(c => c.Educations)
                     .WithOne(e => e.Candidate)
                     .HasForeignKey(e => e.CandidateId)
                     .OnDelete(DeleteBehavior.Cascade);

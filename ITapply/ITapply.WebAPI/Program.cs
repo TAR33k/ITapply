@@ -29,6 +29,10 @@ builder.Services.AddTransient<ICVDocumentService, CVDocumentService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IWorkExperienceService, WorkExperienceService>();
 builder.Services.AddTransient<IEducationService, EducationService>();
+builder.Services.AddTransient<IPreferencesService, PreferencesService>();
+builder.Services.AddTransient<IEmployerSkillService, EmployerSkillService>();
+builder.Services.AddTransient<IJobPostingSkillService, JobPostingSkillService>();
+builder.Services.AddTransient<ICandidateSkillService, CandidateSkillService>();
 
 builder.Services.AddMapster();
 

@@ -95,9 +95,39 @@ namespace ITapply.Services.Services
                 throw new UserException("A user with this email already exists.");
             }
 
+            if (request.RoleIds == null || !request.RoleIds.Any())
+            {
+                throw new UserException("At least one role must be assigned to the user.");
+            }
+
+            var existingRoleIds = await _context.Roles
+                .Where(r => request.RoleIds.Contains(r.Id))
+                .Select(r => r.Id)
+                .ToListAsync();
+
+            var nonExistentRoleIds = request.RoleIds.Except(existingRoleIds).ToList();
+            if (nonExistentRoleIds.Any())
+            {
+                throw new UserException($"The following role IDs do not exist: {string.Join(", ", nonExistentRoleIds)}");
+            }
+
             byte[] salt;
             entity.PasswordHash = HashPassword(request.Password, out salt);
             entity.PasswordSalt = Convert.ToBase64String(salt);
+        }
+
+        protected override async Task AfterInsert(User entity, UserInsertRequest request)
+        {
+            var userRoles = request.RoleIds.Select(roleId => new UserRole
+            {
+                UserId = entity.Id,
+                RoleId = roleId
+            }).ToList();
+
+            _context.UserRoles.AddRange(userRoles);
+            await _context.SaveChangesAsync();
+
+            await base.AfterInsert(entity, request);
         }
 
         protected override async Task BeforeUpdate(User entity, UserUpdateRequest request)

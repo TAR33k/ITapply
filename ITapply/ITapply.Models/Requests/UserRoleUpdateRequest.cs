@@ -11,10 +11,12 @@ namespace ITapply.Models.Requests
 {
     public class UserRoleUpdateRequest
     {
-        [Required]
+        [Required(ErrorMessage = "User ID is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "User ID must be a positive number.")]
         public int UserId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Role ID is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Role ID must be a positive number.")]
         public int RoleId { get; set; }
     }
 }

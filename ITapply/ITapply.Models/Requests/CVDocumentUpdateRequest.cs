@@ -9,7 +9,7 @@ namespace ITapply.Models.Requests
 {
     public class CVDocumentUpdateRequest
     {
-        [StringLength(255)]
+        [StringLength(255, ErrorMessage = "File name cannot exceed 255 characters.")]
         public string FileName { get; set; }
 
         public byte[] FileContent { get; set; }
