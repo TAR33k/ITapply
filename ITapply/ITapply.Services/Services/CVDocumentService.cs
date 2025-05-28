@@ -9,6 +9,7 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,6 +64,12 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeInsert(CVDocument entity, CVDocumentInsertRequest request)
         {
+            var candidate = await _context.Candidates.FindAsync(request.CandidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {request.CandidateId} not found");
+            }
+
             var existingDocs = await _context.CVDocuments
                     .Where(x => x.CandidateId == request.CandidateId)
                     .ToListAsync();
@@ -78,11 +85,39 @@ namespace ITapply.Services.Services
             if (existingDocs.Count == 0)
                 request.IsMain = true;
 
+            entity.UploadDate = DateTime.Now;
+
             await base.BeforeInsert(entity, request);
+        }
+
+        protected override async Task BeforeUpdate(CVDocument entity, CVDocumentUpdateRequest request)
+        {
+            if (request.IsMain.HasValue && request.IsMain.Value && !entity.IsMain)
+            {
+                var candidateDocs = await _context.CVDocuments
+                    .Where(x => x.CandidateId == entity.CandidateId)
+                    .ToListAsync();
+
+                foreach (var doc in candidateDocs)
+                {
+                    if (doc.Id != entity.Id)
+                    {
+                        doc.IsMain = false;
+                    }
+                }
+            }
+
+            await base.BeforeUpdate(entity, request);
         }
 
         public async Task<List<CVDocumentResponse>> GetByCandidateIdAsync(int candidateId)
         {
+            var candidate = await _context.Candidates.FindAsync(candidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {candidateId} not found");
+            }
+
             var entities = await _context.CVDocuments
                 .Include(x => x.Candidate)
                 .Where(x => x.CandidateId == candidateId)
@@ -99,6 +134,9 @@ namespace ITapply.Services.Services
             if (document == null)
                 throw new UserException($"CVDocument with ID {id} not found");
 
+            if (document.IsMain)
+                return MapToResponse(document);
+
             var candidateDocs = await _context.CVDocuments
                 .Where(x => x.CandidateId == document.CandidateId)
                 .ToListAsync();
@@ -112,6 +150,36 @@ namespace ITapply.Services.Services
             await _context.SaveChangesAsync();
 
             return MapToResponse(document);
+        }
+
+        protected override async Task BeforeDelete(CVDocument entity)
+        {
+            if (entity.IsMain)
+            {
+                var otherDocs = await _context.CVDocuments
+                    .Where(x => x.CandidateId == entity.CandidateId && x.Id != entity.Id)
+                    .OrderByDescending(x => x.UploadDate)
+                    .ToListAsync();
+                
+                if (otherDocs.Any())
+                {
+                    otherDocs.First().IsMain = true;
+                }
+            }
+
+            var activeApplications = await _context.Applications
+                .Where(a => a.CVDocumentId == entity.Id && 
+                           (a.Status == EnumResponse.ApplicationStatus.Applied || 
+                            a.Status == EnumResponse.ApplicationStatus.InConsideration || 
+                            a.Status == EnumResponse.ApplicationStatus.InterviewScheduled))
+                .CountAsync();
+            
+            if (activeApplications > 0)
+            {
+                throw new UserException("Cannot delete CV document that is being used in active job applications");
+            }
+
+            await base.BeforeDelete(entity);
         }
 
         protected override CVDocumentResponse MapToResponse(CVDocument entity)

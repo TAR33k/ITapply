@@ -1,3 +1,4 @@
+using ITapply.Models.Exceptions;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
@@ -64,6 +65,31 @@ namespace ITapply.Services.Services
             }
 
             return query;
+        }
+
+        protected override async Task BeforeInsert(CandidateSkill entity, CandidateSkillInsertRequest request)
+        {
+            var candidate = await _context.Candidates.FindAsync(request.CandidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {request.CandidateId} not found");
+            }
+
+            var skill = await _context.Skills.FindAsync(request.SkillId);
+            if (skill == null)
+            {
+                throw new UserException($"Skill with ID {request.SkillId} not found");
+            }
+
+            var existingSkill = await _context.CandidateSkills
+                .FirstOrDefaultAsync(cs => cs.CandidateId == request.CandidateId && cs.SkillId == request.SkillId);
+            
+            if (existingSkill != null)
+            {
+                throw new UserException($"Candidate already has the skill '{skill.Name}'. Use update instead.");
+            }
+
+            await base.BeforeInsert(entity, request);
         }
 
         protected override CandidateSkillResponse MapToResponse(CandidateSkill entity)

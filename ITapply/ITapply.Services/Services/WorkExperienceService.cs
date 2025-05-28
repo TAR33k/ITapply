@@ -1,3 +1,4 @@
+using ITapply.Models.Exceptions;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
@@ -73,8 +74,25 @@ namespace ITapply.Services.Services
             return query;
         }
 
+        protected override async Task BeforeInsert(WorkExperience entity, WorkExperienceInsertRequest request)
+        {
+            var candidate = await _context.Candidates.FindAsync(request.CandidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {request.CandidateId} not found");
+            }
+
+            await base.BeforeInsert(entity, request);
+        }
+
         public async Task<List<WorkExperienceResponse>> GetByCandidateIdAsync(int candidateId)
         {
+            var candidate = await _context.Candidates.FindAsync(candidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {candidateId} not found");
+            }
+
             var entities = await _context.WorkExperiences
                 .Include(x => x.Candidate)
                 .Where(x => x.CandidateId == candidateId)
@@ -88,6 +106,12 @@ namespace ITapply.Services.Services
 
         public async Task<int> GetTotalExperienceMonthsAsync(int candidateId)
         {
+            var candidate = await _context.Candidates.FindAsync(candidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {candidateId} not found");
+            }
+
             var experiences = await _context.WorkExperiences
                 .Where(x => x.CandidateId == candidateId)
                 .ToListAsync();

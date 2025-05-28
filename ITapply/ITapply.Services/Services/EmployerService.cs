@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static ITapply.Models.Responses.EnumResponse;
 
@@ -50,10 +51,30 @@ namespace ITapply.Services.Services
                 throw new UserException($"Employer with ID {id} not found");
             }
 
+            if (!IsValidVerificationStatusTransition(entity.VerificationStatus, status))
+            {
+                throw new UserException($"Invalid status transition from {entity.VerificationStatus} to {status}");
+            }
+
             entity.VerificationStatus = status;
             await _context.SaveChangesAsync();
 
             return MapToResponse(entity);
+        }
+
+        private bool IsValidVerificationStatusTransition(VerificationStatus currentStatus, VerificationStatus newStatus)
+        {
+            switch (currentStatus)
+            {
+                case VerificationStatus.Pending:
+                    return newStatus == VerificationStatus.Approved || newStatus == VerificationStatus.Rejected;
+                case VerificationStatus.Approved:
+                    return newStatus == VerificationStatus.Rejected;
+                case VerificationStatus.Rejected:
+                    return newStatus == VerificationStatus.Pending || newStatus == VerificationStatus.Approved;
+                default:
+                    return true;
+            }
         }
 
         protected override IQueryable<Employer> ApplyFilter(IQueryable<Employer> query, EmployerSearchObject search)
@@ -112,6 +133,22 @@ namespace ITapply.Services.Services
             if (user == null)
             {
                 throw new UserException($"User with ID {request.UserId} not found");
+            }
+
+            var existingEmployer = await _context.Employers
+                .FirstOrDefaultAsync(e => e.User.Id == request.UserId);
+            if (existingEmployer != null)
+            {
+                throw new UserException($"User with ID {request.UserId} is already assigned to another employer");
+            }
+
+            var userHasEmployerRole = await _context.UserRoles
+                .Include(ur => ur.Role)
+                .AnyAsync(ur => ur.UserId == request.UserId && ur.Role.Name == "Employer");
+            
+            if (!userHasEmployerRole)
+            {
+                throw new UserException("User must have the Employer role to be assigned to an employer profile");
             }
 
             if (request.LocationId.HasValue)

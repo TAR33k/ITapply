@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ITapply.Services.Services
@@ -92,12 +93,12 @@ namespace ITapply.Services.Services
         {
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
             {
-                throw new UserException("A user with this email already exists.");
+                throw new UserException("A user with this email already exists");
             }
 
             if (request.RoleIds == null || !request.RoleIds.Any())
             {
-                throw new UserException("At least one role must be assigned to the user.");
+                throw new UserException("At least one role must be assigned to the user");
             }
 
             var existingRoleIds = await _context.Roles
@@ -110,6 +111,19 @@ namespace ITapply.Services.Services
             {
                 throw new UserException($"The following role IDs do not exist: {string.Join(", ", nonExistentRoleIds)}");
             }
+
+            var roleNames = await _context.Roles
+                .Where(r => request.RoleIds.Contains(r.Id))
+                .Select(r => r.Name)
+                .ToListAsync();
+
+            if (roleNames.Contains("Candidate") && roleNames.Contains("Employer"))
+            {
+                throw new UserException("A user cannot have both Candidate and Employer roles");
+            }
+
+            entity.RegistrationDate = DateTime.Now;
+            entity.IsActive = true;
 
             byte[] salt;
             entity.PasswordHash = HashPassword(request.Password, out salt);
@@ -132,9 +146,12 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeUpdate(User entity, UserUpdateRequest request)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == request.Email && u.Id != entity.Id))
+            if (!string.IsNullOrEmpty(request.Email) && request.Email != entity.Email)
             {
-                throw new UserException("A user with this email already exists.");
+                if (await _context.Users.AnyAsync(u => u.Email == request.Email && u.Id != entity.Id))
+                {
+                    throw new UserException("A user with this email already exists");
+                }
             }
 
             if (!string.IsNullOrEmpty(request.Password))
@@ -154,6 +171,11 @@ namespace ITapply.Services.Services
                 
             if (user == null)
                 return null;
+
+            if (!user.IsActive)
+            {
+                throw new UserException("This account has been deactivated");
+            }
 
             if (!VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
                 return null;

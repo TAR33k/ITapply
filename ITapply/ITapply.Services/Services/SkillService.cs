@@ -1,9 +1,11 @@
+using ITapply.Models.Exceptions;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
 using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,32 @@ namespace ITapply.Services.Services
             }
 
             return query;
+        }
+
+        protected override async Task BeforeInsert(Skill entity, SkillInsertRequest request)
+        {
+            var skillExists = await _context.Skills
+                .AnyAsync(s => s.Name.ToLower() == request.Name.ToLower());
+            
+            if (skillExists)
+            {
+                throw new UserException($"Skill with name '{request.Name}' already exists");
+            }
+
+            await base.BeforeInsert(entity, request);
+        }
+
+        protected override async Task BeforeUpdate(Skill entity, SkillUpdateRequest request)
+        {
+            var skillExists = await _context.Skills
+                .AnyAsync(s => s.Id != entity.Id && s.Name.ToLower() == request.Name.ToLower());
+            
+            if (skillExists)
+            {
+                throw new UserException($"Skill with name '{request.Name}' already exists");
+            }
+
+            await base.BeforeUpdate(entity, request);
         }
     }
 } 

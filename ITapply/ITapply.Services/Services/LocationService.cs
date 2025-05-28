@@ -1,9 +1,11 @@
-﻿using ITapply.Models.Requests;
+﻿using ITapply.Models.Exceptions;
+using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
 using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,37 @@ namespace ITapply.Services.Services
             }
 
             return query;
+        }
+
+        protected override async Task BeforeInsert(Location entity, LocationInsertRequest request)
+        {
+            var existingLocation = await _context.Locations
+                .FirstOrDefaultAsync(l => 
+                    l.Country.ToLower() == request.Country.ToLower() && 
+                    l.City.ToLower() == request.City.ToLower());
+            
+            if (existingLocation != null)
+            {
+                throw new UserException($"Location '{request.City}, {request.Country}' already exists");
+            }
+
+            await base.BeforeInsert(entity, request);
+        }
+
+        protected override async Task BeforeUpdate(Location entity, LocationUpdateRequest request)
+        {
+            var existingLocation = await _context.Locations
+                .FirstOrDefaultAsync(l => 
+                    l.Id != entity.Id && 
+                    l.Country.ToLower() == request.Country.ToLower() && 
+                    l.City.ToLower() == request.City.ToLower());
+            
+            if (existingLocation != null)
+            {
+                throw new UserException($"Location '{request.City}, {request.Country}' already exists");
+            }
+
+            await base.BeforeUpdate(entity, request);
         }
     }
 }

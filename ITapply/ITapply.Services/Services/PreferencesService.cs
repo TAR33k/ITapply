@@ -1,3 +1,4 @@
+using ITapply.Models.Exceptions;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
@@ -63,6 +64,48 @@ namespace ITapply.Services.Services
             }
 
             return query;
+        }
+
+        protected override async Task BeforeInsert(Preferences entity, PreferencesInsertRequest request)
+        {
+            var candidate = await _context.Candidates.FindAsync(request.CandidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {request.CandidateId} not found");
+            }
+
+            var existingPreferences = await _context.Preferences
+                .FirstOrDefaultAsync(p => p.CandidateId == request.CandidateId);
+            
+            if (existingPreferences != null)
+            {
+                throw new UserException("Candidate already has preferences set. Use update instead.");
+            }
+
+            if (request.LocationId.HasValue)
+            {
+                var location = await _context.Locations.FindAsync(request.LocationId.Value);
+                if (location == null)
+                {
+                    throw new UserException($"Location with ID {request.LocationId.Value} not found");
+                }
+            }
+
+            await base.BeforeInsert(entity, request);
+        }
+
+        protected override async Task BeforeUpdate(Preferences entity, PreferencesUpdateRequest request)
+        {
+            if (request.LocationId.HasValue)
+            {
+                var location = await _context.Locations.FindAsync(request.LocationId.Value);
+                if (location == null)
+                {
+                    throw new UserException($"Location with ID {request.LocationId.Value} not found");
+                }
+            }
+
+            await base.BeforeUpdate(entity, request);
         }
 
         protected override PreferencesResponse MapToResponse(Preferences entity)

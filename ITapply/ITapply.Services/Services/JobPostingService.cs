@@ -33,9 +33,15 @@ namespace ITapply.Services.Services
 
         public async Task<List<JobPostingResponse>> GetRecommendedJobsForCandidateAsync(int candidateId, int count = 5)
         {
-            // -------------------------
-            // RECOMMENDER SYSTEM - TODO
-            // -------------------------
+            var candidate = await _context.Candidates.FindAsync(candidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {candidateId} not found");
+            }
+
+            // ------------------------------------
+            // TODO: Implement recommendation logic
+            // ------------------------------------
 
             return new List<JobPostingResponse>();
         }
@@ -172,6 +178,11 @@ namespace ITapply.Services.Services
                 throw new UserException($"Employer with ID {request.EmployerId} not found");
             }
 
+            if (employer.VerificationStatus != VerificationStatus.Approved)
+            {
+                throw new UserException("Only verified employers can create job postings");
+            }
+
             if (request.LocationId.HasValue)
             {
                 var location = await _context.Locations.FindAsync(request.LocationId.Value);
@@ -180,6 +191,8 @@ namespace ITapply.Services.Services
                     throw new UserException($"Location with ID {request.LocationId.Value} not found");
                 }
             }
+
+            ValidateJobPostingData(request.MinSalary, request.MaxSalary, request.ApplicationDeadline);
 
             entity.PostedDate = DateTime.Now;
             entity.Status = JobPostingStatus.Active;
@@ -223,7 +236,28 @@ namespace ITapply.Services.Services
                 }
             }
 
+            ValidateJobPostingData(request.MinSalary, request.MaxSalary, request.ApplicationDeadline);
+
             await base.BeforeUpdate(entity, request);
+        }
+
+        private void ValidateJobPostingData(int minSalary, int maxSalary, DateTime applicationDeadline)
+        {
+
+            if (maxSalary < minSalary)
+            {
+                throw new UserException("Maximum salary must be greater than or equal to minimum salary");
+            }
+
+            if (applicationDeadline < DateTime.Now)
+            {
+                throw new UserException("Application deadline cannot be in the past");
+            }
+
+            if (applicationDeadline > DateTime.Now.AddYears(1))
+            {
+                throw new UserException("Application deadline cannot be more than a year in the future");
+            }
         }
 
         protected override async Task AfterUpdate(JobPosting entity, JobPostingUpdateRequest request)
@@ -255,6 +289,19 @@ namespace ITapply.Services.Services
             }
 
             await base.AfterUpdate(entity, request);
+        }
+
+        protected override async Task BeforeDelete(JobPosting entity)
+        {
+            var hasApplications = await _context.Applications
+                .AnyAsync(a => a.JobPostingId == entity.Id);
+            
+            if (hasApplications)
+            {
+                throw new UserException("Cannot delete a job posting that has received applications. Consider changing its status to Closed instead.");
+            }
+
+            await base.BeforeDelete(entity);
         }
 
         protected override JobPostingResponse MapToResponse(JobPosting entity)

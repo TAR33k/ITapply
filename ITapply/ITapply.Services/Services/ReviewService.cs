@@ -80,6 +80,12 @@ namespace ITapply.Services.Services
 
         public async Task<double> GetAverageRatingForEmployerAsync(int employerId)
         {
+            var employer = await _context.Employers.FindAsync(employerId);
+            if (employer == null)
+            {
+                throw new UserException($"Employer with ID {employerId} not found");
+            }
+
             var reviews = await _context.Reviews
                 .Where(x => x.EmployerId == employerId && x.ModerationStatus == ModerationStatus.Approved)
                 .ToListAsync();
@@ -92,6 +98,12 @@ namespace ITapply.Services.Services
 
         public async Task<List<ReviewResponse>> GetByCandidateIdAsync(int candidateId)
         {
+            var candidate = await _context.Candidates.FindAsync(candidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {candidateId} not found");
+            }
+
             var entities = await _context.Reviews
                 .Include(x => x.Candidate)
                 .Include(x => x.Employer)
@@ -104,6 +116,12 @@ namespace ITapply.Services.Services
 
         public async Task<List<ReviewResponse>> GetByEmployerIdAsync(int employerId)
         {
+            var employer = await _context.Employers.FindAsync(employerId);
+            if (employer == null)
+            {
+                throw new UserException($"Employer with ID {employerId} not found");
+            }
+
             var entities = await _context.Reviews
                 .Include(x => x.Candidate)
                 .Include(x => x.Employer)
@@ -124,6 +142,26 @@ namespace ITapply.Services.Services
             await _context.SaveChangesAsync();
 
             return MapToResponse(entity);
+        }
+
+        protected override async Task BeforeInsert(Review entity, ReviewInsertRequest request)
+        {
+            var candidate = await _context.Candidates.FindAsync(request.CandidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {request.CandidateId} not found");
+            }
+
+            var employer = await _context.Employers.FindAsync(request.EmployerId);
+            if (employer == null)
+            {
+                throw new UserException($"Employer with ID {request.EmployerId} not found");
+            }
+
+            entity.ReviewDate = DateTime.Now;
+            entity.ModerationStatus = ModerationStatus.Pending;
+
+            await base.BeforeInsert(entity, request);
         }
 
         protected override ReviewResponse MapToResponse(Review entity)

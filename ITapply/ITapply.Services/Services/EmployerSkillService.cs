@@ -1,3 +1,4 @@
+using ITapply.Models.Exceptions;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
@@ -54,6 +55,36 @@ namespace ITapply.Services.Services
             }
 
             return query;
+        }
+
+        protected override async Task BeforeInsert(EmployerSkill entity, EmployerSkillInsertRequest request)
+        {
+            var employer = await _context.Employers.FindAsync(request.EmployerId);
+            if (employer == null)
+            {
+                throw new UserException($"Employer with ID {request.EmployerId} not found");
+            }
+
+            if (employer.VerificationStatus != EnumResponse.VerificationStatus.Approved)
+            {
+                throw new UserException("Only verified employers can add skills to their profile");
+            }
+
+            var skill = await _context.Skills.FindAsync(request.SkillId);
+            if (skill == null)
+            {
+                throw new UserException($"Skill with ID {request.SkillId} not found");
+            }
+
+            var existingSkill = await _context.EmployerSkills
+                .FirstOrDefaultAsync(es => es.EmployerId == request.EmployerId && es.SkillId == request.SkillId);
+            
+            if (existingSkill != null)
+            {
+                throw new UserException($"Employer already has the skill '{skill.Name}'");
+            }
+
+            await base.BeforeInsert(entity, request);
         }
 
         protected override EmployerSkillResponse MapToResponse(EmployerSkill entity)

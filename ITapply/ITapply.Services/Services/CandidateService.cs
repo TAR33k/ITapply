@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ITapply.Services.Services
@@ -97,6 +98,22 @@ namespace ITapply.Services.Services
             if (user == null)
             {
                 throw new UserException($"User with ID {request.UserId} not found");
+            }
+
+            var existingCandidate = await _context.Candidates
+                .FirstOrDefaultAsync(c => c.User.Id == request.UserId);
+            if (existingCandidate != null)
+            {
+                throw new UserException($"User with ID {request.UserId} is already assigned to another candidate");
+            }
+            
+            var userHasCandidateRole = await _context.UserRoles
+                .Include(ur => ur.Role)
+                .AnyAsync(ur => ur.UserId == request.UserId && ur.Role.Name == "Candidate");
+            
+            if (!userHasCandidateRole)
+            {
+                throw new UserException("User must have the Candidate role to be assigned to a candidate profile");
             }
 
             if (request.LocationId.HasValue)

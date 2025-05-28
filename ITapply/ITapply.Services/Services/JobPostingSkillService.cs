@@ -1,3 +1,4 @@
+using ITapply.Models.Exceptions;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
@@ -59,6 +60,39 @@ namespace ITapply.Services.Services
             }
 
             return query;
+        }
+
+        protected override async Task BeforeInsert(JobPostingSkill entity, JobPostingSkillInsertRequest request)
+        {
+            var jobPosting = await _context.JobPostings
+                .Include(jp => jp.Employer)
+                .FirstOrDefaultAsync(jp => jp.Id == request.JobPostingId);
+                
+            if (jobPosting == null)
+            {
+                throw new UserException($"Job posting with ID {request.JobPostingId} not found");
+            }
+
+            if (jobPosting.Status != EnumResponse.JobPostingStatus.Active)
+            {
+                throw new UserException("Cannot add skills to a job posting that is not in Active status");
+            }
+
+            var skill = await _context.Skills.FindAsync(request.SkillId);
+            if (skill == null)
+            {
+                throw new UserException($"Skill with ID {request.SkillId} not found");
+            }
+
+            var existingSkill = await _context.JobPostingSkills
+                .FirstOrDefaultAsync(jps => jps.JobPostingId == request.JobPostingId && jps.SkillId == request.SkillId);
+            
+            if (existingSkill != null)
+            {
+                throw new UserException($"Job posting already has the skill '{skill.Name}'");
+            }
+
+            await base.BeforeInsert(entity, request);
         }
 
         protected override JobPostingSkillResponse MapToResponse(JobPostingSkill entity)

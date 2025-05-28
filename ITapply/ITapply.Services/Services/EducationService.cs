@@ -1,3 +1,4 @@
+using ITapply.Models.Exceptions;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
@@ -77,8 +78,52 @@ namespace ITapply.Services.Services
             return query;
         }
 
+        protected override async Task BeforeInsert(Education entity, EducationInsertRequest request)
+        {
+            var candidate = await _context.Candidates.FindAsync(request.CandidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {request.CandidateId} not found");
+            }
+
+            if (request.EndDate == null)
+            {
+                var hasCurrentEducation = await _context.Educations
+                    .AnyAsync(e => e.CandidateId == request.CandidateId && e.EndDate == null);
+                
+                if (hasCurrentEducation)
+                {
+                    throw new UserException("Candidate already has a current education entry. Please end the existing one before adding a new current education.");
+                }
+            }
+
+            await base.BeforeInsert(entity, request);
+        }
+
+        protected override async Task BeforeUpdate(Education entity, EducationUpdateRequest request)
+        {
+            if (request.EndDate == null && entity.EndDate != null)
+            {
+                var hasCurrentEducation = await _context.Educations
+                    .AnyAsync(e => e.CandidateId == entity.CandidateId && e.Id != entity.Id && e.EndDate == null);
+                
+                if (hasCurrentEducation)
+                {
+                    throw new UserException("Candidate already has a current education entry. Please end the existing one before making this education current.");
+                }
+            }
+
+            await base.BeforeUpdate(entity, request);
+        }
+
         public async Task<List<EducationResponse>> GetByCandidateIdAsync(int candidateId)
         {
+            var candidate = await _context.Candidates.FindAsync(candidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {candidateId} not found");
+            }
+
             var entities = await _context.Educations
                 .Include(x => x.Candidate)
                 .Where(x => x.CandidateId == candidateId)
@@ -92,6 +137,12 @@ namespace ITapply.Services.Services
 
         public async Task<string> GetHighestDegreeAsync(int candidateId)
         {
+            var candidate = await _context.Candidates.FindAsync(candidateId);
+            if (candidate == null)
+            {
+                throw new UserException($"Candidate with ID {candidateId} not found");
+            }
+
             var education = await _context.Educations
                 .Where(x => x.CandidateId == candidateId)
                 .ToListAsync();

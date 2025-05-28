@@ -1,9 +1,11 @@
-﻿using ITapply.Models.Requests;
+﻿using ITapply.Models.Exceptions;
+using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
 using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,32 @@ namespace ITapply.Services.Services
             }
 
             return query;
+        }
+
+        protected override async Task BeforeInsert(Role entity, RoleInsertRequest request)
+        {
+            var roleExists = await _context.Roles
+                .AnyAsync(r => r.Name.ToLower() == request.Name.ToLower());
+            
+            if (roleExists)
+            {
+                throw new UserException($"Role with name '{request.Name}' already exists");
+            }
+
+            await base.BeforeInsert(entity, request);
+        }
+
+        protected override async Task BeforeUpdate(Role entity, RoleUpdateRequest request)
+        {
+            var roleExists = await _context.Roles
+                .AnyAsync(r => r.Id != entity.Id && r.Name.ToLower() == request.Name.ToLower());
+            
+            if (roleExists)
+            {
+                throw new UserException($"Role with name '{request.Name}' already exists");
+            }
+
+            await base.BeforeUpdate(entity, request);
         }
     }
 }

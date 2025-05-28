@@ -30,10 +30,34 @@ namespace ITapply.Services.Services
                 throw new UserException($"Application with ID {id} not found");
             }
 
+            if (!IsValidStatusTransition(entity.Status, status))
+            {
+                throw new UserException($"Invalid status transition from {entity.Status} to {status}");
+            }
+
             entity.Status = status;
             await _context.SaveChangesAsync();
 
             return MapToResponse(entity);
+        }
+
+        private bool IsValidStatusTransition(ApplicationStatus currentStatus, ApplicationStatus newStatus)
+        {
+            switch (currentStatus)
+            {
+                case ApplicationStatus.Applied:
+                    return newStatus != ApplicationStatus.Applied;
+                case ApplicationStatus.InConsideration:
+                    return newStatus != ApplicationStatus.Applied;
+                case ApplicationStatus.InterviewScheduled:
+                    return newStatus != ApplicationStatus.Applied && newStatus != ApplicationStatus.InConsideration;
+                case ApplicationStatus.Rejected:
+                    return false;
+                case ApplicationStatus.Accepted:
+                    return newStatus == ApplicationStatus.Rejected;
+                default:
+                    return true;
+            }
         }
 
         public async Task<bool> HasAppliedAsync(int candidateId, int jobPostingId)
@@ -122,6 +146,7 @@ namespace ITapply.Services.Services
 
             return query;
         }
+        
         protected override async Task BeforeInsert(Application entity, ApplicationInsertRequest request)
         {
             var candidate = await _context.Candidates.FindAsync(request.CandidateId);
@@ -130,14 +155,23 @@ namespace ITapply.Services.Services
                 throw new UserException($"Candidate with ID {request.CandidateId} not found");
             }
 
-            var jobPosting = await _context.JobPostings.FindAsync(request.JobPostingId);
+            var jobPosting = await _context.JobPostings
+                .Include(jp => jp.Employer)
+                .FirstOrDefaultAsync(jp => jp.Id == request.JobPostingId);
+                
             if (jobPosting == null)
             {
                 throw new UserException($"Job posting with ID {request.JobPostingId} not found");
             }
-            if (jobPosting.Status != JobPostingStatus.Active || jobPosting.ApplicationDeadline < DateTime.Now)
+            
+            if (jobPosting.Status != JobPostingStatus.Active)
             {
-                throw new UserException("This job posting is no longer accepting applications");
+                throw new UserException("This job posting is no longer active");
+            }
+            
+            if (jobPosting.ApplicationDeadline < DateTime.Now)
+            {
+                throw new UserException("The application deadline for this job posting has passed");
             }
 
             var cvDocument = await _context.CVDocuments
@@ -157,6 +191,16 @@ namespace ITapply.Services.Services
             entity.Status = ApplicationStatus.Applied;
 
             await base.BeforeInsert(entity, request);
+        }
+
+        protected override async Task BeforeUpdate(Application entity, ApplicationUpdateRequest request)
+        {
+            if (!IsValidStatusTransition(entity.Status, request.Status))
+            {
+                throw new UserException($"Invalid status transition from {entity.Status} to {request.Status}");
+            }
+
+            await base.BeforeUpdate(entity, request);
         }
 
         protected override ApplicationResponse MapToResponse(Application entity)
