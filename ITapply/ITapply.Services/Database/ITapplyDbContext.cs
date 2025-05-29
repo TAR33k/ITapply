@@ -142,7 +142,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(c => c.Location)
                     .WithMany(l => l.Candidates)
                     .HasForeignKey(c => c.LocationId)
-                    .OnDelete(DeleteBehavior.NoAction)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .IsRequired(false);
                 
                 // Candidate - WorkExperience relationship (1:N)
@@ -194,7 +194,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(e => e.Location)
                     .WithMany(l => l.Employers)
                     .HasForeignKey(e => e.LocationId)
-                    .OnDelete(DeleteBehavior.NoAction)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .IsRequired(false);
                 
                 // Employer - JobPosting relationship (1:N)
@@ -233,7 +233,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(j => j.Location)
                     .WithMany(l => l.JobPostings)
                     .HasForeignKey(j => j.LocationId)
-                    .OnDelete(DeleteBehavior.NoAction)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .IsRequired(false);
                 
                 // JobPosting - JobPostingSkill relationship (1:N)
@@ -327,7 +327,9 @@ namespace ITapply.Services.Database
             {
                 entity.HasIndex(cv => cv.UploadDate);
                 entity.HasIndex(cv => cv.IsMain);
-                entity.HasIndex(cv => new { cv.CandidateId, cv.IsMain });
+                entity.HasIndex(cv => new { cv.CandidateId, cv.IsMain })
+                    .HasFilter("[IsMain] = 1")
+                    .IsUnique();
             });
 
             // ======== Location entity configuration ========
@@ -371,7 +373,7 @@ namespace ITapply.Services.Database
                 entity.HasOne(p => p.Location)
                     .WithMany()
                     .HasForeignKey(p => p.LocationId)
-                    .OnDelete(DeleteBehavior.NoAction)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .IsRequired(false);
             });
 
