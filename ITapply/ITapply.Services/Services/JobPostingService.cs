@@ -6,6 +6,9 @@ using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Trainers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +34,61 @@ namespace ITapply.Services.Services
                     .ThenInclude(jps => jps.Skill);
         }
 
+        static MLContext _mlContext = null;
+        static ITransformer _model = null;
+        static readonly object _lock = new object();
+
+        private void TrainModelIfNotExists()
+        {
+            lock (_lock)
+            {
+                if (_model != null) return;
+
+                _mlContext = new MLContext();
+
+                var allApplications = _context.Applications
+                    .Select(a => new { a.CandidateId, a.JobPostingId })
+                    .ToList();
+
+                var coApplicationData = new List<JobCoApplicationEntry>();
+                var groupedByCandidate = allApplications.GroupBy(a => a.CandidateId);
+
+                foreach (var group in groupedByCandidate)
+                {
+                    if (group.Count() > 1)
+                    {
+                        var jobIds = group.Select(g => g.JobPostingId).Distinct().ToList();
+                        for (int i = 0; i < jobIds.Count; i++)
+                        {
+                            for (int j = i + 1; j < jobIds.Count; j++)
+                            {
+                                coApplicationData.Add(new JobCoApplicationEntry { JobPostingId = (uint)jobIds[i], CoAppliedJobPostingId = (uint)jobIds[j], Label = 1 });
+                                coApplicationData.Add(new JobCoApplicationEntry { JobPostingId = (uint)jobIds[j], CoAppliedJobPostingId = (uint)jobIds[i], Label = 1 });
+                            }
+                        }
+                    }
+                }
+
+                if (!coApplicationData.Any()) return;
+
+                var trainData = _mlContext.Data.LoadFromEnumerable(coApplicationData);
+                var options = new MatrixFactorizationTrainer.Options
+                {
+                    MatrixColumnIndexColumnName = nameof(JobCoApplicationEntry.JobPostingId),
+                    MatrixRowIndexColumnName = nameof(JobCoApplicationEntry.CoAppliedJobPostingId),
+                    LabelColumnName = "Label",
+                    LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass,
+                    Alpha = 0.01,
+                    Lambda = 0.025,
+                    NumberOfIterations = 100,
+                    C = 0.00001
+                };
+
+                var estimator = _mlContext.Recommendation().Trainers.MatrixFactorization(options);
+                _model = estimator.Fit(trainData);
+            }
+        }
+
         public async Task<List<JobPostingResponse>> GetRecommendedJobsForCandidateAsync(int candidateId, int count = 5)
         {
             var candidate = await _context.Candidates.FindAsync(candidateId);
@@ -39,11 +97,84 @@ namespace ITapply.Services.Services
                 throw new UserException($"Candidate with ID {candidateId} not found");
             }
 
-            // ------------------------------------
-            // TODO: Implement recommendation logic
-            // ------------------------------------
+            TrainModelIfNotExists();
 
-            return new List<JobPostingResponse>();
+            var candidateHistory = await _context.Applications
+                .Where(a => a.CandidateId == candidateId)
+                .Include(a => a.JobPosting)
+                .ThenInclude(jp => jp.JobPostingSkills)
+                .ToListAsync();
+
+            if (!candidateHistory.Any())
+            {
+                return new List<JobPostingResponse>();
+            }
+
+            var appliedJobIds = new HashSet<int>(candidateHistory.Select(a => a.JobPostingId));
+            var historicSkillIds = new HashSet<int>(candidateHistory.SelectMany(a => a.JobPosting.JobPostingSkills).Select(s => s.SkillId));
+
+            var recommendableJobs = await _context.JobPostings
+                .Include(j => j.Employer)
+                .Include(j => j.Location)
+                .Include(j => j.JobPostingSkills).ThenInclude(jps => jps.Skill)
+                .Where(j => j.Status == JobPostingStatus.Active && !appliedJobIds.Contains(j.Id))
+                .ToListAsync();
+
+            var predictionEngine = _model != null ? _mlContext.Model.CreatePredictionEngine<JobCoApplicationEntry, CoApplicationPrediction>(_model) : null;
+            var finalScores = new List<(JobPosting Job, double Score)>();
+
+            const double collaborativeBonusScale = 0.2;
+
+            foreach (var job in recommendableJobs)
+            {
+                // --- Content Score (Base Score) ---
+                double contentScore = 0;
+                if (job.JobPostingSkills.Any() && historicSkillIds.Any())
+                {
+                    var jobSkillIds = job.JobPostingSkills.Select(s => s.SkillId);
+                    int matchingSkills = historicSkillIds.Intersect(jobSkillIds).Count();
+                    if (matchingSkills > 0)
+                    {
+                        int unionSkills = historicSkillIds.Count + jobSkillIds.Count() - matchingSkills;
+                        contentScore = (double)matchingSkills / unionSkills;
+                    }
+                }
+
+                if (contentScore == 0) continue;
+
+                // --- Collaborative Score (Bonus) ---
+                double collaborativeBonus = 0;
+                if (predictionEngine != null)
+                {
+                    float cumulativePrediction = 0f;
+                    foreach (var appliedJobId in appliedJobIds)
+                    {
+                        var prediction = predictionEngine.Predict(new JobCoApplicationEntry
+                        {
+                            JobPostingId = (uint)appliedJobId,
+                            CoAppliedJobPostingId = (uint)job.Id
+                        });
+                        cumulativePrediction += prediction.Score;
+                    }
+                    if (appliedJobIds.Any())
+                    {
+                        // Normalize by app count and scale it down to a bonus
+                        collaborativeBonus = (cumulativePrediction / appliedJobIds.Count) * collaborativeBonusScale;
+                    }
+                }
+
+                // --- Final Score ---
+                double finalScore = contentScore + collaborativeBonus;
+                finalScores.Add((job, finalScore));
+            }
+
+            var finalRecommendations = finalScores
+                .OrderByDescending(x => x.Score)
+                .Take(count)
+                .Select(x => x.Job)
+                .ToList();
+
+            return finalRecommendations.Select(MapToResponse).ToList();
         }
 
         public async Task<JobPostingResponse> UpdateStatusAsync(int id, JobPostingStatus status)
@@ -295,7 +426,7 @@ namespace ITapply.Services.Services
         {
             var hasApplications = await _context.Applications
                 .AnyAsync(a => a.JobPostingId == entity.Id);
-            
+
             if (hasApplications)
             {
                 throw new UserException("Cannot delete a job posting that has received applications. Consider changing its status to Closed instead.");
@@ -329,4 +460,21 @@ namespace ITapply.Services.Services
             return response;
         }
     }
-} 
+
+    public class CoApplicationPrediction
+    {
+        public float Score { get; set; }
+    }
+
+    public class JobCoApplicationEntry
+    {
+
+        [KeyType(count: 1000)]
+        public uint JobPostingId { get; set; }
+
+        [KeyType(count: 1000)]
+        public uint CoAppliedJobPostingId { get; set; }
+
+        public float Label { get; set; }
+    }
+}
