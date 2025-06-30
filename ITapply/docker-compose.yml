@@ -1,42 +1,76 @@
-version: '3.8'
-
 networks:
   itapply-network:
     driver: bridge
 
 services:
+  # SQL Server Service
+  itapply-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    hostname: itapply-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SQL_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "${SQL_PORT}:1433"
+    networks:
+      - itapply-network
+    restart: unless-stopped
+
+  # API Service
   itapply-api:
     build:
       context: .
       dockerfile: ITapply.WebAPI/Dockerfile
     ports:
       - "8080:8080"
-      - "8081:8081"
     environment:
+      - ConnectionStrings__DefaultConnection=Server=${SQL_HOST};Database=${SQL_DATABASE};User=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=itapply-sql;Database=220202;User=sa;Password=Password1!;TrustServerCertificate=True
+      - ASPNETCORE_URLS=http://+:8080
+      - EasyNetQ_ConnectionString=${EASYNETQ_CONNECTION_STRING}
     depends_on:
       - itapply-sql
     networks:
       - itapply-network
     restart: unless-stopped
 
-  itapply-sql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  # RabbitMQ Service
+  itapply-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: itapply-rabbitmq
     environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Password1!
-      - MSSQL_PID=Developer
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     ports:
-      - "1433:1433"
-    expose:
-      - 1433
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+    depends_on:
+      - itapply-api
     networks:
       - itapply-network
     restart: unless-stopped
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "Password1!" -Q "SELECT 1" -b -o /dev/null
-      interval: 10s
-      timeout: 3s
-      retries: 10
-      start_period: 10s
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Notifier Service
+  itapply-notifier:
+    build:
+      context: .
+      dockerfile: ITapply.Notifier/Dockerfile
+    environment:
+      - SmtpSettings__Server=${SMTP_SERVER}
+      - SmtpSettings__Port=${SMTP_PORT}
+      - SmtpSettings__Username=${SMTP_USER}
+      - SmtpSettings__Password=${SMTP_PASSWORD}
+      - SmtpSettings__FromEmail=${FROM_EMAIL}
+      - EasyNetQ_ConnectionString=${EASYNETQ_CONNECTION_STRING}
+    depends_on:
+      itapply-rabbitmq:
+        condition: service_healthy
+    networks:
+      - itapply-network
+    restart: unless-stopped

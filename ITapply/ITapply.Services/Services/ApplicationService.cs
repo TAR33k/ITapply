@@ -1,8 +1,11 @@
+using EasyNetQ;
 using ITapply.Models.Exceptions;
+using ITapply.Models.Messages;
 using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
 using ITapply.Services.Database;
+using ITapply.Services.Helpers;
 using ITapply.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -18,13 +21,71 @@ namespace ITapply.Services.Services
     public class ApplicationService
         : BaseCRUDService<ApplicationResponse, ApplicationSearchObject, Application, ApplicationInsertRequest, ApplicationUpdateRequest>, IApplicationService
     {
-        public ApplicationService(ITapplyDbContext context, IMapper mapper) : base(context, mapper)
+        private readonly IBus _bus;
+
+        public ApplicationService(ITapplyDbContext context, IMapper mapper, IBus bus)
+            : base(context, mapper)
         {
+            _bus = bus;
+        }
+
+        private async Task SendNotification(int applicationId)
+        {
+            var applicationWithDetails = await _context.Applications
+                    .Include(a => a.Candidate)
+                        .ThenInclude(c => c.User)
+                    .Include(a => a.JobPosting)
+                        .ThenInclude(jp => jp.Employer)
+                    .FirstOrDefaultAsync(a => a.Id == applicationId);
+
+            if (applicationWithDetails == null)
+            {
+                throw new UserException($"Application with ID {applicationId} not found");
+            }
+
+            if (!applicationWithDetails.ReceiveNotifications)
+            {
+                return;
+            }
+
+            if (applicationWithDetails.Candidate?.User?.Email == null)
+            {
+                throw new UserException($"User doesn't have an email for notifications");
+            }
+
+            var emailBody = EmailTemplateGenerator.GenerateApplicationStatusUpdateEmail(applicationWithDetails);
+
+            var payload = new NotificationPayload
+            {
+                ToEmail = applicationWithDetails.Candidate.User.Email,
+                Subject = $"Update on your application for '{applicationWithDetails.JobPosting.Title}'",
+                Body = emailBody
+            };
+
+            await _bus.PubSub.PublishAsync(payload);
+        }
+
+        protected override async Task AfterInsert(Application entity, ApplicationInsertRequest request)
+        {
+            await SendNotification(entity.Id);
+            await base.AfterInsert(entity, request);
+        }
+
+        protected override async Task AfterUpdate(Application entity, ApplicationUpdateRequest request)
+        {
+            await SendNotification(entity.Id);
+            await base.AfterUpdate(entity, request);
         }
 
         public async Task<ApplicationResponse> UpdateStatusAsync(int id, ApplicationStatus status)
         {
-            var entity = await _context.Applications.FindAsync(id);
+            var entity = await _context.Applications
+                    .Include(a => a.Candidate)
+                        .ThenInclude(c => c.User)
+                    .Include(a => a.JobPosting)
+                        .ThenInclude(jp => jp.Employer)
+                    .FirstOrDefaultAsync(a => a.Id == id);
+
             if (entity == null)
             {
                 throw new UserException($"Application with ID {id} not found");
@@ -37,6 +98,8 @@ namespace ITapply.Services.Services
 
             entity.Status = status;
             await _context.SaveChangesAsync();
+
+            await SendNotification(entity.Id);
 
             return MapToResponse(entity);
         }

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ITapply.Notifier": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

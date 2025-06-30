@@ -1,4 +1,7 @@
 using Azure.Core;
+using EasyNetQ;
+using EasyNetQ.DI;
+using EasyNetQ.Serialization.SystemTextJson;
 using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using ITapply.Services.Services;
@@ -66,6 +69,11 @@ builder.Services.AddSwaggerGen(c =>
             new string[] { }
         }
     });
+});
+
+builder.Services.RegisterEasyNetQ(builder.Configuration["EasyNetQ_ConnectionString"], services =>
+{
+    services.Register<ISerializer, SystemTextJsonSerializer>();
 });
 
 var app = builder.Build();
