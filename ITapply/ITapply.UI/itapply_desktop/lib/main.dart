@@ -1,7 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:itapply_desktop/providers/auth_provider.dart';
+import 'package:itapply_desktop/providers/job_posting_provider.dart';
+import 'package:itapply_desktop/screens/job_posting_list.dart';
+import 'config/theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyLoginApp());
+}
+
+class MyLoginApp extends StatelessWidget {
+  const MyLoginApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(theme: AppTheme.getTheme(), home: LoginScreen());
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: AppTheme.getTheme(),
+      home: Scaffold(
+        appBar: AppBar(title: Text('Login'), centerTitle: true),
+        body: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400, maxHeight: 400),
+            child: Card(
+              child: Padding(
+                padding: EdgeInsetsGeometry.all(20),
+                child: Column(
+                  children: [
+                    Image.network(
+                      'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+                      width: 100,
+                      height: 100,
+                    ),
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        icon: Icon(Icons.email),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        icon: Icon(Icons.password),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () async {
+                        AuthProvider.email = emailController.text;
+                        AuthProvider.password = passwordController.text;
+                        try {
+                          print(
+                            "Email: ${AuthProvider.email}, Password: ${AuthProvider.password}",
+                          );
+                          var jobPostingProvider = JobPostingProvider();
+                          var jobs = await jobPostingProvider.get();
+                          print(jobs);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => JobPostingList(),
+                            ),
+                          );
+                        } on Exception catch (e) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text("Error"),
+                              content: Text(e.toString()),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("OK"),
+                                ),
+                              ],
+                            ),
+                          );
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      child: Text('Login'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -12,25 +114,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      theme: AppTheme.getTheme(),
+      home: Container(
+        color: Colors.red,
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Hello'),
+              Text('World'),
+              TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text('Click me'),
+              ),
+            ],
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
