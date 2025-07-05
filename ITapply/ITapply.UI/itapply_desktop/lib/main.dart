@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:itapply_desktop/providers/auth_provider.dart';
 import 'package:itapply_desktop/providers/job_posting_provider.dart';
 import 'package:itapply_desktop/screens/job_posting_list.dart';
+import 'package:provider/provider.dart';
 import 'config/theme.dart';
 
 void main() {
-  runApp(const MyLoginApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<JobPostingProvider>(create: (_) => JobPostingProvider()),
+  ], child: MyLoginApp()));
 }
 
 class MyLoginApp extends StatelessWidget {
@@ -67,8 +70,7 @@ class LoginScreen extends StatelessWidget {
                             "Email: ${AuthProvider.email}, Password: ${AuthProvider.password}",
                           );
                           var jobPostingProvider = JobPostingProvider();
-                          var jobs = await jobPostingProvider.get();
-                          print(jobs);
+                          var jobs = await jobPostingProvider.get(null);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

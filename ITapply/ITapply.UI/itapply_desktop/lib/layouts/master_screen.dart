@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:itapply_desktop/screens/job_posting_details.dart';
 import 'package:itapply_desktop/screens/job_posting_list.dart';
 
 class MasterScreen extends StatefulWidget {
@@ -33,17 +32,6 @@ class _MasterScreenState extends State<MasterScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => JobPostingList()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text("Job Details"),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => JobPostingDetailsScreen(),
-                  ),
                 );
               },
             ),
