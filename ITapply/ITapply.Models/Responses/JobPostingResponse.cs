@@ -26,7 +26,7 @@ namespace ITapply.Models.Responses
         public DateTime ApplicationDeadline { get; set; }
         public DateTime PostedDate { get; set; }
         public JobPostingStatus Status { get; set; }
-        public List<SkillResponse> Skills { get; set; } = new List<SkillResponse>();
+        public List<JobPostingSkillResponse> Skills { get; set; } = new List<JobPostingSkillResponse>();
         public int ApplicationCount { get; set; }
     }
 } 

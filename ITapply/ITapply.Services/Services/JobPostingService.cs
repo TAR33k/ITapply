@@ -452,8 +452,16 @@ namespace ITapply.Services.Services
             if (entity.JobPostingSkills != null)
             {
                 response.Skills = entity.JobPostingSkills
-                    .Where(ur => ur.Skill != null)
-                    .Select(ur => _mapper.Map<SkillResponse>(ur.Skill))
+                    .Where(jps => jps.Skill != null)
+                    .Select(jps => new JobPostingSkillResponse
+                    {
+                        Id = jps.Id,
+                        JobPostingId = jps.JobPostingId,
+                        SkillId = jps.SkillId,
+                        SkillName = jps.Skill.Name,
+                        JobPostingTitle = entity.Title,
+                        EmployerName = entity.Employer?.CompanyName
+                    })
                     .ToList();
             }
 

@@ -65,12 +65,21 @@ class _JobPostingListState extends State<JobPostingList> {
             } else {
               filter = null;
             }
-            var jobs = await jobPostingProvider.get(filter);
+            var jobs = await jobPostingProvider.get(filter: filter);
             jobPostings = jobs;
             print("Job Postings: ${jobPostings?.items?.firstOrNull?.title}");
             setState(() {});
           },
           child: Text("Search"),
+        ),
+        SizedBox(width: 10),
+        ElevatedButton(
+          onPressed: () async {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => JobPostingDetailsScreen(jobPosting: null)
+            ));
+          },
+          child: Text("New Job Posting"),
         ),
       ],
     ));
@@ -93,7 +102,11 @@ class _JobPostingListState extends State<JobPostingList> {
         },
         cells: [
           DataCell(Text(job.title)),
-          DataCell(Text(job.description.substring(0, 50) + "...")),
+          DataCell(Text(
+            job.description.length > 50
+                ? '${job.description.substring(0, 50)}...'
+                : job.description,
+          )),
           DataCell(Text(job.employerName)),
           DataCell(Text(formatNumber(job.minSalary))),
         ])

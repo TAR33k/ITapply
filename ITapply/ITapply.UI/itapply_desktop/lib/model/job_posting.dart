@@ -16,8 +16,8 @@ class JobPosting {
   final int? locationId;
   final String? locationName;
   final int remote; // enum
-  final int minSalary;
-  final int maxSalary;
+  final int? minSalary;
+  final int? maxSalary;
   final DateTime applicationDeadline;
   final DateTime postedDate;
   final int status; // enum
@@ -47,4 +47,5 @@ class JobPosting {
   });
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => _$JobPostingFromJson(json);
+  Map<String, dynamic> toJson() => _$JobPostingToJson(this);
 }

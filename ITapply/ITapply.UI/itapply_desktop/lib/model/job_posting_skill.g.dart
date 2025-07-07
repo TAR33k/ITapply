@@ -9,8 +9,13 @@ part of 'job_posting_skill.dart';
 JobPostingSkill _$JobPostingSkillFromJson(Map<String, dynamic> json) =>
     JobPostingSkill(
       id: (json['id'] as num).toInt(),
-      name: json['name'] as String,
+      jobPostingId: (json['jobPostingId'] as num).toInt(),
+      skillId: (json['skillId'] as num).toInt(),
     );
 
 Map<String, dynamic> _$JobPostingSkillToJson(JobPostingSkill instance) =>
-    <String, dynamic>{'id': instance.id, 'name': instance.name};
+    <String, dynamic>{
+      'id': instance.id,
+      'jobPostingId': instance.jobPostingId,
+      'skillId': instance.skillId,
+    };

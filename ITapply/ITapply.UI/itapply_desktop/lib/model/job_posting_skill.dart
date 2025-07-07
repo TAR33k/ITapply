@@ -4,11 +4,13 @@ part 'job_posting_skill.g.dart';
 @JsonSerializable()
 class JobPostingSkill {
   final int id;
-  final String name;
+  final int jobPostingId;
+  final int skillId;
 
   JobPostingSkill({
     required this.id,
-    required this.name,
+    required this.jobPostingId,
+    required this.skillId,
   });
 
   factory JobPostingSkill.fromJson(Map<String, dynamic> json) => _$JobPostingSkillFromJson(json);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:itapply_desktop/providers/auth_provider.dart';
 import 'package:itapply_desktop/providers/job_posting_provider.dart';
+import 'package:itapply_desktop/providers/job_posting_skill_provider.dart';
+import 'package:itapply_desktop/providers/skill_provider.dart';
 import 'package:itapply_desktop/screens/job_posting_list.dart';
 import 'package:provider/provider.dart';
 import 'config/theme.dart';
@@ -8,6 +10,8 @@ import 'config/theme.dart';
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<JobPostingProvider>(create: (_) => JobPostingProvider()),
+    ChangeNotifierProvider<JobPostingSkillProvider>(create: (_) => JobPostingSkillProvider()),
+    ChangeNotifierProvider<SkillProvider>(create: (_) => SkillProvider()),
   ], child: MyLoginApp()));
 }
 
@@ -70,7 +74,8 @@ class LoginScreen extends StatelessWidget {
                             "Email: ${AuthProvider.email}, Password: ${AuthProvider.password}",
                           );
                           var jobPostingProvider = JobPostingProvider();
-                          var jobs = await jobPostingProvider.get(null);
+                          dynamic filter;
+                          var jobs = await jobPostingProvider.get(filter: filter);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
