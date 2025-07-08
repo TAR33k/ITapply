@@ -5,7 +5,7 @@ class JobPostingProvider extends BaseProvider<JobPosting> {
   JobPostingProvider() : super("JobPosting");
 
   @override
-  JobPosting fromJson(dynamic json) {
-    return JobPosting.fromJson(json);
+  JobPosting fromJson(dynamic data) {
+    return JobPosting.fromJson(data);
   }
 }

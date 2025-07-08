@@ -53,7 +53,7 @@ class _JobPostingDetailsScreenState extends State<JobPostingDetailsScreen> {
         "maxSalary": formatNumber(widget.jobPosting!.maxSalary?.toString()),
         "applicationDeadline": widget.jobPosting!.applicationDeadline,
         "status": widget.jobPosting!.status,
-        "skillIds": widget.jobPosting!.skills.map((skill) => skill.id).toList(),
+        "skillIds": widget.jobPosting!.skills.map((skill) => skill.skillId).toList(),
         "employerName": widget.jobPosting!.employerName,
         "locationName": widget.jobPosting!.locationName,
         "postedDate": widget.jobPosting!.postedDate,
@@ -66,6 +66,7 @@ class _JobPostingDetailsScreenState extends State<JobPostingDetailsScreen> {
   Widget build(BuildContext context) {
     return MasterScreen(
       title: isEditMode ? "Details - ${widget.jobPosting!.title}" : "Create New Job Posting",
+      selectedRoute: '/job-posting',
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: FutureBuilder<SearchResult<Skill>?>(
@@ -153,6 +154,7 @@ class _JobPostingDetailsScreenState extends State<JobPostingDetailsScreen> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
             FormBuilderDropdown(
                     name: "remote",
                     decoration: const InputDecoration(labelText: "Remote Policy"),
@@ -185,6 +187,7 @@ class _JobPostingDetailsScreenState extends State<JobPostingDetailsScreen> {
               decoration: const InputDecoration(labelText: 'Required Skills', border: InputBorder.none),
               options: skills.items!.map((skill) => FormBuilderChipOption(value: skill.id, child: Text(skill.name))).toList(),
               spacing: 8.0,
+              runSpacing: 6.0,
             ),
             const SizedBox(height: 24),
             const SizedBox(height: 24),

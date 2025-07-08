@@ -5,7 +5,7 @@ class JobPostingSkillProvider extends BaseProvider<JobPostingSkill> {
   JobPostingSkillProvider() : super("JobPostingSkill");
 
   @override
-  JobPostingSkill fromJson(dynamic json) {
-    return JobPostingSkill.fromJson(json);
+  JobPostingSkill fromJson(dynamic data) {
+    return JobPostingSkill.fromJson(data);
   }
 }

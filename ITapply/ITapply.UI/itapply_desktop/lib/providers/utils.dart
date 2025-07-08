@@ -12,9 +12,9 @@ String formatNumber(dynamic number) {
       var parsedNumber = double.parse(number);
       return f.format(parsedNumber);
     } catch (e) {
-      return "0.00"; // Return default format for invalid strings
+      return "0.00";
     }
   } else {
-    return "0.00"; // Default format for unsupported types
+    return "0.00";
   }
 }
