@@ -32,13 +32,13 @@ Map<String, dynamic> _$ReviewUpdateRequestToJson(
 };
 
 const _$ReviewRelationshipEnumMap = {
-  ReviewRelationship.currentEmployee: 'currentEmployee',
-  ReviewRelationship.formerEmployee: 'formerEmployee',
-  ReviewRelationship.interviewee: 'interviewee',
+  ReviewRelationship.currentEmployee: 0,
+  ReviewRelationship.formerEmployee: 1,
+  ReviewRelationship.interviewee: 2,
 };
 
 const _$ModerationStatusEnumMap = {
-  ModerationStatus.pending: 'pending',
-  ModerationStatus.approved: 'approved',
-  ModerationStatus.rejected: 'rejected',
+  ModerationStatus.pending: 0,
+  ModerationStatus.approved: 1,
+  ModerationStatus.rejected: 2,
 };

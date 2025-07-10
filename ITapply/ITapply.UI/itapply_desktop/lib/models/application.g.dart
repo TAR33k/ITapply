@@ -18,7 +18,7 @@ Application _$ApplicationFromJson(Map<String, dynamic> json) => Application(
   status: $enumDecode(
     _$ApplicationStatusEnumMap,
     json['status'],
-    unknownValue: ApplicationStatus.pending,
+    unknownValue: ApplicationStatus.inConsideration,
   ),
   coverLetter: json['coverLetter'] as String?,
   cvDocumentId: (json['cvDocumentId'] as num).toInt(),
@@ -50,10 +50,9 @@ Map<String, dynamic> _$ApplicationToJson(Application instance) =>
     };
 
 const _$ApplicationStatusEnumMap = {
-  ApplicationStatus.applied: 'applied',
-  ApplicationStatus.inConsideration: 'inConsideration',
-  ApplicationStatus.interviewScheduled: 'interviewScheduled',
-  ApplicationStatus.accepted: 'accepted',
-  ApplicationStatus.rejected: 'rejected',
-  ApplicationStatus.pending: 'pending',
+  ApplicationStatus.applied: 0,
+  ApplicationStatus.inConsideration: 1,
+  ApplicationStatus.interviewScheduled: 2,
+  ApplicationStatus.accepted: 3,
+  ApplicationStatus.rejected: 4,
 };

@@ -26,14 +26,10 @@ Map<String, dynamic> _$PreferencesUpdateRequestToJson(
 };
 
 const _$EmploymentTypeEnumMap = {
-  EmploymentType.fullTime: 'fullTime',
-  EmploymentType.partTime: 'partTime',
-  EmploymentType.contract: 'contract',
-  EmploymentType.internship: 'internship',
+  EmploymentType.fullTime: 0,
+  EmploymentType.partTime: 1,
+  EmploymentType.contract: 2,
+  EmploymentType.internship: 3,
 };
 
-const _$RemoteEnumMap = {
-  Remote.yes: 'yes',
-  Remote.no: 'no',
-  Remote.hybrid: 'hybrid',
-};
+const _$RemoteEnumMap = {Remote.yes: 0, Remote.no: 1, Remote.hybrid: 2};

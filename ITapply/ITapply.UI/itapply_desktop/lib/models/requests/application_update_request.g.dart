@@ -23,10 +23,9 @@ Map<String, dynamic> _$ApplicationUpdateRequestToJson(
 };
 
 const _$ApplicationStatusEnumMap = {
-  ApplicationStatus.applied: 'applied',
-  ApplicationStatus.inConsideration: 'inConsideration',
-  ApplicationStatus.interviewScheduled: 'interviewScheduled',
-  ApplicationStatus.accepted: 'accepted',
-  ApplicationStatus.rejected: 'rejected',
-  ApplicationStatus.pending: 'pending',
+  ApplicationStatus.applied: 0,
+  ApplicationStatus.inConsideration: 1,
+  ApplicationStatus.interviewScheduled: 2,
+  ApplicationStatus.accepted: 3,
+  ApplicationStatus.rejected: 4,
 };

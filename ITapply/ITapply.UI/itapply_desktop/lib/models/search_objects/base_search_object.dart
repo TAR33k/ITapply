@@ -16,6 +16,7 @@ class BaseSearchObject implements ISearchObject {
     this.RetrieveAll = false,
   });
 
+  @override
   Map<String, dynamic> toJson() => _$BaseSearchObjectToJson(this);
 }
 

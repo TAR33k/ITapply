@@ -46,7 +46,7 @@ Map<String, dynamic> _$EmployerSearchObjectToJson(
 };
 
 const _$VerificationStatusEnumMap = {
-  VerificationStatus.pending: 'pending',
-  VerificationStatus.approved: 'approved',
-  VerificationStatus.rejected: 'rejected',
+  VerificationStatus.pending: 0,
+  VerificationStatus.approved: 1,
+  VerificationStatus.rejected: 2,
 };

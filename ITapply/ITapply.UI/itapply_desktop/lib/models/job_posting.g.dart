@@ -66,27 +66,23 @@ Map<String, dynamic> _$JobPostingToJson(JobPosting instance) =>
     };
 
 const _$EmploymentTypeEnumMap = {
-  EmploymentType.fullTime: 'fullTime',
-  EmploymentType.partTime: 'partTime',
-  EmploymentType.contract: 'contract',
-  EmploymentType.internship: 'internship',
+  EmploymentType.fullTime: 0,
+  EmploymentType.partTime: 1,
+  EmploymentType.contract: 2,
+  EmploymentType.internship: 3,
 };
 
 const _$ExperienceLevelEnumMap = {
-  ExperienceLevel.entryLevel: 'entryLevel',
-  ExperienceLevel.junior: 'junior',
-  ExperienceLevel.mid: 'mid',
-  ExperienceLevel.senior: 'senior',
-  ExperienceLevel.lead: 'lead',
+  ExperienceLevel.entryLevel: 0,
+  ExperienceLevel.junior: 1,
+  ExperienceLevel.mid: 2,
+  ExperienceLevel.senior: 3,
+  ExperienceLevel.lead: 4,
 };
 
-const _$RemoteEnumMap = {
-  Remote.yes: 'yes',
-  Remote.no: 'no',
-  Remote.hybrid: 'hybrid',
-};
+const _$RemoteEnumMap = {Remote.yes: 0, Remote.no: 1, Remote.hybrid: 2};
 
 const _$JobPostingStatusEnumMap = {
-  JobPostingStatus.active: 'active',
-  JobPostingStatus.closed: 'closed',
+  JobPostingStatus.active: 0,
+  JobPostingStatus.closed: 1,
 };

@@ -11,4 +11,13 @@ class UserProvider extends BaseProvider<User, UserSearchObject, UserInsertReques
   User fromJson(data) {
     return User.fromJson(data);
   }
+
+  Future<bool> checkEmailExists(String email) async {
+    try {
+      final result = await get(filter: UserSearchObject(Email: email));
+      return result.items!.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
 }

@@ -13,5 +13,11 @@ namespace ITapply.WebAPI.Controllers
         public RoleController(IRoleService roleService) : base(roleService)
         {
         }
+
+        [AllowAnonymous]
+        public override async Task<PagedResult<RoleResponse>> Get([FromQuery] RoleSearchObject? search = null)
+        {
+            return await base.Get(search);
+        }
     }
 }

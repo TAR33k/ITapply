@@ -12,7 +12,7 @@ class Application {
   final String? jobTitle;
   final String? companyName;
   final DateTime applicationDate;
-  @JsonKey(unknownEnumValue: ApplicationStatus.pending)
+  @JsonKey(unknownEnumValue: ApplicationStatus.inConsideration)
   final ApplicationStatus status;
   final String? coverLetter;
   final int cvDocumentId;

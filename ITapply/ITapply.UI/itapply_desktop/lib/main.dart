@@ -7,6 +7,7 @@ import 'package:itapply_desktop/providers/candidate_skill_provider.dart';
 import 'package:itapply_desktop/providers/cv_document_provider.dart';
 import 'package:itapply_desktop/providers/education_provider.dart';
 import 'package:itapply_desktop/providers/employer_provider.dart';
+import 'package:itapply_desktop/providers/employer_registration_provider.dart';
 import 'package:itapply_desktop/providers/employer_skill_provider.dart';
 import 'package:itapply_desktop/providers/job_posting_provider.dart';
 import 'package:itapply_desktop/providers/job_posting_skill_provider.dart';
@@ -20,14 +21,30 @@ import 'package:itapply_desktop/providers/user_role_provider.dart';
 import 'package:itapply_desktop/providers/work_experience_provider.dart';
 import 'package:itapply_desktop/screens/login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import 'config/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1200, 800),
+    center: true,
+    minimumSize: Size(950, 700),
+    title: "ITapply Desktop",
+  );
+
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ApplicationProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CandidateProvider()),
         ChangeNotifierProvider(create: (_) => CandidateSkillProvider()),
         ChangeNotifierProvider(create: (_) => CVDocumentProvider()),
@@ -44,6 +61,21 @@ void main() {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserRoleProvider()),
         ChangeNotifierProvider(create: (_) => WorkExperienceProvider()),
+
+        ChangeNotifierProxyProvider<EmployerProvider, AuthProvider>(
+          create: (context) => AuthProvider(context.read<EmployerProvider>()),
+          update: (context, employerProvider, previous) => AuthProvider(employerProvider),
+        ),
+
+        ChangeNotifierProxyProvider3<UserProvider, EmployerProvider, RoleProvider, EmployerRegistrationProvider>(
+          create: (context) => EmployerRegistrationProvider(
+            context.read<UserProvider>(),
+            context.read<EmployerProvider>(),
+            context.read<RoleProvider>(),
+          ),
+          update: (context, userProvider, employerProvider, roleProvider, previous) => 
+                  EmployerRegistrationProvider(userProvider, employerProvider, roleProvider),
+        ),
       ],
       child: const ITapplyDesktopApp(),
     ),

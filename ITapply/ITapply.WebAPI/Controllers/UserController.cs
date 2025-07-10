@@ -1,7 +1,9 @@
-﻿using ITapply.Models.Requests;
+﻿using ITapply.Models.Exceptions;
+using ITapply.Models.Requests;
 using ITapply.Models.Responses;
 using ITapply.Models.SearchObjects;
 using ITapply.Services.Interfaces;
+using ITapply.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +11,13 @@ namespace ITapply.WebAPI.Controllers
 {
     public class UserController : BaseCRUDController<UserResponse, UserSearchObject, UserInsertRequest, UserUpdateRequest>
     {
+        private readonly IUserService _userService;
         public UserController(IUserService userService) : base(userService)
         {
+            _userService = userService;
         }
 
-        [Authorize(Roles = "Administrator, Employer, Candidate")]
+        [AllowAnonymous]
         public override async Task<PagedResult<UserResponse>> Get([FromQuery] UserSearchObject? search = null)
         {
             return await base.Get(search);
@@ -37,10 +41,18 @@ namespace ITapply.WebAPI.Controllers
             return await base.Update(id, request);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [AllowAnonymous]
         public override async Task<bool> Delete(int id)
         {
             return await base.Delete(id);
+        }
+
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserResponse>> Login([FromBody] UserLoginRequest request)
+        {
+            var user = await _userService.Login(request);
+            return Ok(user);
         }
     }
 }

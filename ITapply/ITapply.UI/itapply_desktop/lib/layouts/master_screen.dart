@@ -17,42 +17,30 @@ class MasterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 900 || constraints.maxHeight < 600) {
-          return const Scaffold(
-            body: Center(
-              child: Text("Screen is too small. Please resize the window."),
-            ),
-          );
-        }
-
-        return Scaffold(
-          body: Row(
-            children: [
-              _Sidebar(selectedRoute: selectedRoute),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AppBar(
-                      title: Text(title),
-                      elevation: 1,
-                      automaticallyImplyLeading: false,
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(24.0),
-                        child: child,
-                      ),
-                    ),
-                  ],
+    return Scaffold(
+      body: Row(
+        children: [
+          _Sidebar(selectedRoute: selectedRoute),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppBar(
+                  title: Text(title),
+                  elevation: 1,
+                  automaticallyImplyLeading: false,
                 ),
-              ),
-            ],
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24.0),
+                    child: child,
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -99,7 +87,10 @@ class _Sidebar extends StatelessWidget {
               title: const Text("Logout"),
               onTap: () {
                 context.read<AuthProvider>().logout();
-                Navigator.of(context).pushNamedAndRemoveUntil(AppRouter.loginRoute, (route) => false);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRouter.loginRoute,
+                  (route) => false,
+                );
               },
             ),
           ),
@@ -133,8 +124,12 @@ class _SidebarItemState extends State<_SidebarItem> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isSelected = widget.isSelected;
-    final color = isSelected ? theme.primaryColor : theme.textTheme.bodyLarge?.color;
-    final bgColor = isSelected ? theme.primaryColor.withOpacity(0.1) : (_isHovered ? theme.hoverColor : Colors.transparent);
+    final color = isSelected
+        ? theme.primaryColor
+        : theme.textTheme.bodyLarge?.color;
+    final bgColor = isSelected
+        ? theme.primaryColor.withOpacity(0.1)
+        : (_isHovered ? theme.hoverColor : Colors.transparent);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -160,7 +155,12 @@ class _SidebarItemState extends State<_SidebarItem> {
                 const SizedBox(width: 16),
                 Text(
                   widget.title,
-                  style: TextStyle(color: color, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
                 ),
               ],
             ),

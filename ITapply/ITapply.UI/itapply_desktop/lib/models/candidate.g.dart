@@ -43,9 +43,9 @@ Map<String, dynamic> _$CandidateToJson(Candidate instance) => <String, dynamic>{
 };
 
 const _$ExperienceLevelEnumMap = {
-  ExperienceLevel.entryLevel: 'entryLevel',
-  ExperienceLevel.junior: 'junior',
-  ExperienceLevel.mid: 'mid',
-  ExperienceLevel.senior: 'senior',
-  ExperienceLevel.lead: 'lead',
+  ExperienceLevel.entryLevel: 0,
+  ExperienceLevel.junior: 1,
+  ExperienceLevel.mid: 2,
+  ExperienceLevel.senior: 3,
+  ExperienceLevel.lead: 4,
 };

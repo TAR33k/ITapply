@@ -31,7 +31,7 @@ Map<String, dynamic> _$ReviewInsertRequestToJson(
 };
 
 const _$ReviewRelationshipEnumMap = {
-  ReviewRelationship.currentEmployee: 'currentEmployee',
-  ReviewRelationship.formerEmployee: 'formerEmployee',
-  ReviewRelationship.interviewee: 'interviewee',
+  ReviewRelationship.currentEmployee: 0,
+  ReviewRelationship.formerEmployee: 1,
+  ReviewRelationship.interviewee: 2,
 };
