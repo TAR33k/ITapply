@@ -6,10 +6,7 @@ class Skill {
   final int id;
   final String name;
 
-  Skill({
-    required this.id,
-    required this.name,
-  });
+  Skill({required this.id, required this.name});
 
   factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
   Map<String, dynamic> toJson() => _$SkillToJson(this);

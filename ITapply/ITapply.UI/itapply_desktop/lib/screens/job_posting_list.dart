@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:itapply_desktop/config/app_router.dart';
+import 'package:itapply_desktop/config/app_theme.dart';
 import 'package:itapply_desktop/layouts/master_screen.dart';
-import 'package:itapply_desktop/model/job_posting.dart';
-import 'package:itapply_desktop/model/search_result.dart';
+import 'package:itapply_desktop/models/enums.dart';
+import 'package:itapply_desktop/models/job_posting.dart';
+import 'package:itapply_desktop/models/search_objects/job_posting_search_object.dart';
+import 'package:itapply_desktop/models/search_result.dart';
 import 'package:itapply_desktop/providers/job_posting_provider.dart';
-import 'package:itapply_desktop/screens/job_posting_details.dart';
 import 'package:provider/provider.dart';
 
 class JobPostingList extends StatefulWidget {
@@ -17,7 +20,7 @@ class JobPostingList extends StatefulWidget {
 class _JobPostingListState extends State<JobPostingList> {
   late JobPostingProvider _jobPostingProvider;
   final _searchController = TextEditingController();
-  SearchResult<JobPosting>? _jobPostings;
+  SearchResult<JobPosting>? _pagedResult;
   bool _isLoading = true;
 
   @override
@@ -30,19 +33,25 @@ class _JobPostingListState extends State<JobPostingList> {
   Future<void> _fetchData() async {
     setState(() => _isLoading = true);
     try {
-      var filter;
-      if (_searchController.text.trim().isNotEmpty) {
-        filter = {"Title": _searchController.text.trim()};
-      }
-      var data = await _jobPostingProvider.get(filter: filter);
+      var searchObject = JobPostingSearchObject(
+        Title: _searchController.text.trim().isNotEmpty
+            ? _searchController.text.trim()
+            : null,
+        IncludeExpired: true,
+        IncludeTotalCount: true,
+        RetrieveAll: true,
+      );
+      var data = await _jobPostingProvider.get(filter: searchObject);
       setState(() {
-        _jobPostings = data;
+        _pagedResult = data;
         _isLoading = false;
       });
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error fetching data: $e"), backgroundColor: Colors.red),
+          SnackBar(
+              content: Text("Error fetching data: $e"),
+              backgroundColor: Colors.red),
         );
         setState(() => _isLoading = false);
       }
@@ -58,7 +67,7 @@ class _JobPostingListState extends State<JobPostingList> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildSearchAndActions(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           _buildDataTable(),
         ],
       ),
@@ -90,17 +99,18 @@ class _JobPostingListState extends State<JobPostingList> {
             const SizedBox(width: 16),
             ElevatedButton.icon(
               onPressed: () async {
-                final result = await Navigator.push(
+                final result = await Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(builder: (context) => const JobPostingDetailsScreen()),
+                  AppRouter.jobPostingDetailsRoute,
                 );
-                if (result == true) {
+                if (result == true && mounted) {
                   _fetchData();
                 }
               },
               icon: const Icon(Icons.add),
               label: const Text("New Posting"),
-              style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary),
             ),
           ],
         ),
@@ -113,59 +123,84 @@ class _JobPostingListState extends State<JobPostingList> {
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
         width: double.infinity,
-        child: DataTable(
+        child: PaginatedDataTable(
+          header: const Text('Job Postings'),
           columns: const [
             DataColumn(label: Text("Title")),
             DataColumn(label: Text("Employer")),
             DataColumn(label: Text("Status")),
+            DataColumn(label: Text("Deadline")),
             DataColumn(label: Text("Actions")),
           ],
-          rows: _isLoading
-              ? [const DataRow(cells: [DataCell(Text("")), DataCell(Center(child: CircularProgressIndicator())), DataCell(Text("")), DataCell(Text(""))])]
-              : _jobPostings?.items?.map((job) => DataRow(
-                    cells: [
-                      DataCell(Text(job.title, style: const TextStyle(fontWeight: FontWeight.bold))),
-                      DataCell(Text(job.employerName)),
-                      DataCell(_buildStatusChip(job.status)),
-                      DataCell(
-                        IconButton(
-                          icon: Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
-                          onPressed: () async {
-                             final result = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => JobPostingDetailsScreen(jobPosting: job),
-                            ));
-                            if(result == true) {
-                              _fetchData();
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  )).toList() ?? [const DataRow(cells: [DataCell(Text("No data found")), DataCell(Text("")), DataCell(Text("")), DataCell(Text(""))])],
+          source: _JobPostingDataSource(
+            jobPostings: _pagedResult?.items ?? [],
+            onEdit: (job) async {
+              final result = await Navigator.pushNamed(
+                context,
+                AppRouter.jobPostingDetailsRoute,
+                arguments: job,
+              );
+              if (result == true && mounted) {
+                _fetchData();
+              }
+            },
+          ),
+          rowsPerPage: 10,
         ),
       ),
     );
   }
+}
 
-  Widget _buildStatusChip(int status) {
+class _JobPostingDataSource extends DataTableSource {
+  final List<JobPosting> jobPostings;
+  final Function(JobPosting) onEdit;
+
+  _JobPostingDataSource({required this.jobPostings, required this.onEdit});
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= jobPostings.length) {
+      return null;
+    }
+    final job = jobPostings[index];
+    return DataRow(cells: [
+      DataCell(Text(job.title,
+          style: const TextStyle(fontWeight: FontWeight.bold))),
+      DataCell(Text(job.employerName)),
+      DataCell(_buildStatusChip(job.status)),
+      DataCell(Text(DateFormat.yMMMd().format(job.applicationDeadline))),
+      DataCell(
+        IconButton(
+          icon: Icon(Icons.edit_outlined,
+              color: AppTheme.primaryColor),
+          onPressed: () => onEdit(job),
+        ),
+      ),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => jobPostings.length;
+
+  @override
+  int get selectedRowCount => 0;
+
+  Widget _buildStatusChip(JobPostingStatus status) {
     Color color;
     String text;
     switch (status) {
-      case 0:
+      case JobPostingStatus.active:
         color = Colors.green;
         text = "Active";
         break;
-      case 1:
-        color = Colors.grey;
-        text = "Inactive";
-        break;
-      case 2:
+      case JobPostingStatus.closed:
         color = Colors.red;
         text = "Closed";
         break;
-      default:
-        color = Colors.orange;
-        text = "Draft";
     }
     return Chip(
       label: Text(text),

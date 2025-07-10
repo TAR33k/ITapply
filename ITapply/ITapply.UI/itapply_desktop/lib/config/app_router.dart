@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:itapply_desktop/models/job_posting.dart';
 import 'package:itapply_desktop/screens/dashboard_screen.dart';
 import 'package:itapply_desktop/screens/job_posting_details.dart';
 import 'package:itapply_desktop/screens/job_posting_list.dart';
@@ -19,7 +20,9 @@ class AppRouter {
       case jobPostingsRoute:
         return MaterialPageRoute(builder: (_) => const JobPostingList());
       case jobPostingDetailsRoute:
-        return MaterialPageRoute(builder: (_) => const JobPostingDetailsScreen());
+        final jobPosting = settings.arguments as JobPosting?;
+        return MaterialPageRoute(
+            builder: (_) => JobPostingDetailsScreen(jobPosting: jobPosting));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

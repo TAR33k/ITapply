@@ -1,26 +1,31 @@
-import 'package:itapply_desktop/model/job_posting_skill.dart';
+import 'package:itapply_desktop/models/enums.dart';
+import 'package:itapply_desktop/models/job_posting_skill.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'job_posting.g.dart';
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class JobPosting {
   final int id;
   final int employerId;
   final String employerName;
-  final String title; // max 200 chars
-  final String description; // max 10000 chars
-  final String? requirements; // max 5000 chars, optional
-  final String? benefits; // max 3000 chars, optional
-  final int employmentType; // enum
-  final int experienceLevel; // enum
+  final String title;
+  final String description;
+  final String? requirements;
+  final String? benefits;
+  @JsonKey(unknownEnumValue: EmploymentType.fullTime)
+  final EmploymentType employmentType;
+  @JsonKey(unknownEnumValue: ExperienceLevel.entryLevel)
+  final ExperienceLevel experienceLevel;
   final int? locationId;
   final String? locationName;
-  final int remote; // enum
+  @JsonKey(unknownEnumValue: Remote.no)
+  final Remote remote;
   final int? minSalary;
   final int? maxSalary;
   final DateTime applicationDeadline;
   final DateTime postedDate;
-  final int status; // enum
+  @JsonKey(unknownEnumValue: JobPostingStatus.active)
+  final JobPostingStatus status;
   final List<JobPostingSkill> skills;
   final int applicationCount;
 
@@ -37,8 +42,8 @@ class JobPosting {
     this.locationId,
     this.locationName,
     required this.remote,
-    required this.minSalary,
-    required this.maxSalary,
+    this.minSalary,
+    this.maxSalary,
     required this.applicationDeadline,
     required this.postedDate,
     required this.status,

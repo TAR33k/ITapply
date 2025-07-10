@@ -70,7 +70,7 @@ class _Sidebar extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.symmetric(vertical: 24.0),
-            child: Image.asset('lib/assets/logo.png', height: 60),
+            child: Image.asset('assets/logo.png', height: 60),
           ),
           const Divider(height: 1),
           Expanded(

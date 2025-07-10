@@ -13,7 +13,7 @@ namespace ITapply.WebAPI.Controllers
         {
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Employer, Candidate")]
         public override async Task<PagedResult<UserResponse>> Get([FromQuery] UserSearchObject? search = null)
         {
             return await base.Get(search);

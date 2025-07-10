@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.asset('lib/assets/logo.png', height: 80),
+                      Image.asset('assets/logo.png', height: 80),
                       const SizedBox(height: 8),
                       Text("ITapply Desktop", style: Theme.of(context).textTheme.titleLarge),
                       const SizedBox(height: 32),
