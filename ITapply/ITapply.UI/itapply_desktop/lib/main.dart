@@ -32,7 +32,7 @@ void main() async {
   WindowOptions windowOptions = const WindowOptions(
     size: Size(1200, 800),
     center: true,
-    minimumSize: Size(950, 700),
+    minimumSize: Size(1200, 600),
     title: "ITapply Desktop",
   );
 

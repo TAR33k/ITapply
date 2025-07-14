@@ -62,7 +62,7 @@ class _JobPostingListState extends State<JobPostingList> {
   Widget build(BuildContext context) {
     return MasterScreen(
       title: "Job Postings",
-      selectedRoute: AppRouter.jobPostingsRoute,
+      selectedRoute: AppRouter.adminJobPostingsRoute,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

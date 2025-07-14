@@ -72,17 +72,29 @@ class _LoginScreenState extends State<LoginScreen> {
             );
             
         if (mounted) {
-          final employer = authProvider.currentEmployer;
-          if (employer != null) {
+          final user = authProvider.currentUser;
+          if (user == null) {
+            throw Exception("Login failed: User data not available.");
+          }
+
+          if (user.roles.any((r) => r.name == "Administrator")) {
+            Navigator.pushReplacementNamed(context, AppRouter.adminDashboardRoute);
+          } 
+          else if (user.roles.any((r) => r.name == "Employer")) {
+            final employer = authProvider.currentEmployer;
+            if (employer == null) {
+              throw Exception("Employer profile not found for this user.");
+            }
+            
             if (employer.verificationStatus == VerificationStatus.approved) {
-              Navigator.pushReplacementNamed(context, AppRouter.dashboardRoute);
+              Navigator.pushReplacementNamed(context, AppRouter.employerDashboardRoute);
             } else {
               Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) => AwaitingApprovalScreen(employer: employer)
               ));
             }
           } else {
-            Navigator.pushReplacementNamed(context, AppRouter.dashboardRoute);
+            throw Exception("You do not have permission to access the desktop portal.");
           }
         }
       } catch (e) {
