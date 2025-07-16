@@ -314,13 +314,10 @@ namespace ITapply.Services.Services
                 throw new UserException("Only verified employers can create job postings");
             }
 
-            if (request.LocationId.HasValue)
+            var location = await _context.Locations.FindAsync(request.LocationId);
+            if (location == null)
             {
-                var location = await _context.Locations.FindAsync(request.LocationId.Value);
-                if (location == null)
-                {
-                    throw new UserException($"Location with ID {request.LocationId.Value} not found");
-                }
+                throw new UserException($"Location with ID {request.LocationId} not found");
             }
 
             ValidateJobPostingData(request.MinSalary, request.MaxSalary, request.ApplicationDeadline);
@@ -358,13 +355,10 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeUpdate(JobPosting entity, JobPostingUpdateRequest request)
         {
-            if (request.LocationId.HasValue)
+            var location = await _context.Locations.FindAsync(request.LocationId);
+            if (location == null)
             {
-                var location = await _context.Locations.FindAsync(request.LocationId.Value);
-                if (location == null)
-                {
-                    throw new UserException($"Location with ID {request.LocationId.Value} not found");
-                }
+                throw new UserException($"Location with ID {request.LocationId} not found");
             }
 
             ValidateJobPostingData(request.MinSalary, request.MaxSalary, request.ApplicationDeadline);
@@ -372,12 +366,14 @@ namespace ITapply.Services.Services
             await base.BeforeUpdate(entity, request);
         }
 
-        private void ValidateJobPostingData(int minSalary, int maxSalary, DateTime applicationDeadline)
+        private void ValidateJobPostingData(int? minSalary, int? maxSalary, DateTime applicationDeadline)
         {
-
-            if (maxSalary < minSalary)
+            if (minSalary != null && maxSalary != null)
             {
-                throw new UserException("Maximum salary must be greater than or equal to minimum salary");
+                if (maxSalary < minSalary)
+                {
+                    throw new UserException("Maximum salary must be greater than or equal to minimum salary");
+                }
             }
 
             if (applicationDeadline < DateTime.Now)

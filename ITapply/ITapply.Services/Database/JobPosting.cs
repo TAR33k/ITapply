@@ -25,10 +25,10 @@ namespace ITapply.Services.Database
         public string Description { get; set; } // Detailed job description
 
         [StringLength(5000)]
-        public string Requirements { get; set; }
+        public string? Requirements { get; set; }
 
         [StringLength(3000)]
-        public string Benefits { get; set; }
+        public string? Benefits { get; set; }
 
         [Required]
         public EmploymentType EmploymentType { get; set; }
@@ -44,10 +44,10 @@ namespace ITapply.Services.Database
         public Remote Remote { get; set; }
 
         [Range(0, int.MaxValue)]
-        public int MinSalary { get; set; }
+        public int? MinSalary { get; set; }
 
         [Range(0, int.MaxValue)]
-        public int MaxSalary { get; set; }
+        public int? MaxSalary { get; set; }
 
         [Required]
         public DateTime ApplicationDeadline { get; set; }

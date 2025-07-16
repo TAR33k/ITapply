@@ -104,15 +104,42 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   }
   
   Future<void> _handleVerification(int companyId, VerificationStatus newStatus) async {
+    final isApproval = newStatus == VerificationStatus.approved;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(isApproval ? 'Approve Company' : 'Reject Company'),
+        content: Text(isApproval
+            ? 'Are you sure you want to approve this company? It will be allowed to post jobs on the platform.'
+            : 'Are you sure you want to reject this company? They will be blocked from posting.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isApproval ? Colors.green : Colors.red,
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(isApproval ? 'Approve' : 'Reject'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
     try {
       await context.read<EmployerProvider>().updateVerificationStatus(companyId, newStatus);
-      _fetchAdminDashboardData(); 
+      _fetchAdminDashboardData();
     } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Failed to update status: $e"), backgroundColor: Colors.red),
-          );
-        }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to update status: $e"), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 

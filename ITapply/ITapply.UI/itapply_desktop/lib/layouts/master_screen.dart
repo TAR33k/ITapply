@@ -108,7 +108,7 @@ class _Sidebar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/logo.png', height: 40),
+          Image.asset('assets/logo.png', height: 50),
           const SizedBox(width: 8),
           RichText(
                   text: TextSpan(
@@ -118,7 +118,7 @@ class _Sidebar extends StatelessWidget {
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 30,
                         ),
                       ),
                       TextSpan(
@@ -126,7 +126,7 @@ class _Sidebar extends StatelessWidget {
                         style: TextStyle(
                           color: Theme.of(context).textTheme.bodyLarge?.color,
                           fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          fontSize: 30,
                   ),
                 ),
               ],

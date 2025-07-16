@@ -20,7 +20,7 @@ namespace ITapply.WebAPI.Controllers
             return await _crudService.CreateAsync(request);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public virtual async Task<T> Update(int id, [FromBody] TUpdate request)
         {
             return await _crudService.UpdateAsync(id, request);

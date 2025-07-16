@@ -23,10 +23,10 @@ namespace ITapply.Models.Requests
         public string Description { get; set; }
 
         [StringLength(5000, ErrorMessage = "Requirements cannot exceed 5000 characters.")]
-        public string Requirements { get; set; }
+        public string? Requirements { get; set; }
 
         [StringLength(3000, ErrorMessage = "Benefits cannot exceed 3000 characters.")]
-        public string Benefits { get; set; }
+        public string? Benefits { get; set; }
 
         [Required(ErrorMessage = "Employment type is required.")]
         public EmploymentType EmploymentType { get; set; }
@@ -34,17 +34,18 @@ namespace ITapply.Models.Requests
         [Required(ErrorMessage = "Experience level is required.")]
         public ExperienceLevel ExperienceLevel { get; set; }
 
+        [Required(ErrorMessage = "Location is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Location ID must be a positive number.")]
-        public int? LocationId { get; set; }
+        public int LocationId { get; set; }
 
         [Required(ErrorMessage = "Remote work option is required.")]
         public Remote Remote { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Minimum salary must be a positive number or zero.")]
-        public int MinSalary { get; set; }
+        public int? MinSalary { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Maximum salary must be a positive number or zero.")]
-        public int MaxSalary { get; set; }
+        public int? MaxSalary { get; set; }
 
         [Required(ErrorMessage = "Application deadline is required.")]
         public DateTime ApplicationDeadline { get; set; }

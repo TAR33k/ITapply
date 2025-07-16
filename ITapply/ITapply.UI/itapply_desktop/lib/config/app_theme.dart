@@ -94,10 +94,11 @@ class AppTheme {
       ),
       dataTableTheme: DataTableThemeData(
         headingRowColor: WidgetStateProperty.all(lightColor),
-        headingTextStyle: const TextStyle(fontWeight: FontWeight.w600, color: darkColor),
+        headingTextStyle: const TextStyle(fontWeight: FontWeight.w600, color: darkColor, fontSize: 16),
         dataRowColor: WidgetStateProperty.all(Colors.white),
         dividerThickness: 1,
-        columnSpacing: 20,
+        columnSpacing: 15,
+        dataTextStyle: const TextStyle(fontSize: 14)
       ),
     );
   }

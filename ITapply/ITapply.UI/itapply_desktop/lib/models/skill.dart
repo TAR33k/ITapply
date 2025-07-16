@@ -10,4 +10,12 @@ class Skill {
 
   factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
   Map<String, dynamic> toJson() => _$SkillToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Skill && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

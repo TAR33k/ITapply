@@ -337,7 +337,11 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   DataCell(Text(app.candidateName ?? 'N/A')),
                   DataCell(Text(app.jobTitle ?? 'N/A')),
                   DataCell(Text(DateFormat.yMMMd().format(app.applicationDate))),
-                  DataCell(Text(applicationStatusToString(app.status), style: TextStyle(color: applicationStatusColor(app.status)))),
+                  DataCell(Chip(
+                    label: Text(applicationStatusToString(app.status), style: TextStyle(color: applicationStatusColor(app.status), fontWeight: FontWeight.bold)),
+                    backgroundColor: applicationStatusColor(app.status).withOpacity(0.15),
+                    side: BorderSide.none,
+                  )),
                   DataCell(IconButton(
                     icon: const Icon(Icons.visibility_outlined),
                     onPressed: () {
@@ -385,11 +389,15 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   DataCell(Text(DateFormat.yMMMd().format(job.postedDate))),
                   DataCell(Text(DateFormat.yMMMd().format(job.applicationDeadline))),
                   DataCell(Text(job.applicationCount.toString())),
-                  DataCell(Text(jobPostingStatusToString(job.status), style: TextStyle(color: jobPostingStatusColor(job.status)))),
+                  DataCell(Chip(
+                    label: Text(jobPostingStatusToString(job.status), style: TextStyle(color: jobPostingStatusColor(job.status), fontWeight: FontWeight.bold)),
+                    backgroundColor: jobPostingStatusColor(job.status).withOpacity(0.15),
+                    side: BorderSide.none,
+                  )),
                   DataCell(Row(
                     children: [
                       IconButton(icon: const Icon(Icons.people_alt_outlined), tooltip: "View Applications", onPressed: () {}),
-                      IconButton(icon: const Icon(Icons.edit_outlined), tooltip: "Edit Posting", onPressed: () => Navigator.pushNamed(context, AppRouter.jobPostingDetailsRoute, arguments: job)),
+                      IconButton(icon: const Icon(Icons.edit_outlined), tooltip: "Edit Posting", onPressed: () => Navigator.pushNamed(context, AppRouter.employerJobPostingDetailsRoute, arguments: job)),
                     ],
                   )),
                 ])).toList(),

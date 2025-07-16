@@ -30,7 +30,7 @@ void main() async {
   await windowManager.ensureInitialized();
 
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(1200, 800),
+    size: Size(1600, 1000),
     center: true,
     minimumSize: Size(1200, 600),
     title: "ITapply Desktop",
