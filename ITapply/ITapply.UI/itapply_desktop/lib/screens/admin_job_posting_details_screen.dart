@@ -42,7 +42,6 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
   @override
   void initState() {
     super.initState();
-    // Fetch all necessary data: Skills, Locations, and now Employers
     _dependenciesFuture = Future.wait([
       context.read<SkillProvider>().get(filter: SkillSearchObject(RetrieveAll: true)),
       context.read<LocationProvider>().get(filter: LocationSearchObject(RetrieveAll: true)),
@@ -74,7 +73,6 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
           );
           await context.read<JobPostingProvider>().update(widget.jobPosting!.id, request);
         } else {
-          // Get employerId from the form's dropdown instead of AuthProvider
           final request = JobPostingInsertRequest(
             employerId: formValues['employerId'],
             title: formValues['title'],
@@ -113,7 +111,7 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
   Widget build(BuildContext context) {
     return MasterScreen(
       title: isEditMode ? "Details - ${widget.jobPosting!.title}" : "Create New Job Posting",
-      selectedRoute: '/admin-job-postings', // Updated route for admin context
+      selectedRoute: '/admin-job-postings',
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -160,10 +158,8 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
       initialLocation = locations.items!.firstWhere((loc) => loc.id == widget.jobPosting!.locationId);
     }
     
-    // Find the initial employer for edit mode
     Employer? initialEmployer;
     if (isEditMode) {
-      // Assuming widget.jobPosting has an employerId property.
       initialEmployer = employers.items!.firstWhere((emp) => emp.id == widget.jobPosting!.employerId);
     }
 
@@ -171,7 +167,7 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
       key: _formKey,
       initialValue: isEditMode
           ? {
-              'employerId': initialEmployer, // Set initial value for the employer field
+              'employerId': initialEmployer,
               'title': widget.jobPosting!.title,
               'description': widget.jobPosting!.description,
               'requirements': widget.jobPosting!.requirements,
@@ -194,14 +190,13 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
             title: "Core Information",
             child: Column(
               children: [
-                // Searchable Dropdown for Employer
                 FormBuilderTypeAhead<Employer?>(
                   name: 'employerId',
-                  enabled: !isEditMode, // Make readonly when editing
+                  enabled: !isEditMode,
                   decoration: InputDecoration(
                     labelText: 'Employer *',
                     border: const OutlineInputBorder(),
-                    filled: isEditMode, // Visually indicate it's disabled
+                    filled: isEditMode,
                     fillColor: isEditMode ? Theme.of(context).disabledColor.withOpacity(0.1) : null,
                   ),
                   itemBuilder: (context, employer) => ListTile(title: Text(employer?.companyName ?? '')),
@@ -236,12 +231,11 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
                   name: 'locationId',
                   locations: locations.items!,
                   validator: FormBuilderValidators.required(),
-                  labelText: "Job Location *", // Changed from "Job Position" for clarity
+                  labelText: "Job Location *",
                 ),
               ],
             ),
           ),
-          // --- All other form sections remain the same as the employer screen ---
           _buildFormSection(
             title: "Position Details",
             child: Column(

@@ -6,7 +6,7 @@ part 'application_update_request.g.dart';
 @JsonSerializable()
 class ApplicationUpdateRequest {
   @JsonKey(toJson: _applicationStatusToJson)
-  final ApplicationStatus status;
+  final ApplicationStatus? status;
   final String? internalNotes;
   final String? employerMessage;
 
@@ -20,4 +20,4 @@ class ApplicationUpdateRequest {
   Map<String, dynamic> toJson() => _$ApplicationUpdateRequestToJson(this);
 }
 
-int _applicationStatusToJson(ApplicationStatus status) => status.index;
+int? _applicationStatusToJson(ApplicationStatus? status) => status?.index;

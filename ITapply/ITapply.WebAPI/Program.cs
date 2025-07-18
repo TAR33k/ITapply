@@ -37,6 +37,10 @@ builder.Services.AddTransient<IEmployerSkillService, EmployerSkillService>();
 builder.Services.AddTransient<IJobPostingSkillService, JobPostingSkillService>();
 builder.Services.AddTransient<ICandidateSkillService, CandidateSkillService>();
 
+var config = TypeAdapterConfig.GlobalSettings;
+
+config.Default.IgnoreNullValues(true);
+
 builder.Services.AddMapster();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

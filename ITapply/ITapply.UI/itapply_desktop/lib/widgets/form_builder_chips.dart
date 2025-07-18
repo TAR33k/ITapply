@@ -78,6 +78,7 @@ class _FormBuilderChipsState
               return ActionChip(
                 label: Text(skill.name, style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
                 shape: const StadiumBorder(side: BorderSide.none),
+                side: BorderSide(color: AppTheme.primaryColor),
                 onPressed: () {
                   final updated = [...value ?? [], skill];
                   _controller.clear();
@@ -96,6 +97,7 @@ class _FormBuilderChipsState
               return InputChip(
                 label: Text(skill.name, style: TextStyle(color: AppTheme.lightColor, fontWeight: FontWeight.bold)),
                 shape: const StadiumBorder(side: BorderSide.none),
+                side: BorderSide(color: AppTheme.primaryColor),
                 backgroundColor: AppTheme.primaryColor,
                 deleteIconColor: AppTheme.lightColor,
                 onDeleted: () {

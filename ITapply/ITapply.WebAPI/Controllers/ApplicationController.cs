@@ -35,7 +35,7 @@ namespace ITapply.WebAPI.Controllers
             return await base.Create(request);
         }
 
-        [Authorize(Roles = "Administrator,Candidate")]
+        [Authorize(Roles = "Administrator,Candidate,Employer")]
         public override async Task<ApplicationResponse> Update(int id, [FromBody] ApplicationUpdateRequest request)
         {
             return await base.Update(id, request);

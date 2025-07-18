@@ -73,7 +73,10 @@ namespace ITapply.Services.Services
 
         protected override async Task AfterUpdate(Application entity, ApplicationUpdateRequest request)
         {
-            await SendNotification(entity.Id);
+            if (request.Status.HasValue)
+            {
+                await SendNotification(entity.Id);
+            }
             await base.AfterUpdate(entity, request);
         }
 
@@ -258,9 +261,12 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeUpdate(Application entity, ApplicationUpdateRequest request)
         {
-            if (!IsValidStatusTransition(entity.Status, request.Status))
+            if (request.Status.HasValue && request.Status.Value != entity.Status)
             {
-                throw new UserException($"Invalid status transition from {entity.Status} to {request.Status}");
+                if (!IsValidStatusTransition(entity.Status, request.Status.Value))
+                {
+                    throw new UserException($"Invalid status transition from {entity.Status} to {request.Status.Value}");
+                }
             }
 
             await base.BeforeUpdate(entity, request);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:itapply_desktop/layouts/master_screen.dart';
@@ -131,7 +130,7 @@ class _EmployerJobPostingDetailsScreenState extends State<EmployerJobPostingDeta
               }
 
               if (!snapshot.hasData || snapshot.data == null || snapshot.data!.length < 2) {
-                print("Snapshot data incomplete: ${snapshot.data}");
+                debugPrint("Snapshot data incomplete: ${snapshot.data}");
                 return const Center(child: Text("Could not load required data."));
               }
 
@@ -212,7 +211,7 @@ class _EmployerJobPostingDetailsScreenState extends State<EmployerJobPostingDeta
                   name: 'locationId',
                   locations: locations.items!,
                   validator: FormBuilderValidators.required(),
-                  labelText: "Job Position *",
+                  labelText: "Job Location *",
                 ),
               ],
             ),

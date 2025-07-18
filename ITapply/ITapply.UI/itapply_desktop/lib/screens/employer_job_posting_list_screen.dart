@@ -209,7 +209,9 @@ class _EmployerJobPostingListScreenState extends State<EmployerJobPostingListScr
         if (result == true) _fetchData();
       },
       onToggleStatus: _toggleJobStatus,
-      onViewApplications: (job) { /* Navigate to applications screen */ },
+      onViewApplications: (job) { 
+        Navigator.pushNamed(context, AppRouter.employerApplicationsRoute, arguments: job); 
+      },
     );
     
     return Card(

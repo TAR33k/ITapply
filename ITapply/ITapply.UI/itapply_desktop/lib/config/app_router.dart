@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:itapply_desktop/models/application.dart';
 import 'package:itapply_desktop/models/job_posting.dart';
 import 'package:itapply_desktop/screens/admin_dashboard_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_list_screen.dart';
+import 'package:itapply_desktop/screens/employer_application_details_screen.dart';
+import 'package:itapply_desktop/screens/employer_application_list_screen.dart';
 import 'package:itapply_desktop/screens/employer_dashboard_screen.dart';
 import 'package:itapply_desktop/screens/employer_job_posting_details_screen.dart';
 import 'package:itapply_desktop/screens/employer_job_posting_list_screen.dart';
@@ -18,6 +21,7 @@ class AppRouter {
   static const String employerJobPostingsRoute = '/employer-job-postings';
   static const String employerJobPostingDetailsRoute = '/job-posting-details';
   static const String employerApplicationsRoute = '/employer-applications';
+  static const String employerApplicationDetailsRoute = '/employer-application-details';
   static const String employerReviewsRoute = '/employer-reviews';
 
   static const String adminDashboardRoute = '/admin-dashboard';
@@ -43,13 +47,20 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => EmployerJobPostingDetailsScreen(jobPosting: jobPosting));
       case employerApplicationsRoute:
-        return MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(title: Text("Applications"))));
+        final jobPosting = settings.arguments as JobPosting?;
+        return MaterialPageRoute(builder: (_) => EmployerApplicationListScreen(initialJobPostingFilter: jobPosting));
+      case employerApplicationDetailsRoute:
+        final application = settings.arguments as Application?;
+        return MaterialPageRoute(
+            builder: (_) => EmployerApplicationDetailsScreen(application: application));
+      case employerReviewsRoute:
+        return MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(title: Text("Reviews"))));
       case adminDashboardRoute:
         return MaterialPageRoute(builder: (_) => const AdminDashboardScreen());
       case adminJobPostingsRoute:
         return MaterialPageRoute(builder: (_) => const AdminJobPostingListScreen());
       case AppRouter.adminJobPostingDetailsRoute:
-        final jobPosting = settings.arguments as JobPosting?; 
+        final jobPosting = settings.arguments as JobPosting?;
         return MaterialPageRoute(
           builder: (_) => AdminJobPostingDetailsScreen(jobPosting: jobPosting),
           settings: settings,
