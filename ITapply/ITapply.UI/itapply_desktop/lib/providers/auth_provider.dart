@@ -66,4 +66,18 @@ class AuthProvider with ChangeNotifier {
     _currentEmployer = null;
     notifyListeners();
   }
+
+  void setCurrentEmployer(Employer updatedEmployer) {
+    _currentEmployer = updatedEmployer;
+    notifyListeners();
+  }
+
+  void setCurrentUser(app_user.User updatedUser) {
+    if (updatedUser.email != _currentUser?.email) {
+      _email = updatedUser.email;
+    }
+    
+    _currentUser = updatedUser;
+    notifyListeners();
+  }
 }

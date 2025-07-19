@@ -9,6 +9,7 @@ import 'package:itapply_desktop/screens/employer_application_list_screen.dart';
 import 'package:itapply_desktop/screens/employer_dashboard_screen.dart';
 import 'package:itapply_desktop/screens/employer_job_posting_details_screen.dart';
 import 'package:itapply_desktop/screens/employer_job_posting_list_screen.dart';
+import 'package:itapply_desktop/screens/employer_profile_screen.dart';
 import 'package:itapply_desktop/screens/login_screen.dart';
 import 'package:itapply_desktop/screens/registration_screen.dart';
 
@@ -53,6 +54,8 @@ class AppRouter {
         final application = settings.arguments as Application?;
         return MaterialPageRoute(
             builder: (_) => EmployerApplicationDetailsScreen(application: application));
+      case employerProfileRoute:
+        return MaterialPageRoute(builder: (_) => const EmployerProfileScreen());
       case employerReviewsRoute:
         return MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(title: Text("Reviews"))));
       case adminDashboardRoute:

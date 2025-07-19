@@ -337,7 +337,7 @@ class _EmployerJobPostingDetailsScreenState extends State<EmployerJobPostingDeta
             child: FormBuilderChips(
               name: 'skills',
               allSkills: skills.items!,
-              initialSkills: initialSkills,
+              initialValue: initialSkills,
             ),
           ),
           if (isEditMode)

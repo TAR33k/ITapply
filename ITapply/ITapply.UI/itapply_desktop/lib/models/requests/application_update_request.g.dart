@@ -9,7 +9,7 @@ part of 'application_update_request.dart';
 ApplicationUpdateRequest _$ApplicationUpdateRequestFromJson(
   Map<String, dynamic> json,
 ) => ApplicationUpdateRequest(
-  status: $enumDecode(_$ApplicationStatusEnumMap, json['status']),
+  status: $enumDecodeNullable(_$ApplicationStatusEnumMap, json['status']),
   internalNotes: json['internalNotes'] as String?,
   employerMessage: json['employerMessage'] as String?,
 );

@@ -10,17 +10,18 @@ class FormBuilderChips extends FormBuilderField<List<Skill>> {
     super.key,
     required super.name,
     required this.allSkills,
-    List<Skill> initialSkills = const [],
+    List<Skill>? initialValue,
     FormFieldValidator<List<Skill>>? validator,
     ValueChanged<List<Skill>?>? onChanged,
     AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
   }) : super(
-          initialValue: initialSkills,
+          initialValue: initialValue ?? [],
           validator: validator,
           onChanged: onChanged,
           autovalidateMode: autovalidateMode,
-          builder: (field) {
-            return const SizedBox.shrink();
+          builder: (FormFieldState<List<Skill>> field) {
+            final state = field as _FormBuilderChipsState;
+            return state._buildChipsWidget();
           },
         );
 
@@ -40,8 +41,7 @@ class _FormBuilderChipsState
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildChipsWidget() {
     final filtered = _query.isEmpty
         ? []
         : widget.allSkills
@@ -110,5 +110,10 @@ class _FormBuilderChipsState
           ),
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildChipsWidget();
   }
 }

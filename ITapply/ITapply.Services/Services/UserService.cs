@@ -183,6 +183,29 @@ namespace ITapply.Services.Services
             return MapToResponse(user);
         }
 
+        public async Task<bool> ChangePassword(int userId, ChangePasswordRequest request)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new UserException("User not found.");
+            }
+
+            if (!VerifyPassword(request.OldPassword, user.PasswordHash, user.PasswordSalt))
+            {
+                throw new UserException("Incorrect current password.");
+            }
+
+            byte[] salt;
+            user.PasswordHash = HashPassword(request.NewPassword, out salt);
+            user.PasswordSalt = Convert.ToBase64String(salt);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         protected override UserResponse MapToResponse(User entity)
         {
             var response = _mapper.Map<UserResponse>(entity);

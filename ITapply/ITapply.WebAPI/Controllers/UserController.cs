@@ -35,7 +35,7 @@ namespace ITapply.WebAPI.Controllers
             return await base.Create(request);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Candidate,Employer")]
         public override async Task<UserResponse> Update(int id, [FromBody] UserUpdateRequest request)
         {
             return await base.Update(id, request);
@@ -53,6 +53,18 @@ namespace ITapply.WebAPI.Controllers
         {
             var user = await _userService.Login(request);
             return Ok(user);
+        }
+
+        [HttpPut("{id}/change-password")]
+        [Authorize]
+        public async Task<ActionResult> ChangePassword(int id, [FromBody] ChangePasswordRequest request)
+        {
+            var result = await _userService.ChangePassword(id, request);
+            if (!result)
+            {
+                return BadRequest();
+            }
+            return Ok();
         }
     }
 }

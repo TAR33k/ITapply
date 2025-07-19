@@ -12,5 +12,6 @@ namespace ITapply.Services.Interfaces
     public interface IUserService : ICRUDService<UserResponse, UserSearchObject, UserInsertRequest, UserUpdateRequest>
     {
         Task<UserResponse?> Login(UserLoginRequest request);
+        Task<bool> ChangePassword(int userId, ChangePasswordRequest request);
     }
 }

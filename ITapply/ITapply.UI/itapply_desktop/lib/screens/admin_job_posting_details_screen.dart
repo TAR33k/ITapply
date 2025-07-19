@@ -347,7 +347,7 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
             child: FormBuilderChips(
               name: 'skills',
               allSkills: skills.items!,
-              initialSkills: initialSkills,
+              initialValue: initialSkills,
             ),
           ),
           if (isEditMode)
