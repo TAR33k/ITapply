@@ -12,6 +12,17 @@ class AppTheme {
   static const Color darkColor = Color(0xFF2C3E50);
   static const Color textColor = Color(0xFF34495E);
 
+  static const List<Color> pieColors = [
+    primaryColor,
+    Color(0xFF3498DB),
+    Color(0xFF2ECC71),
+    Color(0xFFE74C3C),
+    Color(0xFF9B59B6),
+    Color(0xFFF39C12),
+    Color(0xFF1ABC9C),
+    Color(0xFFE67E22),
+  ];
+
   static ThemeData getTheme() {
     final baseTheme = ThemeData.light();
 

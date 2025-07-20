@@ -345,7 +345,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   DataCell(IconButton(
                     icon: const Icon(Icons.visibility_outlined),
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRouter.employerApplicationsRoute, arguments: app);
+                      Navigator.pushNamed(context, AppRouter.employerApplicationDetailsRoute, arguments: app);
                     },
                     tooltip: "View Application",
                   )),
@@ -396,7 +396,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   )),
                   DataCell(Row(
                     children: [
-                      IconButton(icon: const Icon(Icons.people_alt_outlined), tooltip: "View Applications", onPressed: () {}),
+                      IconButton(icon: const Icon(Icons.people_alt_outlined), tooltip: "View Applications", onPressed: () => Navigator.pushNamed(context, AppRouter.employerApplicationsRoute, arguments: job)),
                       IconButton(icon: const Icon(Icons.edit_outlined), tooltip: "Edit Posting", onPressed: () => Navigator.pushNamed(context, AppRouter.employerJobPostingDetailsRoute, arguments: job)),
                     ],
                   )),

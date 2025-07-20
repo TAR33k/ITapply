@@ -199,16 +199,16 @@ class _Sidebar extends StatelessWidget {
         isSelected: selectedRoute == AppRouter.employerApplicationsRoute,
       ),
       _SidebarItem(
+        title: "Reports",
+        icon: Icons.bar_chart_outlined,
+        route: AppRouter.employerReportsRoute,
+        isSelected: selectedRoute == AppRouter.employerReportsRoute,
+      ),
+      _SidebarItem(
         title: "Company Profile",
         icon: Icons.store_outlined,
         route: AppRouter.employerProfileRoute,
         isSelected: selectedRoute == AppRouter.employerProfileRoute,
-      ),
-       _SidebarItem(
-        title: "Reviews",
-        icon: Icons.rate_review_outlined,
-        route: AppRouter.employerReviewsRoute,
-        isSelected: selectedRoute == AppRouter.employerReviewsRoute,
       ),
     ];
   }

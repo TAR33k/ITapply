@@ -73,11 +73,21 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   Future<void> _fetchData() async {
     try {
       final authProvider = context.read<AuthProvider>();
-      if (authProvider.currentEmployer == null) {
-        throw Exception("Employer profile not found. Please log in again.");
+      
+      int? employerId;
+      if (authProvider.currentEmployer != null) {
+        employerId = authProvider.currentEmployer!.id;
+      } else if (authProvider.currentUser != null) {
+        try {
+          final employer = await context.read<EmployerProvider>().getById(authProvider.currentUser!.id);
+          authProvider.setCurrentEmployer(employer);
+          employerId = employer.id;
+        } catch (e) {
+          throw Exception("Employer profile not found. Please log in again.");
+        }
+      } else {
+        throw Exception("No user session found. Please log in again.");
       }
-
-      final employerId = authProvider.currentEmployer!.id;
 
       final results = await Future.wait([
         context.read<EmployerProvider>().getById(employerId),
@@ -102,7 +112,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
           if (_employer?.logo != null && _employer!.logo!.isNotEmpty) {
             _logoPreview = MemoryImage(base64Decode(_employer!.logo!));
           } else {
-            _logoPreview = const AssetImage("assets/images/placeholder_logo.png");
+            _logoPreview = const AssetImage("assets/placeholder_logo.png");
           }
           _calculateReviewStats();
 
@@ -196,16 +206,18 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
         );
 
         final updatedEmployer =
-            await context.read<EmployerProvider>().update(_employer!.id, request);
-        context.read<AuthProvider>().setCurrentEmployer(updatedEmployer);
+          await context.read<EmployerProvider>().update(_employer!.id, request);
+      context.read<AuthProvider>().setCurrentEmployer(updatedEmployer);
 
-        if (skillUpdateFutures.isNotEmpty) {
-          await Future.wait(skillUpdateFutures);
-        }
+      if (skillUpdateFutures.isNotEmpty) {
+        await Future.wait(skillUpdateFutures);
+      }
 
-        _showFeedback("Profile updated successfully.", isError: false);
+      _showFeedback("Profile updated successfully.", isError: false);
 
-        _fetchData();
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      await _fetchData();
       } catch (e) {
         _showFeedback(e.toString().replaceFirst("Exception: ", ""));
       } finally {
