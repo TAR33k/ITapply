@@ -167,16 +167,13 @@ namespace ITapply.Services.Services
                 }
             }
 
-            var activeApplications = await _context.Applications
-                .Where(a => a.CVDocumentId == entity.Id && 
-                           (a.Status == EnumResponse.ApplicationStatus.Applied || 
-                            a.Status == EnumResponse.ApplicationStatus.InConsideration || 
-                            a.Status == EnumResponse.ApplicationStatus.InterviewScheduled))
+            var applications = await _context.Applications
+                .Where(a => a.CVDocumentId == entity.Id)
                 .CountAsync();
             
-            if (activeApplications > 0)
+            if (applications > 0)
             {
-                throw new UserException("Cannot delete CV document that is being used in active job applications");
+                throw new UserException("Cannot delete CV document that is currently used in job applications");
             }
 
             await base.BeforeDelete(entity);

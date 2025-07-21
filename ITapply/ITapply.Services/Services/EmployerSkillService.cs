@@ -65,11 +65,6 @@ namespace ITapply.Services.Services
                 throw new UserException($"Employer with ID {request.EmployerId} not found");
             }
 
-            if (employer.VerificationStatus != EnumResponse.VerificationStatus.Approved)
-            {
-                throw new UserException("Only verified employers can add skills to their profile");
-            }
-
             var skill = await _context.Skills.FindAsync(request.SkillId);
             if (skill == null)
             {

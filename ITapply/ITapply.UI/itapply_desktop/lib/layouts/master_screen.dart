@@ -151,12 +151,6 @@ class _Sidebar extends StatelessWidget {
         route: AppRouter.adminUserManagementRoute,
         isSelected: selectedRoute == AppRouter.adminUserManagementRoute,
       ),
-      _SidebarItem(
-        title: "Companies",
-        icon: Icons.business_outlined,
-        route: AppRouter.adminCompanyManagementRoute,
-        isSelected: selectedRoute == AppRouter.adminCompanyManagementRoute,
-      ),
        _SidebarItem(
         title: "Job Postings",
         icon: Icons.work_outline,

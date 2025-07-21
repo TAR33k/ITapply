@@ -420,12 +420,22 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeDelete(JobPosting entity)
         {
-            var hasApplications = await _context.Applications
-                .AnyAsync(a => a.JobPostingId == entity.Id);
+            var applications = await _context.Applications.Where(x => x.JobPostingId == entity.Id).ToListAsync();
 
-            if (hasApplications)
+            foreach (var app in applications)
             {
-                throw new UserException("Cannot delete a job posting that has received applications. Consider changing its status to Closed instead.");
+                _context.Applications.Remove(app);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var jobSkills = await _context.JobPostingSkills.Where(x => x.JobPostingId == entity.Id).ToListAsync();
+
+            foreach (var sk in jobSkills)
+            {
+                _context.JobPostingSkills.Remove(sk);
+
+                await _context.SaveChangesAsync();
             }
 
             await base.BeforeDelete(entity);

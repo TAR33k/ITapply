@@ -355,7 +355,7 @@ class _EmployerApplicationDetailsScreenState
               spacing: 8,
               runSpacing: 8,
               children: _skills.map((s) => Chip(
-                label: Text(s.skillName ?? '', style: TextStyle(color: AppTheme.lightColor, fontWeight: FontWeight.bold)),
+                label: Text("${s.skillName ?? ''} - Level ${s.level}", style: TextStyle(color: AppTheme.lightColor, fontWeight: FontWeight.bold)),
                 shape: const StadiumBorder(side: BorderSide.none),
                 backgroundColor: Theme.of(context).primaryColor,
                 side: BorderSide(color: AppTheme.primaryColor)

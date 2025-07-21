@@ -56,5 +56,37 @@ namespace ITapply.Services.Services
 
             await base.BeforeUpdate(entity, request);
         }
+
+        protected override async Task BeforeDelete(Skill entity)
+        {
+            var candidateSkills = await _context.CandidateSkills.Where(x => x.SkillId == entity.Id).ToListAsync();
+
+            foreach (var cs in candidateSkills)
+            {
+                _context.CandidateSkills.Remove(cs);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var employerSkills = await _context.EmployerSkills.Where(x => x.SkillId == entity.Id).ToListAsync();
+
+            foreach (var es in employerSkills)
+            {
+                _context.EmployerSkills.Remove(es);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var jobSkills = await _context.JobPostingSkills.Where(x => x.SkillId == entity.Id).ToListAsync();
+
+            foreach (var js in jobSkills)
+            {
+                _context.JobPostingSkills.Remove(js);
+
+                await _context.SaveChangesAsync();
+            }
+
+            await base.BeforeDelete(entity);
+        }
     }
 } 

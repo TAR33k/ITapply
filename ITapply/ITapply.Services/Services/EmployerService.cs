@@ -180,6 +180,70 @@ namespace ITapply.Services.Services
             await base.BeforeUpdate(entity, request);
         }
 
+        protected override async Task BeforeDelete(Employer entity)
+        {
+            var empSkills = await _context.EmployerSkills.Where(x => x.EmployerId == entity.Id).ToListAsync();
+
+            foreach (var es in empSkills)
+            {
+                _context.EmployerSkills.Remove(es);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var reviews = await _context.Reviews.Where(x => x.EmployerId == entity.Id).ToListAsync();
+
+            foreach (var review in reviews)
+            {
+                _context.Reviews.Remove(review);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var jobPostings = await _context.JobPostings.Where(x => x.EmployerId == entity.Id).ToListAsync();
+
+            foreach (var job in jobPostings)
+            {
+                var applications = await _context.Applications.Where(x => x.JobPostingId == job.Id).ToListAsync();
+
+                foreach (var app in applications)
+                {
+                    _context.Applications.Remove(app);
+                }
+
+                var jobSkills = await _context.JobPostingSkills.Where(x => x.JobPostingId == job.Id).ToListAsync();
+
+                foreach (var sk in jobSkills)
+                {
+                    _context.JobPostingSkills.Remove(sk);
+                }
+
+                _context.JobPostings.Remove(job);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var roles = await _context.UserRoles.Where(x => x.UserId == entity.Id).ToListAsync();
+
+            foreach (var r in roles)
+            {
+                _context.UserRoles.Remove(r);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var user = await _context.Users.Where(x => x.Id == entity.Id).ToListAsync();
+
+            foreach (var u in user)
+            {
+                _context.Users.Remove(u);
+
+                await _context.SaveChangesAsync();
+            }
+
+            await base.BeforeDelete(entity);
+        }
+
         protected override EmployerResponse MapToResponse(Employer entity)
         {
             var response = _mapper.Map<EmployerResponse>(entity);

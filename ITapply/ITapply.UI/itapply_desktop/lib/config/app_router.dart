@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:itapply_desktop/models/application.dart';
+import 'package:itapply_desktop/models/candidate.dart';
+import 'package:itapply_desktop/models/employer.dart';
 import 'package:itapply_desktop/models/job_posting.dart';
+import 'package:itapply_desktop/screens/admin_candidate_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_dashboard_screen.dart';
+import 'package:itapply_desktop/screens/admin_employer_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_list_screen.dart';
+import 'package:itapply_desktop/screens/admin_user_management_screen.dart';
 import 'package:itapply_desktop/screens/employer_application_details_screen.dart';
 import 'package:itapply_desktop/screens/employer_application_list_screen.dart';
 import 'package:itapply_desktop/screens/employer_dashboard_screen.dart';
@@ -27,8 +32,9 @@ class AppRouter {
   static const String employerReportsRoute = '/employer-reports';
 
   static const String adminDashboardRoute = '/admin-dashboard';
-  static const String adminUserManagementRoute = '/admin-user-management';
-  static const String adminCompanyManagementRoute = '/admin-company-management';
+  static const String adminUserManagementRoute = '/admin-users';
+  static const String adminCandidateDetailsRoute = '/admin-candidate-details';
+  static const String adminEmployerDetailsRoute = '/admin-employer-details';
   static const String adminEntitiesRoute = '/admin-entities';
   static const String adminJobPostingsRoute = '/admin-job-postings';
   static const String adminJobPostingDetailsRoute = '/admin-job-posting-details';
@@ -61,8 +67,22 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const EmployerReportsScreen());
       case adminDashboardRoute:
         return MaterialPageRoute(builder: (_) => const AdminDashboardScreen());
+      case adminUserManagementRoute:
+        return MaterialPageRoute(builder: (_) => const AdminUserManagementScreen());
+      case adminCandidateDetailsRoute:
+        final candidate = settings.arguments as Candidate?;
+        return MaterialPageRoute(builder: (_) => AdminCandidateDetailsScreen(candidate: candidate!));
+      case adminEmployerDetailsRoute:
+        final employer = settings.arguments as Employer?;
+        return MaterialPageRoute(builder: (_) => AdminEmployerDetailsScreen(employer: employer));
       case adminJobPostingsRoute:
-        return MaterialPageRoute(builder: (_) => const AdminJobPostingListScreen());
+        final args = settings.arguments as Map<String, dynamic>?;
+        final employerId = args?['employerId'] as int?;
+        final employerName = args?['employerName'] as String?;
+        return MaterialPageRoute(builder: (_) => AdminJobPostingListScreen(
+          employerId: employerId,
+          employerName: employerName,
+        ));
       case AppRouter.adminJobPostingDetailsRoute:
         final jobPosting = settings.arguments as JobPosting?;
         return MaterialPageRoute(

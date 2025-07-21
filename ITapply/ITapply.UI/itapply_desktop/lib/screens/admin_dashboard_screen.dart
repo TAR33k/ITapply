@@ -15,6 +15,7 @@ import 'package:itapply_desktop/providers/employer_provider.dart';
 import 'package:itapply_desktop/providers/job_posting_provider.dart';
 import 'package:itapply_desktop/providers/review_provider.dart';
 import 'package:itapply_desktop/providers/user_provider.dart';
+import 'package:itapply_desktop/screens/admin_user_management_screen.dart';
 import 'package:itapply_desktop/widgets/stat_card.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -256,7 +257,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Pending Company Verifications", style: Theme.of(context).textTheme.titleLarge),
-                TextButton(onPressed: () {}, child: const Text("View All"))
+                TextButton(onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminUserManagementScreen(startingIndex: 2)));
+                }, child: const Text("View All"))
               ],
             ),
             const SizedBox(height: 12),

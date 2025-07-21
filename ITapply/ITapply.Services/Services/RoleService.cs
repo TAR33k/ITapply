@@ -56,5 +56,15 @@ namespace ITapply.Services.Services
 
             await base.BeforeUpdate(entity, request);
         }
+
+        protected override async Task BeforeDelete(Role entity)
+        {
+            var isUsed = await _context.UserRoles.AnyAsync(ur => ur.RoleId == entity.Id);
+            if (isUsed)
+            {
+                throw new UserException("This role cannot be deleted because it is currently assigned to one or more users.");
+            }
+            await base.BeforeDelete(entity);
+        }
     }
 }

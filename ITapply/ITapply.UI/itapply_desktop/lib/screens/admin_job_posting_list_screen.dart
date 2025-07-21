@@ -12,7 +12,10 @@ import 'package:itapply_desktop/providers/utils.dart';
 import 'package:provider/provider.dart';
 
 class AdminJobPostingListScreen extends StatefulWidget {
-  const AdminJobPostingListScreen({super.key});
+  final int? employerId;
+  final String? employerName;
+  
+  const AdminJobPostingListScreen({super.key, this.employerId, this.employerName});
 
   @override
   State<AdminJobPostingListScreen> createState() => _AdminJobPostingListScreenState();
@@ -37,6 +40,11 @@ class _AdminJobPostingListScreenState extends State<AdminJobPostingListScreen> {
   void initState() {
     super.initState();
     _jobPostingProvider = context.read<JobPostingProvider>();
+    
+    if (widget.employerName != null) {
+      _companyController.text = widget.employerName!;
+    }
+    
     _fetchData();
   }
 
@@ -67,6 +75,7 @@ class _AdminJobPostingListScreenState extends State<AdminJobPostingListScreen> {
       var searchObject = JobPostingSearchObject(
         Title: _titleController.text.trim().isNotEmpty ? _titleController.text.trim() : null,
         EmployerName: _companyController.text.trim().isNotEmpty ? _companyController.text.trim() : null,
+        EmployerId: widget.employerId,
         PostedAfter: _postedAfter,
         DeadlineBefore: _deadlineBefore,
         Status: _selectedStatus,
@@ -289,6 +298,18 @@ class _AdminJobPostingListScreenState extends State<AdminJobPostingListScreen> {
             const SizedBox(height: 16),
             Row(children: [
               ElevatedButton.icon(
+                onPressed: _isLoading ? null : () async {
+                  final result = await Navigator.pushNamed(context, AppRouter.adminJobPostingDetailsRoute);
+                  if (result == true) _performSearch();
+                },
+                icon: const Icon(Icons.add),
+                label: const Text("New Posting"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              const Spacer(),
+              ElevatedButton.icon(
                 onPressed: _isLoading ? null : _performSearch,
                 icon: const Icon(Icons.search),
                 label: const Text("Search"),
@@ -298,18 +319,6 @@ class _AdminJobPostingListScreenState extends State<AdminJobPostingListScreen> {
                 onPressed: _isLoading ? null : _clearFilters,
                 icon: const Icon(Icons.clear_all),
                 label: const Text("Clear Filters"),
-              ),
-              const Spacer(),
-              ElevatedButton.icon(
-                onPressed: _isLoading ? null : () async {
-                  final result = await Navigator.pushNamed(context, AppRouter.adminJobPostingDetailsRoute);
-                  if (result == true) _performSearch();
-                },
-                icon: const Icon(Icons.add),
-                label: const Text("New Posting"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                ),
               ),
             ]),
           ],

@@ -220,5 +220,132 @@ namespace ITapply.Services.Services
             
             return response;
         }
+
+        protected override async Task BeforeDelete(User entity)
+        {
+            var applications = await _context.Applications.Where(x => x.CandidateId == entity.Id).ToListAsync();
+
+            foreach (var app in applications)
+            {
+                _context.Applications.Remove(app);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var candidateSkills = await _context.CandidateSkills.Where(x => x.CandidateId == entity.Id).ToListAsync();
+
+            foreach (var skill in candidateSkills)
+            {
+                _context.CandidateSkills.Remove(skill);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var cvDocuments = await _context.CVDocuments.Where(x => x.CandidateId == entity.Id).ToListAsync();
+
+            foreach (var cv in cvDocuments)
+            {
+                _context.CVDocuments.Remove(cv);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var educations = await _context.Educations.Where(x => x.CandidateId == entity.Id).ToListAsync();
+
+            foreach (var ed in educations)
+            {
+                _context.Educations.Remove(ed);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var preferences = await _context.Preferences.Where(x => x.CandidateId == entity.Id).ToListAsync();
+
+            foreach (var pref in preferences)
+            {
+                _context.Preferences.Remove(pref);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var reviews = await _context.Reviews.Where(x => x.CandidateId == entity.Id || x.EmployerId == entity.Id).ToListAsync();
+
+            foreach (var rev in reviews)
+            {
+                _context.Reviews.Remove(rev);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var works = await _context.WorkExperiences.Where(x => x.CandidateId == entity.Id).ToListAsync();
+
+            foreach (var w in works)
+            {
+                _context.WorkExperiences.Remove(w);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var empSkills = await _context.EmployerSkills.Where(x => x.EmployerId == entity.Id).ToListAsync();
+
+            foreach (var es in empSkills)
+            {
+                _context.EmployerSkills.Remove(es);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var jobPostings = await _context.JobPostings.Where(x => x.EmployerId == entity.Id).ToListAsync();
+
+            foreach (var job in jobPostings)
+            {
+                var jobApps = await _context.Applications.Where(x => x.JobPostingId == job.Id).ToListAsync();
+
+                foreach (var jApp in jobApps)
+                {
+                    _context.Applications.Remove(jApp);
+                }
+
+                var jobSkills = await _context.JobPostingSkills.Where(x => x.JobPostingId == job.Id).ToListAsync();
+
+                foreach (var sk in jobSkills)
+                {
+                    _context.JobPostingSkills.Remove(sk);
+                }
+
+                _context.JobPostings.Remove(job);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var candidate = await _context.Candidates.Where(x => x.Id == entity.Id).ToListAsync();
+
+            foreach (var cand in candidate)
+            {
+                _context.Candidates.Remove(cand);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var employer = await _context.Employers.Where(x => x.Id == entity.Id).ToListAsync();
+
+            foreach (var employ in employer)
+            {
+                _context.Employers.Remove(employ);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var roles = await _context.UserRoles.Where(x => x.UserId == entity.Id).ToListAsync();
+
+            foreach (var r in roles)
+            {
+                _context.UserRoles.Remove(r);
+
+                await _context.SaveChangesAsync();
+            }
+
+            await base.BeforeDelete(entity);
+        }
     }
 }

@@ -65,5 +65,34 @@ namespace ITapply.Services.Services
 
             await base.BeforeUpdate(entity, request);
         }
+
+        protected override async Task BeforeDelete(Location entity)
+        {
+            var isUsedByCandidates = await _context.Candidates.AnyAsync(c => c.LocationId == entity.Id);
+            if (isUsedByCandidates)
+            {
+                throw new UserException("This location cannot be deleted because it is assigned to one or more candidates. Reassign them before deleting.");
+            }
+
+            var isUsedByEmployers = await _context.Employers.AnyAsync(e => e.LocationId == entity.Id);
+            if (isUsedByEmployers)
+            {
+                throw new UserException("This location cannot be deleted because it is assigned to one or more employers. Reassign them before deleting.");
+            }
+
+            var isUsedByJobPostings = await _context.JobPostings.AnyAsync(jp => jp.LocationId == entity.Id);
+            if (isUsedByJobPostings)
+            {
+                throw new UserException("This location cannot be deleted because it is used in one or more job postings. Reassign them before deleting.");
+            }
+
+            var isUsedByPreferences = await _context.Preferences.AnyAsync(jp => jp.LocationId == entity.Id);
+            if (isUsedByPreferences)
+            {
+                throw new UserException("This location cannot be deleted because it is used in one or more preferences. Reassign them before deleting.");
+            }
+
+            await base.BeforeDelete(entity);
+        }
     }
 }

@@ -107,6 +107,50 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
     }
   }
 
+  Future<void> _deleteJobPosting() async {
+    if (!isEditMode) return;
+    
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Delete'),
+        content: Text(
+            'Are you sure you want to delete "${widget.jobPosting!.title}"? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      setState(() => _isLoading = true);
+      try {
+        await context.read<JobPostingProvider>().delete(widget.jobPosting!.id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Job posting deleted successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.of(context).pop(true);
+        }
+      } catch (e) {
+        _showError(e.toString());
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
@@ -391,20 +435,32 @@ class _AdminJobPostingDetailsScreenState extends State<AdminJobPostingDetailsScr
             ),
           const SizedBox(height: 32),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              if (isEditMode)
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: _isLoading ? null : _deleteJobPosting,
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("DELETE", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              if (isEditMode) const SizedBox(width: 300),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("CANCEL"),
+                ),
+              ),
+              const SizedBox(width: 16),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _saveChanges,
                   child: _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Text(isEditMode ? "SAVE CHANGES" : "CREATE POSTING"),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("CANCEL"),
                 ),
               ),
             ],

@@ -2,6 +2,7 @@
 using ITapply.Services.Database;
 using ITapply.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,6 +95,9 @@ namespace ITapply.Services.Services
 
             await BeforeDelete(entity);
 
+            if (await _context.Set<TEntity>().FindAsync(id) == null)
+                return true;
+            
             _context.Set<TEntity>().Remove(entity);
             await _context.SaveChangesAsync();
 
