@@ -6,6 +6,7 @@ import 'package:itapply_desktop/models/job_posting.dart';
 import 'package:itapply_desktop/screens/admin_candidate_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_dashboard_screen.dart';
 import 'package:itapply_desktop/screens/admin_employer_details_screen.dart';
+import 'package:itapply_desktop/screens/admin_entities_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_list_screen.dart';
 import 'package:itapply_desktop/screens/admin_user_management_screen.dart';
@@ -90,6 +91,8 @@ class AppRouter {
           builder: (_) => AdminJobPostingDetailsScreen(jobPosting: jobPosting),
           settings: settings,
         );
+      case AppRouter.adminEntitiesRoute:
+        return MaterialPageRoute(builder: (_) => const AdminEntitiesScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
