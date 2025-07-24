@@ -33,6 +33,6 @@ namespace ITapply.Services.Database
         public DateTime? EndDate { get; set; } // Nullable if currently studying
 
         [StringLength(2000)]
-        public string Description { get; set; } // Optional, e.g., relevant coursework, GPA
+        public string? Description { get; set; } // Optional, e.g., relevant coursework, GPA
     }
 }

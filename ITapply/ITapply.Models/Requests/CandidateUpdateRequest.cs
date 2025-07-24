@@ -20,13 +20,13 @@ namespace ITapply.Models.Requests
 
         [StringLength(20, ErrorMessage = "Phone number cannot exceed 20 characters.")]
         [RegularExpression(@"^\+?[0-9\s\-\(\)]+$", ErrorMessage = "Phone number format is invalid.")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters.")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [StringLength(2000, ErrorMessage = "Bio cannot exceed 2000 characters.")]
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Location ID must be a positive number.")]
         public int? LocationId { get; set; }

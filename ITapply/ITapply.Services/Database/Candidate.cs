@@ -23,13 +23,13 @@ namespace ITapply.Services.Database
         public string LastName { get; set; }
 
         [StringLength(20)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [StringLength(100)]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [StringLength(2000)]
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
 
         public int? LocationId { get; set; }
         [ForeignKey("LocationId")]

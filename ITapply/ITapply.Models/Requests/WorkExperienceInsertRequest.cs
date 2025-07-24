@@ -27,6 +27,6 @@ namespace ITapply.Models.Requests
         public DateTime? EndDate { get; set; }
 
         [StringLength(4000, ErrorMessage = "Description cannot exceed 4000 characters.")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 } 

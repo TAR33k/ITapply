@@ -38,6 +38,7 @@ class AppRouter {
   static const String adminEntitiesRoute = '/admin-entities';
   static const String adminJobPostingsRoute = '/admin-job-postings';
   static const String adminJobPostingDetailsRoute = '/admin-job-posting-details';
+  static const String adminApplicationsRoute = '/admin-applications';
   static const String adminReviewsRoute = '/admin-reviews';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -71,7 +72,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const AdminUserManagementScreen());
       case adminCandidateDetailsRoute:
         final candidate = settings.arguments as Candidate?;
-        return MaterialPageRoute(builder: (_) => AdminCandidateDetailsScreen(candidate: candidate!));
+        return MaterialPageRoute(builder: (_) => AdminCandidateDetailsScreen(candidate: candidate));
       case adminEmployerDetailsRoute:
         final employer = settings.arguments as Employer?;
         return MaterialPageRoute(builder: (_) => AdminEmployerDetailsScreen(employer: employer));

@@ -455,6 +455,16 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen>
                                 onPressed: () =>
                                     _viewCandidateDetails(candidate)),
                             IconButton(
+                                icon: const Icon(Icons.work_outline),
+                                tooltip: 'View Applications',
+                                onPressed: () => _viewCandidateApplications(candidate),
+                              ),
+                            IconButton(
+                                icon: const Icon(Icons.rate_review_outlined),
+                                tooltip: 'View Reviews',
+                                onPressed: () => _viewCandidateReviews(candidate),
+                              ),
+                            IconButton(
                                 icon: const Icon(Icons.delete_outlined),
                                 tooltip: 'Delete User',
                                 onPressed: () => _deleteCandidate(candidate),
@@ -564,7 +574,7 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen>
     Flushbar(
       title: isError ? "Operation Failed" : "Success",
       message: message,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 1),
       backgroundColor: isError ? Colors.red.shade700 : AppTheme.confirmColor,
       icon: Icon(isError ? Icons.error_outline : Icons.check_circle_outline,
           color: Colors.white),
@@ -680,6 +690,24 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen>
     if (result == true) {
       await _fetchData();
     }
+  }
+
+  void _viewCandidateApplications(Candidate candidate) {
+    Navigator.of(context).pushNamed(
+      AppRouter.adminApplicationsRoute,
+      arguments: {
+        'candidate': candidate,
+      },
+    );
+  }
+
+  void _viewCandidateReviews(Candidate candidate) {
+    Navigator.of(context).pushNamed(
+      AppRouter.adminReviewsRoute,
+      arguments: {
+        'candidate': candidate,
+      },
+    );
   }
 
   void _viewEmployerJobPostings(Employer employer) {

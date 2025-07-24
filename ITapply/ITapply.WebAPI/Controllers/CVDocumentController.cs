@@ -33,13 +33,13 @@ namespace ITapply.WebAPI.Controllers
             return await base.GetById(id);
         }
 
-        [Authorize(Roles = "Candidate")]
+        [Authorize(Roles = "Administrator,Candidate")]
         public override async Task<CVDocumentResponse> Create([FromBody] CVDocumentInsertRequest request)
         {
             return await base.Create(request);
         }
 
-        [Authorize(Roles = "Candidate")]
+        [Authorize(Roles = "Administrator,Candidate")]
         public override async Task<CVDocumentResponse> Update(int id, [FromBody] CVDocumentUpdateRequest request)
         {
             return await base.Update(id, request);
@@ -52,7 +52,7 @@ namespace ITapply.WebAPI.Controllers
         }
 
         [HttpPut("{id}/main")]
-        [Authorize(Roles = "Candidate")]
+        [Authorize(Roles = "Administrator,Candidate")]
         public async Task<ActionResult<CVDocumentResponse>> SetAsMain(int id)
         {
             var result = await _cvDocumentService.SetAsMainAsync(id);

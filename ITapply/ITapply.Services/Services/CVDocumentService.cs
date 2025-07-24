@@ -137,14 +137,16 @@ namespace ITapply.Services.Services
             if (document.IsMain)
                 return MapToResponse(document);
 
-            var candidateDocs = await _context.CVDocuments
-                .Where(x => x.CandidateId == document.CandidateId)
+            var otherDocs = await _context.CVDocuments
+                .Where(x => x.CandidateId == document.CandidateId && x.Id != id && x.IsMain)
                 .ToListAsync();
 
-            foreach (var doc in candidateDocs)
+            foreach (var doc in otherDocs)
             {
                 doc.IsMain = false;
             }
+
+            await _context.SaveChangesAsync();
 
             document.IsMain = true;
             await _context.SaveChangesAsync();

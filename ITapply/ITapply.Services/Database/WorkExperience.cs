@@ -29,6 +29,6 @@ namespace ITapply.Services.Database
         public DateTime? EndDate { get; set; } // Nullable for current job
 
         [StringLength(4000)]
-        public string Description { get; set; } // Optional, simple string describing responsibilities/achievements
+        public string? Description { get; set; } // Optional, simple string describing responsibilities/achievements
     }
 }
