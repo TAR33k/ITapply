@@ -9,6 +9,7 @@ import 'package:itapply_desktop/screens/admin_employer_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_entities_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_list_screen.dart';
+import 'package:itapply_desktop/screens/admin_reviews_screen.dart';
 import 'package:itapply_desktop/screens/admin_user_management_screen.dart';
 import 'package:itapply_desktop/screens/employer_application_details_screen.dart';
 import 'package:itapply_desktop/screens/employer_application_list_screen.dart';
@@ -85,14 +86,21 @@ class AppRouter {
           employerId: employerId,
           employerName: employerName,
         ));
-      case AppRouter.adminJobPostingDetailsRoute:
+      case adminJobPostingDetailsRoute:
         final jobPosting = settings.arguments as JobPosting?;
         return MaterialPageRoute(
           builder: (_) => AdminJobPostingDetailsScreen(jobPosting: jobPosting),
           settings: settings,
         );
-      case AppRouter.adminEntitiesRoute:
+      case adminEntitiesRoute:
         return MaterialPageRoute(builder: (_) => const AdminEntitiesScreen());
+      case adminReviewsRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final candidate = args?['candidate'] as Candidate?;
+        final employer = args?['employer'] as Employer?;
+        final candidateName = candidate != null ? "${candidate.firstName} ${candidate.lastName}" : null;
+        final employerName = employer?.companyName;
+        return MaterialPageRoute(builder: (_) => AdminReviewsScreen(candidateName: candidateName, employerName: employerName));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

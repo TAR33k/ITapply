@@ -526,6 +526,11 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen>
                                 tooltip: 'View Job Postings',
                                 onPressed: () => _viewEmployerJobPostings(employer)),
                             IconButton(
+                                icon: const Icon(Icons.rate_review_outlined),
+                                tooltip: 'View Reviews',
+                                onPressed: () => _viewEmployerReviews(employer),
+                              ),
+                            IconButton(
                                 icon: const Icon(Icons.delete_outlined),
                                 tooltip: 'Delete User',
                                 onPressed: () => _deleteEmployer(employer),
@@ -716,6 +721,15 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen>
       arguments: {
         'employerId': employer.id,
         'employerName': employer.companyName,
+      },
+    );
+  }
+
+  void _viewEmployerReviews(Employer employer) {
+    Navigator.of(context).pushNamed(
+      AppRouter.adminReviewsRoute,
+      arguments: {
+        'employer': employer,
       },
     );
   }

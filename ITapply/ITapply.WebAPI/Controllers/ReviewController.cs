@@ -34,7 +34,7 @@ namespace ITapply.WebAPI.Controllers
             return await base.GetById(id);
         }
 
-        [Authorize(Roles = "Candidate")]
+        [Authorize(Roles = "Administrator,Candidate")]
         public override async Task<ReviewResponse> Create([FromBody] ReviewInsertRequest request)
         {
             return await base.Create(request);
