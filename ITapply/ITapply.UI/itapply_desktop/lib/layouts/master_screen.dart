@@ -175,6 +175,12 @@ class _Sidebar extends StatelessWidget {
         route: AppRouter.adminEntitiesRoute,
         isSelected: selectedRoute == AppRouter.adminEntitiesRoute,
       ),
+      _SidebarItem(
+        title: "Reports",
+        icon: Icons.bar_chart_outlined,
+        route: AppRouter.adminReportsRoute,
+        isSelected: selectedRoute == AppRouter.adminReportsRoute,
+      ),
     ];
   }
 

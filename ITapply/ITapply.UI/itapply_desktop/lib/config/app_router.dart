@@ -4,6 +4,7 @@ import 'package:itapply_desktop/models/candidate.dart';
 import 'package:itapply_desktop/models/employer.dart';
 import 'package:itapply_desktop/models/job_posting.dart';
 import 'package:itapply_desktop/models/review.dart';
+import 'package:itapply_desktop/screens/admin_application_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_application_list_screen.dart';
 import 'package:itapply_desktop/screens/admin_candidate_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_dashboard_screen.dart';
@@ -11,6 +12,7 @@ import 'package:itapply_desktop/screens/admin_employer_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_entities_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_job_posting_list_screen.dart';
+import 'package:itapply_desktop/screens/admin_reports_screen.dart';
 import 'package:itapply_desktop/screens/admin_reviews_screen.dart';
 import 'package:itapply_desktop/screens/admin_user_management_screen.dart';
 import 'package:itapply_desktop/screens/employer_application_details_screen.dart';
@@ -45,6 +47,7 @@ class AppRouter {
   static const String adminApplicationsRoute = '/admin-applications';
   static const String adminApplicationDetailsRoute = '/admin-application-details';
   static const String adminReviewsRoute = '/admin-reviews';
+  static const String adminReportsRoute = '/admin-reports';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -100,7 +103,7 @@ class AppRouter {
       case adminApplicationDetailsRoute:
         final application = settings.arguments as Application?;
         return MaterialPageRoute(
-          builder: (_) => Text("Application details for ${application?.id}"),
+          builder: (_) => AdminApplicationDetailsScreen(application: application),
           settings: settings,
         );
       case adminEntitiesRoute:
@@ -121,6 +124,8 @@ class AppRouter {
           employerName = employer?.companyName;
         }
         return MaterialPageRoute(builder: (_) => AdminReviewsScreen(candidateName: candidateName, employerName: employerName));
+      case adminReportsRoute:
+        return MaterialPageRoute(builder: (_) => const AdminReportsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

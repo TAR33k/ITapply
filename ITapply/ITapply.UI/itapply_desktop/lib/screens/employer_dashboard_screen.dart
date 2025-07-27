@@ -219,9 +219,9 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
           crossAxisSpacing: 15,
           mainAxisSpacing: 15,
           children: [
-            StatCard(title: "Active Job Postings", value: _activeListingsCount.toString(), icon: Icons.work_outline, color: Colors.blue),
+            StatCard(title: "Active Job Postings", value: _activeListingsCount.toString(), icon: Icons.work_outline, color: Colors.blue, onTap: () => Navigator.pushNamed(context, AppRouter.employerJobPostingsRoute)),
             StatCard(title: "New Applications (7d)", value: _newApplicationsCount.toString(), icon: Icons.file_copy_outlined, color: Colors.orange),
-            StatCard(title: "Total Applications", value: _totalApplicationsCount.toString(), icon: Icons.people_outline, color: Colors.green),
+            StatCard(title: "Total Applications", value: _totalApplicationsCount.toString(), icon: Icons.people_outline, color: Colors.green, onTap: () => Navigator.pushNamed(context, AppRouter.employerApplicationsRoute)),
           ],
         );
       },
@@ -377,12 +377,12 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
               width: double.infinity,
               child: DataTable(
                 columns: const [
-                  DataColumn(label: Text("Title")),
-                  DataColumn(label: Text("Posted Date")),
-                  DataColumn(label: Text("Deadline Date")),
-                  DataColumn(label: Text("Applications")),
-                  DataColumn(label: Text("Status")),
-                  DataColumn(label: Text("Actions")),
+                  DataColumn(label: Text("Title", style: TextStyle(fontSize: 14))),
+                  DataColumn(label: Text("Posted Date", style: TextStyle(fontSize: 14))),
+                  DataColumn(label: Text("Deadline Date", style: TextStyle(fontSize: 14))),
+                  DataColumn(label: Text("Applications", style: TextStyle(fontSize: 14))),
+                  DataColumn(label: Text("Status", style: TextStyle(fontSize: 14))),
+                  DataColumn(label: Text("Actions", style: TextStyle(fontSize: 14))),
                 ],
                 rows: _activeJobPostings.map((job) => DataRow(cells: [
                   DataCell(Text(job.title)),

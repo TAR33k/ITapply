@@ -6,6 +6,7 @@ import 'package:itapply_desktop/models/skill.dart';
 class FormBuilderChips extends FormBuilderField<List<Skill>> {
   final List<Skill> allSkills;
 
+  // ignore: use_super_parameters
   FormBuilderChips({
     super.key,
     required super.name,

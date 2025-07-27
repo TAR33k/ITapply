@@ -23,7 +23,7 @@ class StatCard extends StatelessWidget {
       elevation: 4,
       shadowColor: color.withOpacity(0.2),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
             Container(
@@ -42,7 +42,7 @@ class StatCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.titleSmall?.copyWith(
                       color: theme.colorScheme.secondary,
                     ),
                     overflow: TextOverflow.ellipsis,

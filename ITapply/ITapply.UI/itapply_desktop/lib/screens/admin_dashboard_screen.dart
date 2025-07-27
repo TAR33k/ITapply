@@ -277,8 +277,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   DataCell(Row(children: [
                     IconButton(icon: const Icon(Icons.check_circle_outline, color: Colors.green), tooltip: "Approve", onPressed: () => _handleVerification(company.id, VerificationStatus.approved)),
                     IconButton(icon: const Icon(Icons.highlight_off_outlined, color: Colors.red), tooltip: "Reject", onPressed: () => _handleVerification(company.id, VerificationStatus.rejected)),
-                    IconButton(icon: const Icon(Icons.visibility_outlined, color: Colors.grey), tooltip: "View Details", onPressed: () {
-                      Navigator.pushNamed(context, AppRouter.adminEmployerDetailsRoute, arguments: company);
+                    IconButton(icon: const Icon(Icons.visibility_outlined, color: Colors.grey), tooltip: "View Details", onPressed: () async {
+                      final result = await Navigator.pushNamed(
+                          context, AppRouter.adminEmployerDetailsRoute,
+                          arguments: company);
+                      if (result == true) {
+                        await _fetchAdminDashboardData();
+                      }
                     }),
                   ])),
                 ])).toList(),

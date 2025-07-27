@@ -740,7 +740,7 @@ class _EmployerReportsScreenState extends State<EmployerReportsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Report saved to: $downloadsPath/$fileName'),
+              content: Text('Report saved to: $downloadsPath\\$fileName'),
               backgroundColor: Colors.green,
               duration: const Duration(seconds: 4),
               action: SnackBarAction(
@@ -789,7 +789,7 @@ class _EmployerReportsScreenState extends State<EmployerReportsScreen> {
     setState(() => _selectedTabIndex = originalTab);
     await Future.delayed(const Duration(milliseconds: 300));
 
-    Future<Uint8List?> _captureChart(GlobalKey key) async {
+    Future<Uint8List?> captureChart(GlobalKey key) async {
       try {
         final context = key.currentContext;
         if (context == null) return null;
@@ -797,13 +797,13 @@ class _EmployerReportsScreenState extends State<EmployerReportsScreen> {
         RenderRepaintBoundary boundary = context.findRenderObject() as RenderRepaintBoundary;
         if (boundary.debugNeedsPaint) {
           await Future.delayed(const Duration(milliseconds: 100));
-          return _captureChart(key);
+          return captureChart(key);
         }
         final image = await boundary.toImage(pixelRatio: 3.0);
         final byteData = await image.toByteData(format: ImageByteFormat.png);
         return byteData?.buffer.asUint8List();
       } catch (e) {
-        print('Error capturing chart: $e');
+        debugPrint('Error capturing chart: $e');
         return null;
       }
     }
@@ -813,13 +813,13 @@ class _EmployerReportsScreenState extends State<EmployerReportsScreen> {
     Uint8List? trendsChartImage;
 
     if (options["Top Job Postings Chart"] == true) {
-      topChartImage = await _captureChart(_topJobsChartKey);
+      topChartImage = await captureChart(_topJobsChartKey);
     }
     if (options["Application Status Chart"] == true) {
-      statusChartImage = await _captureChart(_applicationStatusChartKey);
+      statusChartImage = await captureChart(_applicationStatusChartKey);
     }
     if (options["Application Trends Chart"] == true) {
-      trendsChartImage = await _captureChart(_applicationTrendsChartKey);
+      trendsChartImage = await captureChart(_applicationTrendsChartKey);
     }
 
     pdf.addPage(
