@@ -20,7 +20,6 @@ import 'package:itapply_desktop/models/search_objects/user_role_search_object.da
 import 'package:itapply_desktop/models/search_objects/user_search_object.dart';
 import 'package:itapply_desktop/models/user.dart';
 import 'package:itapply_desktop/providers/auth_provider.dart';
-
 import 'package:itapply_desktop/providers/candidate_provider.dart';
 import 'package:itapply_desktop/providers/employer_provider.dart';
 import 'package:itapply_desktop/providers/role_provider.dart';
@@ -718,10 +717,7 @@ class _AdminUserManagementScreenState extends State<AdminUserManagementScreen>
   void _viewEmployerJobPostings(Employer employer) {
     Navigator.of(context).pushNamed(
       AppRouter.adminJobPostingsRoute,
-      arguments: {
-        'employerId': employer.id,
-        'employerName': employer.companyName,
-      },
+      arguments: employer.companyName,
     );
   }
 

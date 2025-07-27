@@ -12,10 +12,9 @@ import 'package:itapply_desktop/providers/utils.dart';
 import 'package:provider/provider.dart';
 
 class AdminJobPostingListScreen extends StatefulWidget {
-  final int? employerId;
   final String? employerName;
   
-  const AdminJobPostingListScreen({super.key, this.employerId, this.employerName});
+  const AdminJobPostingListScreen({super.key, this.employerName});
 
   @override
   State<AdminJobPostingListScreen> createState() => _AdminJobPostingListScreenState();
@@ -75,7 +74,6 @@ class _AdminJobPostingListScreenState extends State<AdminJobPostingListScreen> {
       var searchObject = JobPostingSearchObject(
         Title: _titleController.text.trim().isNotEmpty ? _titleController.text.trim() : null,
         EmployerName: _companyController.text.trim().isNotEmpty ? _companyController.text.trim() : null,
-        EmployerId: widget.employerId,
         PostedAfter: _postedAfter,
         DeadlineBefore: _deadlineBefore,
         Status: _selectedStatus,
@@ -338,7 +336,12 @@ class _AdminJobPostingListScreenState extends State<AdminJobPostingListScreen> {
         if (result == true) _fetchData();
       },
       onToggleStatus: _toggleJobStatus,
-      onViewApplications: (_) {},
+      onViewApplications: (jobPosting) {
+        final args = {
+          'jobPosting': jobPosting,
+        };
+        Navigator.pushNamed(context, AppRouter.adminApplicationsRoute, arguments: args);
+      },
     );
 
     return Card(

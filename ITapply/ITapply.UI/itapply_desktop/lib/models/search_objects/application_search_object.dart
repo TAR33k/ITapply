@@ -11,6 +11,7 @@ class ApplicationSearchObject extends BaseSearchObject {
   int? EmployerId;
   String? JobTitle;
   String? CandidateName;
+  String? CompanyName;
   @JsonKey(toJson: _applicationStatusToJson)
   ApplicationStatus? Status;
   DateTime? ApplicationDateFrom;
@@ -22,6 +23,7 @@ class ApplicationSearchObject extends BaseSearchObject {
     this.EmployerId,
     this.JobTitle,
     this.CandidateName,
+    this.CompanyName,
     this.Status,
     this.ApplicationDateFrom,
     this.ApplicationDateTo,

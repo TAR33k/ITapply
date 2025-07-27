@@ -14,6 +14,7 @@ ApplicationSearchObject _$ApplicationSearchObjectFromJson(
   EmployerId: (json['EmployerId'] as num?)?.toInt(),
   JobTitle: json['JobTitle'] as String?,
   CandidateName: json['CandidateName'] as String?,
+  CompanyName: json['CompanyName'] as String?,
   Status: $enumDecodeNullable(_$ApplicationStatusEnumMap, json['Status']),
   ApplicationDateFrom: json['ApplicationDateFrom'] == null
       ? null
@@ -39,6 +40,7 @@ Map<String, dynamic> _$ApplicationSearchObjectToJson(
   'EmployerId': instance.EmployerId,
   'JobTitle': instance.JobTitle,
   'CandidateName': instance.CandidateName,
+  'CompanyName': instance.CompanyName,
   'Status': _applicationStatusToJson(instance.Status),
   'ApplicationDateFrom': instance.ApplicationDateFrom?.toIso8601String(),
   'ApplicationDateTo': instance.ApplicationDateTo?.toIso8601String(),

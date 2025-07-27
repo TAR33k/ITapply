@@ -195,6 +195,11 @@ namespace ITapply.Services.Services
                     a.Candidate.LastName.Contains(search.CandidateName));
             }
 
+            if (!string.IsNullOrEmpty(search.CompanyName))
+            {
+                query = query.Where(a => a.JobPosting.Employer.CompanyName.Contains(search.CompanyName));
+            }
+
             if (search.Status.HasValue)
             {
                 query = query.Where(a => a.Status == search.Status);

@@ -158,6 +158,12 @@ class _Sidebar extends StatelessWidget {
         isSelected: selectedRoute == AppRouter.adminJobPostingsRoute,
       ),
        _SidebarItem(
+        title: "Applications",
+        icon: Icons.file_copy_outlined,
+        route: AppRouter.adminApplicationsRoute,
+        isSelected: selectedRoute == AppRouter.adminApplicationsRoute,
+      ),
+       _SidebarItem(
         title: "Reviews",
         icon: Icons.rate_review_outlined,
         route: AppRouter.adminReviewsRoute,

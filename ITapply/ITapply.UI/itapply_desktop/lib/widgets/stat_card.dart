@@ -5,6 +5,7 @@ class StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
+  final Function()? onTap;
 
   const StatCard({
     super.key,
@@ -12,6 +13,7 @@ class StatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.color,
+    this.onTap,
   });
 
   @override
@@ -56,6 +58,8 @@ class StatCard extends StatelessWidget {
                 ],
               ),
             ),
+            if (onTap != null)
+              IconButton(onPressed: onTap, icon: const Icon(Icons.arrow_forward_ios, size: 12)),
           ],
         ),
       ),

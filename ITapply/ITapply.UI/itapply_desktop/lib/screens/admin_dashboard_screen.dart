@@ -191,10 +191,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           crossAxisSpacing: 20,
           mainAxisSpacing: 20,
           children: [
-            StatCard(title: "Total Users", value: _totalUsers.toString(), icon: Icons.group_outlined, color: Colors.blue),
-            StatCard(title: "Active Companies", value: _activeCompanies.toString(), icon: Icons.business_center_outlined, color: Colors.green),
-            StatCard(title: "Active Job Postings", value: _activeJobs.toString(), icon: Icons.work_outline, color: Colors.orange),
-            StatCard(title: "Total Reviews", value: _totalReviews.toString(), icon: Icons.rate_review_outlined, color: Colors.purple),
+            StatCard(title: "Total Users", value: _totalUsers.toString(), icon: Icons.group_outlined, color: Colors.blue, onTap: () => Navigator.pushNamed(context, AppRouter.adminUserManagementRoute)),
+            StatCard(title: "Active Companies", value: _activeCompanies.toString(), icon: Icons.business_center_outlined, color: Colors.green, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdminUserManagementScreen(startingIndex: 2)))),
+            StatCard(title: "Active Job Postings", value: _activeJobs.toString(), icon: Icons.work_outline, color: Colors.orange, onTap: () => Navigator.pushNamed(context, AppRouter.adminJobPostingsRoute)),
+            StatCard(title: "Total Reviews", value: _totalReviews.toString(), icon: Icons.rate_review_outlined, color: Colors.purple, onTap: () => Navigator.pushNamed(context, AppRouter.adminReviewsRoute)),
           ],
         );
       },
@@ -277,7 +277,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   DataCell(Row(children: [
                     IconButton(icon: const Icon(Icons.check_circle_outline, color: Colors.green), tooltip: "Approve", onPressed: () => _handleVerification(company.id, VerificationStatus.approved)),
                     IconButton(icon: const Icon(Icons.highlight_off_outlined, color: Colors.red), tooltip: "Reject", onPressed: () => _handleVerification(company.id, VerificationStatus.rejected)),
-                    IconButton(icon: const Icon(Icons.visibility_outlined, color: Colors.grey), tooltip: "View Details", onPressed: () {}),
+                    IconButton(icon: const Icon(Icons.visibility_outlined, color: Colors.grey), tooltip: "View Details", onPressed: () {
+                      Navigator.pushNamed(context, AppRouter.adminEmployerDetailsRoute, arguments: company);
+                    }),
                   ])),
                 ])).toList(),
               ),
@@ -299,7 +301,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Recent Reviews", style: Theme.of(context).textTheme.titleLarge),
-                TextButton(onPressed: () {}, child: const Text("View All"))
+                TextButton(onPressed: () {
+                  Navigator.pushNamed(context, AppRouter.adminReviewsRoute);
+                }, child: const Text("View All"))
               ],
             ),
             const SizedBox(height: 12),
@@ -318,7 +322,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   DataCell(Text(review.candidateName ?? 'N/A')),
                   DataCell(Row(children: List.generate(5, (index) => Icon(index < review.rating ? Icons.star : Icons.star_border, color: Colors.amber, size: 18)))),
                   DataCell(SizedBox(width: 200, child: Text(review.comment ?? '', overflow: TextOverflow.ellipsis))),
-                  DataCell(IconButton(icon: const Icon(Icons.visibility_outlined), tooltip: "View & Moderate", onPressed: () {})),
+                  DataCell(IconButton(icon: const Icon(Icons.visibility_outlined), tooltip: "View & Moderate", onPressed: () {
+                    Navigator.of(context).pushNamed(
+                      AppRouter.adminReviewsRoute,
+                      arguments: {
+                        'review': review,
+                      },
+                    );
+                  })),
                 ])).toList(),
               ),
             ),

@@ -14,6 +14,7 @@ namespace ITapply.Models.SearchObjects
         public int? EmployerId { get; set; }
         public string JobTitle { get; set; } = string.Empty;
         public string CandidateName { get; set; } = string.Empty;
+        public string CompanyName { get; set; } = string.Empty;
         public ApplicationStatus? Status { get; set; }
         public DateTime? ApplicationDateFrom { get; set; }
         public DateTime? ApplicationDateTo { get; set; }

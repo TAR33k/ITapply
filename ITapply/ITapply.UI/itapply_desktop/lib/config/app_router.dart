@@ -3,6 +3,8 @@ import 'package:itapply_desktop/models/application.dart';
 import 'package:itapply_desktop/models/candidate.dart';
 import 'package:itapply_desktop/models/employer.dart';
 import 'package:itapply_desktop/models/job_posting.dart';
+import 'package:itapply_desktop/models/review.dart';
+import 'package:itapply_desktop/screens/admin_application_list_screen.dart';
 import 'package:itapply_desktop/screens/admin_candidate_details_screen.dart';
 import 'package:itapply_desktop/screens/admin_dashboard_screen.dart';
 import 'package:itapply_desktop/screens/admin_employer_details_screen.dart';
@@ -41,6 +43,7 @@ class AppRouter {
   static const String adminJobPostingsRoute = '/admin-job-postings';
   static const String adminJobPostingDetailsRoute = '/admin-job-posting-details';
   static const String adminApplicationsRoute = '/admin-applications';
+  static const String adminApplicationDetailsRoute = '/admin-application-details';
   static const String adminReviewsRoute = '/admin-reviews';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -79,11 +82,8 @@ class AppRouter {
         final employer = settings.arguments as Employer?;
         return MaterialPageRoute(builder: (_) => AdminEmployerDetailsScreen(employer: employer));
       case adminJobPostingsRoute:
-        final args = settings.arguments as Map<String, dynamic>?;
-        final employerId = args?['employerId'] as int?;
-        final employerName = args?['employerName'] as String?;
+        final employerName = settings.arguments as String?;
         return MaterialPageRoute(builder: (_) => AdminJobPostingListScreen(
-          employerId: employerId,
           employerName: employerName,
         ));
       case adminJobPostingDetailsRoute:
@@ -92,14 +92,34 @@ class AppRouter {
           builder: (_) => AdminJobPostingDetailsScreen(jobPosting: jobPosting),
           settings: settings,
         );
+      case adminApplicationsRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final candidate = args?['candidate'] as Candidate?;
+        final jobPosting = args?['jobPosting'] as JobPosting?;
+        return MaterialPageRoute(builder: (_) => AdminApplicationListScreen(initialCandidateFilter: candidate, initialJobPostingFilter: jobPosting));
+      case adminApplicationDetailsRoute:
+        final application = settings.arguments as Application?;
+        return MaterialPageRoute(
+          builder: (_) => Text("Application details for ${application?.id}"),
+          settings: settings,
+        );
       case adminEntitiesRoute:
         return MaterialPageRoute(builder: (_) => const AdminEntitiesScreen());
       case adminReviewsRoute:
         final args = settings.arguments as Map<String, dynamic>?;
         final candidate = args?['candidate'] as Candidate?;
         final employer = args?['employer'] as Employer?;
-        final candidateName = candidate != null ? "${candidate.firstName} ${candidate.lastName}" : null;
-        final employerName = employer?.companyName;
+        final review = args?['review'] as Review?;
+
+        String? candidateName;
+        String? employerName;
+        if (review != null) {
+          candidateName = review.candidateName;
+          employerName = review.companyName;
+        } else {
+          candidateName = candidate != null ? "${candidate.firstName} ${candidate.lastName}" : null;
+          employerName = employer?.companyName;
+        }
         return MaterialPageRoute(builder: (_) => AdminReviewsScreen(candidateName: candidateName, employerName: employerName));
       default:
         return MaterialPageRoute(

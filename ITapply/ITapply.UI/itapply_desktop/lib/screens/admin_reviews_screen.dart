@@ -44,7 +44,10 @@ class _AdminReviewsScreenState extends State<AdminReviewsScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.candidateName != null && widget.candidateName!.isNotEmpty) {
+    if (widget.candidateName != null && widget.candidateName!.isNotEmpty && widget.employerName != null && widget.employerName!.isNotEmpty) {
+      _searchController.text = "${widget.candidateName} ${widget.employerName}";
+    }
+    else if (widget.candidateName != null && widget.candidateName!.isNotEmpty) {
       _searchController.text = widget.candidateName!;
     }
     else if (widget.employerName != null && widget.employerName!.isNotEmpty) {
@@ -87,7 +90,8 @@ class _AdminReviewsScreenState extends State<AdminReviewsScreen> {
       _filteredReviews = _reviews.where((review) {
         final matchesSearch = query.isEmpty ||
             (review.candidateName?.toLowerCase().contains(query) ?? false) ||
-            (review.companyName?.toLowerCase().contains(query) ?? false);
+            (review.companyName?.toLowerCase().contains(query) ?? false) ||
+            ("${review.candidateName?.toLowerCase()} ${review.companyName?.toLowerCase()}".contains(query));
         final matchesStatus = _selectedStatusFilter == null || review.moderationStatus == _selectedStatusFilter;
         return matchesSearch && matchesStatus;
       }).toList();
