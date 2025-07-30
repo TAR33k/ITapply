@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itapply_desktop/models/application.dart';
-import 'package:itapply_desktop/models/enums.dart';
-import 'package:itapply_desktop/models/requests/application_insert_request.dart';
-import 'package:itapply_desktop/models/requests/application_update_request.dart';
-import 'package:itapply_desktop/models/search_objects/application_search_object.dart';
-import 'package:itapply_desktop/providers/base_provider.dart';
+import 'package:itapply_mobile/models/application.dart';
+import 'package:itapply_mobile/models/enums.dart';
+import 'package:itapply_mobile/models/requests/application_insert_request.dart';
+import 'package:itapply_mobile/models/requests/application_update_request.dart';
+import 'package:itapply_mobile/models/search_objects/application_search_object.dart';
+import 'package:itapply_mobile/providers/base_provider.dart';
 
 class ApplicationProvider extends BaseProvider<Application, ApplicationSearchObject, ApplicationInsertRequest, ApplicationUpdateRequest> {
   ApplicationProvider() : super("Application");

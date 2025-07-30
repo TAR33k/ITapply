@@ -1,5 +1,5 @@
-import 'package:itapply_desktop/models/enums.dart';
-import 'package:itapply_desktop/models/job_posting_skill.dart';
+import 'package:itapply_mobile/models/enums.dart';
+import 'package:itapply_mobile/models/job_posting_skill.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'job_posting.g.dart';

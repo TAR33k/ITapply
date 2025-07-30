@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itapply_desktop/models/cv_document.dart';
-import 'package:itapply_desktop/models/requests/cv_document_insert_request.dart';
-import 'package:itapply_desktop/models/requests/cv_document_update_request.dart';
-import 'package:itapply_desktop/models/search_objects/cv_document_search_object.dart';
-import 'package:itapply_desktop/providers/base_provider.dart';
+import 'package:itapply_mobile/models/cv_document.dart';
+import 'package:itapply_mobile/models/requests/cv_document_insert_request.dart';
+import 'package:itapply_mobile/models/requests/cv_document_update_request.dart';
+import 'package:itapply_mobile/models/search_objects/cv_document_search_object.dart';
+import 'package:itapply_mobile/providers/base_provider.dart';
 
 class CVDocumentProvider extends BaseProvider<CVDocument, CVDocumentSearchObject, CVDocumentInsertRequest, CVDocumentUpdateRequest> {
   CVDocumentProvider() : super("CVDocument");

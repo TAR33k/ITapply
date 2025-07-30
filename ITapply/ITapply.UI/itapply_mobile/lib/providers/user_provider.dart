@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itapply_desktop/models/requests/change_password_request.dart';
-import 'package:itapply_desktop/models/requests/user_insert_request.dart';
-import 'package:itapply_desktop/models/requests/user_update_request.dart';
-import 'package:itapply_desktop/models/search_objects/user_search_object.dart';
-import 'package:itapply_desktop/models/user.dart';
-import 'package:itapply_desktop/providers/base_provider.dart';
+import 'package:itapply_mobile/models/requests/change_password_request.dart';
+import 'package:itapply_mobile/models/requests/user_insert_request.dart';
+import 'package:itapply_mobile/models/requests/user_update_request.dart';
+import 'package:itapply_mobile/models/search_objects/user_search_object.dart';
+import 'package:itapply_mobile/models/user.dart';
+import 'package:itapply_mobile/providers/base_provider.dart';
 
 class UserProvider extends BaseProvider<User, UserSearchObject, UserInsertRequest, UserUpdateRequest> {
   UserProvider() : super("User");

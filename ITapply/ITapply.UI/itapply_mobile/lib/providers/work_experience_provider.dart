@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itapply_desktop/models/work_experience.dart';
-import 'package:itapply_desktop/models/requests/work_experience_insert_request.dart';
-import 'package:itapply_desktop/models/requests/work_experience_update_request.dart';
-import 'package:itapply_desktop/models/search_objects/work_experience_search_object.dart';
-import 'package:itapply_desktop/providers/base_provider.dart';
+import 'package:itapply_mobile/models/work_experience.dart';
+import 'package:itapply_mobile/models/requests/work_experience_insert_request.dart';
+import 'package:itapply_mobile/models/requests/work_experience_update_request.dart';
+import 'package:itapply_mobile/models/search_objects/work_experience_search_object.dart';
+import 'package:itapply_mobile/providers/base_provider.dart';
 
 class WorkExperienceProvider extends BaseProvider<WorkExperience, WorkExperienceSearchObject, WorkExperienceInsertRequest, WorkExperienceUpdateRequest> {
   WorkExperienceProvider() : super("WorkExperience");

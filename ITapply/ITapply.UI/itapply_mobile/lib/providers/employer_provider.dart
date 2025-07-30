@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itapply_desktop/models/employer.dart';
-import 'package:itapply_desktop/models/enums.dart';
-import 'package:itapply_desktop/models/requests/employer_insert_request.dart';
-import 'package:itapply_desktop/models/requests/employer_update_request.dart';
-import 'package:itapply_desktop/models/search_objects/employer_search_object.dart';
-import 'package:itapply_desktop/providers/base_provider.dart';
+import 'package:itapply_mobile/models/employer.dart';
+import 'package:itapply_mobile/models/enums.dart';
+import 'package:itapply_mobile/models/requests/employer_insert_request.dart';
+import 'package:itapply_mobile/models/requests/employer_update_request.dart';
+import 'package:itapply_mobile/models/search_objects/employer_search_object.dart';
+import 'package:itapply_mobile/providers/base_provider.dart';
 
 class EmployerProvider extends BaseProvider<Employer, EmployerSearchObject, EmployerInsertRequest, EmployerUpdateRequest> {
   EmployerProvider() : super("Employer");

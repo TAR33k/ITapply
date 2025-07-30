@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:itapply_desktop/models/enums.dart';
+import 'package:itapply_mobile/models/enums.dart';
 
 String formatNumber(dynamic number) {
   var f = NumberFormat("#,##0.00", "en_US");

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:itapply_desktop/models/requests/employer_insert_request.dart';
-import 'package:itapply_desktop/models/requests/user_insert_request.dart';
-import 'package:itapply_desktop/models/search_objects/role_search_object.dart';
-import 'package:itapply_desktop/models/user.dart';
-import 'package:itapply_desktop/providers/employer_provider.dart';
-import 'package:itapply_desktop/providers/role_provider.dart';
-import 'package:itapply_desktop/providers/user_provider.dart';
+import 'package:itapply_mobile/models/requests/employer_insert_request.dart';
+import 'package:itapply_mobile/models/requests/user_insert_request.dart';
+import 'package:itapply_mobile/models/search_objects/role_search_object.dart';
+import 'package:itapply_mobile/models/user.dart';
+import 'package:itapply_mobile/providers/employer_provider.dart';
+import 'package:itapply_mobile/providers/role_provider.dart';
+import 'package:itapply_mobile/providers/user_provider.dart';
 
 class EmployerRegistrationProvider with ChangeNotifier {
   final UserProvider _userProvider;

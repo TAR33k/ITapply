@@ -1,4 +1,4 @@
-import 'package:itapply_desktop/models/enums.dart';
+import 'package:itapply_mobile/models/enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'preferences_insert_request.g.dart';

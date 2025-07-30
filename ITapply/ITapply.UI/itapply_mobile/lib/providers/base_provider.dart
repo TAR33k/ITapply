@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:itapply_desktop/models/search_objects/base_search_object.dart';
-import 'package:itapply_desktop/models/search_result.dart';
-import 'package:itapply_desktop/providers/auth_provider.dart';
+import 'package:itapply_mobile/models/search_objects/base_search_object.dart';
+import 'package:itapply_mobile/models/search_result.dart';
+import 'package:itapply_mobile/providers/auth_provider.dart';
 
 abstract class BaseProvider<T, TSearch extends ISearchObject, TInsert, TUpdate> with ChangeNotifier {
   static final String _baseUrl = const String.fromEnvironment("baseUrl",

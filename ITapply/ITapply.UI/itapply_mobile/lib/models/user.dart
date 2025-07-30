@@ -1,4 +1,4 @@
-import 'package:itapply_desktop/models/role.dart';
+import 'package:itapply_mobile/models/role.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';

@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:itapply_desktop/models/employer.dart';
-import 'package:itapply_desktop/models/requests/user_login_request.dart';
-import 'package:itapply_desktop/models/user.dart' as app_user;
-import 'package:itapply_desktop/providers/employer_provider.dart';
+import 'package:itapply_mobile/models/employer.dart';
+import 'package:itapply_mobile/models/requests/user_login_request.dart';
+import 'package:itapply_mobile/models/user.dart' as app_user;
+import 'package:itapply_mobile/providers/employer_provider.dart';
 
 class AuthProvider with ChangeNotifier {
   static String? _email;

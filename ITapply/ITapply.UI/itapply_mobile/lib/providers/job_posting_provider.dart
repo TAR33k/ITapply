@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:itapply_desktop/models/enums.dart';
-import 'package:itapply_desktop/models/job_posting.dart';
-import 'package:itapply_desktop/models/requests/job_posting_insert_request.dart';
-import 'package:itapply_desktop/models/requests/job_posting_update_request.dart';
-import 'package:itapply_desktop/models/search_objects/job_posting_search_object.dart';
-import 'package:itapply_desktop/providers/base_provider.dart';
+import 'package:itapply_mobile/models/enums.dart';
+import 'package:itapply_mobile/models/job_posting.dart';
+import 'package:itapply_mobile/models/requests/job_posting_insert_request.dart';
+import 'package:itapply_mobile/models/requests/job_posting_update_request.dart';
+import 'package:itapply_mobile/models/search_objects/job_posting_search_object.dart';
+import 'package:itapply_mobile/providers/base_provider.dart';
 
 class JobPostingProvider extends BaseProvider<JobPosting, JobPostingSearchObject, JobPostingInsertRequest, JobPostingUpdateRequest> {
   JobPostingProvider() : super("JobPosting");
