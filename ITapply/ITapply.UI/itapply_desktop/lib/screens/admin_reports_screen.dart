@@ -631,7 +631,7 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
         final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
         return byteData?.buffer.asUint8List();
       } catch (e) {
-        print('Error capturing chart: $e');
+        debugPrint('Error capturing chart: $e');
         return null;
       }
     }

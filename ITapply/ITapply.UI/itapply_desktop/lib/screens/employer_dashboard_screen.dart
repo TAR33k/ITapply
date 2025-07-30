@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -270,7 +270,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                           if (index >= 0 && index < _chartDailyLabels.length) {
                             return Padding(padding: EdgeInsetsDirectional.only(top: 10.0),
                             child: Transform.rotate(
-                              angle: -Math.pi / 4,
+                              angle: -math.pi / 4,
                               child: Text(
                                 _chartDailyLabels[index],
                                 style: const TextStyle(fontSize: 10),
