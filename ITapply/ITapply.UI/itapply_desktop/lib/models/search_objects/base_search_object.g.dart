@@ -6,6 +6,7 @@ part of 'base_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 BaseSearchObject _$BaseSearchObjectFromJson(Map<String, dynamic> json) =>
     BaseSearchObject(
       Page: (json['Page'] as num?)?.toInt() ?? 0,

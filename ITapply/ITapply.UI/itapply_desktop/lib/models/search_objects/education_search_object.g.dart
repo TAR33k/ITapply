@@ -6,6 +6,7 @@ part of 'education_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 EducationSearchObject _$EducationSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => EducationSearchObject(

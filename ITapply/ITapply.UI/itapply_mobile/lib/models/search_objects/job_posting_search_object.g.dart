@@ -6,6 +6,7 @@ part of 'job_posting_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 JobPostingSearchObject _$JobPostingSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => JobPostingSearchObject(

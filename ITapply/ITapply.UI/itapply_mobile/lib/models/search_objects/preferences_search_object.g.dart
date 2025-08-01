@@ -6,6 +6,7 @@ part of 'preferences_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 PreferencesSearchObject _$PreferencesSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => PreferencesSearchObject(

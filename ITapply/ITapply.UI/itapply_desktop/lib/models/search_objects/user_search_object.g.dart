@@ -6,6 +6,7 @@ part of 'user_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 UserSearchObject _$UserSearchObjectFromJson(Map<String, dynamic> json) =>
     UserSearchObject(
       Email: json['Email'] as String?,

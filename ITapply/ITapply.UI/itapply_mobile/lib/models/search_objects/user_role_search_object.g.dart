@@ -6,6 +6,7 @@ part of 'user_role_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 UserRoleSearchObject _$UserRoleSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => UserRoleSearchObject(

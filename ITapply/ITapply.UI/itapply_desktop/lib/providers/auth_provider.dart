@@ -23,14 +23,14 @@ class AuthProvider with ChangeNotifier {
 
   AuthProvider(this._employerProvider);
 
-  final String _baseUrl = const String.fromEnvironment("baseUrl", defaultValue: "http://localhost:8080");
+  final String _baseUrl = const String.fromEnvironment("baseUrl", defaultValue: "http://localhost:8080/");
 
   Future<void> login(String email, String password) async {
     _email = email;
     _password = password;
 
     final loginRequest = UserLoginRequest(email: email, password: password);
-    final url = Uri.parse("$_baseUrl/User/login");
+    final url = Uri.parse("${_baseUrl}User/login");
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode(loginRequest.toJson());
 

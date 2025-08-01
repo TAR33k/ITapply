@@ -8,7 +8,7 @@ import 'package:itapply_mobile/providers/auth_provider.dart';
 
 abstract class BaseProvider<T, TSearch extends ISearchObject, TInsert, TUpdate> with ChangeNotifier {
   static final String _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "http://localhost:8080/");
+        defaultValue: "http://10.0.2.2:8080/");
 
   String endpoint = "";
 
@@ -103,6 +103,7 @@ abstract class BaseProvider<T, TSearch extends ISearchObject, TInsert, TUpdate> 
     }
   }
 
+  // ignore: strict_top_level_inference
   T fromJson(data) {
     throw Exception("Method not implemented for ${T.toString()}");
   }

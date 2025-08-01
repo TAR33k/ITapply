@@ -6,6 +6,7 @@ part of 'review_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 ReviewSearchObject _$ReviewSearchObjectFromJson(Map<String, dynamic> json) =>
     ReviewSearchObject(
       CandidateId: (json['CandidateId'] as num?)?.toInt(),

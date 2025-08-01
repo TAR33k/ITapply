@@ -6,6 +6,7 @@ part of 'role_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 RoleSearchObject _$RoleSearchObjectFromJson(Map<String, dynamic> json) =>
     RoleSearchObject(
       Name: json['Name'] as String?,

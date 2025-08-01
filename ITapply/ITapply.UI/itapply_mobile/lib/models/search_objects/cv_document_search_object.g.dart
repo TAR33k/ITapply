@@ -6,6 +6,7 @@ part of 'cv_document_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 CVDocumentSearchObject _$CVDocumentSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => CVDocumentSearchObject(

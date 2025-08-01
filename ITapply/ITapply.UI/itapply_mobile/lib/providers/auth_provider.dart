@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:itapply_mobile/models/employer.dart';
+import 'package:itapply_mobile/models/candidate.dart';
 import 'package:itapply_mobile/models/requests/user_login_request.dart';
 import 'package:itapply_mobile/models/user.dart' as app_user;
-import 'package:itapply_mobile/providers/employer_provider.dart';
+import 'package:itapply_mobile/providers/candidate_provider.dart';
 
 class AuthProvider with ChangeNotifier {
   static String? _email;
@@ -16,21 +16,21 @@ class AuthProvider with ChangeNotifier {
   app_user.User? _currentUser;
   app_user.User? get currentUser => _currentUser;
 
-  Employer? _currentEmployer;
-  Employer? get currentEmployer => _currentEmployer;
+  Candidate? _currentCandidate;
+  Candidate? get currentCandidate => _currentCandidate;
 
-  final EmployerProvider _employerProvider;
+  final CandidateProvider _candidateProvider;
 
-  AuthProvider(this._employerProvider);
+  AuthProvider(this._candidateProvider);
 
-  final String _baseUrl = const String.fromEnvironment("baseUrl", defaultValue: "http://localhost:8080");
+  final String _baseUrl = const String.fromEnvironment("baseUrl", defaultValue: "http://10.0.2.2:8080/");
 
   Future<void> login(String email, String password) async {
     _email = email;
     _password = password;
 
     final loginRequest = UserLoginRequest(email: email, password: password);
-    final url = Uri.parse("$_baseUrl/User/login");
+    final url = Uri.parse("${_baseUrl}User/login");
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode(loginRequest.toJson());
 
@@ -44,9 +44,9 @@ class AuthProvider with ChangeNotifier {
         var data = jsonDecode(response.body);
         _currentUser = app_user.User.fromJson(data);
 
-        if (_currentUser!.roles.any((r) => r.name == 'Employer')) {
-          final employerResult = await _employerProvider.getById(_currentUser!.id);
-          _currentEmployer = employerResult;
+        if (_currentUser!.roles.any((r) => r.name == 'Candidate')) {
+          final candidateResult = await _candidateProvider.getById(_currentUser!.id);
+          _currentCandidate = candidateResult;
         }
         
         notifyListeners();
@@ -63,12 +63,12 @@ class AuthProvider with ChangeNotifier {
     _email = null;
     _password = null;
     _currentUser = null;
-    _currentEmployer = null;
+    _currentCandidate = null;
     notifyListeners();
   }
 
-  void setCurrentEmployer(Employer updatedEmployer) {
-    _currentEmployer = updatedEmployer;
+  void setCurrentCandidate(Candidate updatedCandidate) {
+    _currentCandidate = updatedCandidate;
     notifyListeners();
   }
 

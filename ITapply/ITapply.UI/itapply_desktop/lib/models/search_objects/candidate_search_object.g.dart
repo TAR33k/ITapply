@@ -6,6 +6,7 @@ part of 'candidate_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 CandidateSearchObject _$CandidateSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => CandidateSearchObject(

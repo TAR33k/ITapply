@@ -369,7 +369,9 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Recent Job Postings", style: Theme.of(context).textTheme.titleLarge),
-                TextButton(onPressed: () => Navigator.pushReplacementNamed(context, AppRouter.employerJobPostingsRoute), child: const Text("View All"))
+                TextButton(onPressed: () => {
+                  Navigator.pushReplacementNamed(context, AppRouter.employerJobPostingsRoute),
+                }, child: const Text("View All"))
               ],
             ),
             const SizedBox(height: 12),

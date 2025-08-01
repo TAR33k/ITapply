@@ -6,6 +6,7 @@ part of 'application_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 ApplicationSearchObject _$ApplicationSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => ApplicationSearchObject(

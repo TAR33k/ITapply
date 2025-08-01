@@ -6,6 +6,7 @@ part of 'skill_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 SkillSearchObject _$SkillSearchObjectFromJson(Map<String, dynamic> json) =>
     SkillSearchObject(
       Name: json['Name'] as String?,

@@ -6,6 +6,7 @@ part of 'location_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 LocationSearchObject _$LocationSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => LocationSearchObject(

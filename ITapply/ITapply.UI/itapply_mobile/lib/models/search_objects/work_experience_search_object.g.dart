@@ -6,6 +6,7 @@ part of 'work_experience_search_object.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: unused_element
 WorkExperienceSearchObject _$WorkExperienceSearchObjectFromJson(
   Map<String, dynamic> json,
 ) => WorkExperienceSearchObject(

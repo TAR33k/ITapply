@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'package:itapply_mobile/config/app_router.dart';
+import 'package:itapply_mobile/config/app_router.dart';
+import 'package:itapply_mobile/config/app_theme.dart';
 import 'package:itapply_mobile/providers/application_provider.dart';
 import 'package:itapply_mobile/providers/auth_provider.dart';
 import 'package:itapply_mobile/providers/candidate_provider.dart';
@@ -7,7 +8,7 @@ import 'package:itapply_mobile/providers/candidate_skill_provider.dart';
 import 'package:itapply_mobile/providers/cv_document_provider.dart';
 import 'package:itapply_mobile/providers/education_provider.dart';
 import 'package:itapply_mobile/providers/employer_provider.dart';
-import 'package:itapply_mobile/providers/employer_registration_provider.dart';
+import 'package:itapply_mobile/providers/candidate_registration_provider.dart';
 import 'package:itapply_mobile/providers/employer_skill_provider.dart';
 import 'package:itapply_mobile/providers/job_posting_provider.dart';
 import 'package:itapply_mobile/providers/job_posting_skill_provider.dart';
@@ -19,10 +20,8 @@ import 'package:itapply_mobile/providers/skill_provider.dart';
 import 'package:itapply_mobile/providers/user_provider.dart';
 import 'package:itapply_mobile/providers/user_role_provider.dart';
 import 'package:itapply_mobile/providers/work_experience_provider.dart';
-//import 'package:itapply_mobile/screens/login_screen.dart';
+import 'package:itapply_mobile/screens/login_screen.dart';
 import 'package:provider/provider.dart';
-//import 'package:window_manager/window_manager.dart';
-//import 'config/app_theme.dart';
 
 void main() async {
   runApp(
@@ -46,19 +45,19 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserRoleProvider()),
         ChangeNotifierProvider(create: (_) => WorkExperienceProvider()),
 
-        ChangeNotifierProxyProvider<EmployerProvider, AuthProvider>(
-          create: (context) => AuthProvider(context.read<EmployerProvider>()),
-          update: (context, employerProvider, previous) => AuthProvider(employerProvider),
+        ChangeNotifierProxyProvider<CandidateProvider, AuthProvider>(
+          create: (context) => AuthProvider(context.read<CandidateProvider>()),
+          update: (context, candidateProvider, previous) => AuthProvider(candidateProvider),
         ),
 
-        ChangeNotifierProxyProvider3<UserProvider, EmployerProvider, RoleProvider, EmployerRegistrationProvider>(
-          create: (context) => EmployerRegistrationProvider(
+        ChangeNotifierProxyProvider3<UserProvider, CandidateProvider, RoleProvider, CandidateRegistrationProvider>(
+          create: (context) => CandidateRegistrationProvider(
             context.read<UserProvider>(),
-            context.read<EmployerProvider>(),
+            context.read<CandidateProvider>(),
             context.read<RoleProvider>(),
           ),
-          update: (context, userProvider, employerProvider, roleProvider, previous) => 
-                  EmployerRegistrationProvider(userProvider, employerProvider, roleProvider),
+          update: (context, userProvider, candidateProvider, roleProvider, previous) => 
+                  CandidateRegistrationProvider(userProvider, candidateProvider, roleProvider),
         ),
       ],
       child: const ITapplyMobileApp(),
@@ -74,9 +73,9 @@ class ITapplyMobileApp extends StatelessWidget {
     return MaterialApp(
       title: 'ITapply Mobile',
       debugShowCheckedModeBanner: false,
-      //theme: AppTheme.getTheme(),
-      //home: LoginScreen(),
-      //onGenerateRoute: AppRouter.generateRoute,
+      theme: AppTheme.getTheme(),
+      home: LoginScreen(),
+      onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }
