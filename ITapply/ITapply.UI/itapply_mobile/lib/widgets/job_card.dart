@@ -212,7 +212,7 @@ class JobCard extends StatelessWidget {
     if (deadlineDate == null) return false;
     final now = DateTime.now();
     final difference = deadlineDate!.difference(now);
-    return difference.inDays <= 7; // Consider deadline near if within 7 days
+    return difference.inDays <= 7;
   }
 
   Widget _buildMetaItem(IconData icon, String text, {Color? color}) {

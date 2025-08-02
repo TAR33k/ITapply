@@ -60,7 +60,7 @@ class QuickFilters extends StatelessWidget {
           color: isSelected ? AppTheme.primaryColor : AppTheme.lightColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.grayColor.withOpacity(0.3),
+            color: AppTheme.primaryColor,
             width: 1,
           ),
         ),
@@ -69,7 +69,7 @@ class QuickFilters extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: isSelected ? Colors.white : AppTheme.textColor,
+            color: isSelected ? Colors.white : AppTheme.primaryColor,
           ),
         ),
       ),
@@ -90,7 +90,7 @@ class HomeQuickFilters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final quickFilters = [
-      'Full Stack',
+      'Full-Stack',
       'Frontend',
       'Backend',
       'DevOps',

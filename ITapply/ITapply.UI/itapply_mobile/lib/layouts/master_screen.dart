@@ -11,6 +11,7 @@ class MasterScreen extends StatelessWidget {
   final String title;
   final int selectedIndex;
   final bool showBackButton;
+  final VoidCallback? onScroll;
 
   const MasterScreen({
     super.key,
@@ -18,6 +19,7 @@ class MasterScreen extends StatelessWidget {
     required this.title,
     required this.selectedIndex,
     this.showBackButton = false,
+    this.onScroll,
   });
 
   @override
@@ -28,9 +30,19 @@ class MasterScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.lightColor,
       appBar: _buildAppBar(context, isLoggedIn),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: child,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (onScroll != null && 
+              scrollInfo is ScrollUpdateNotification &&
+              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+            onScroll!();
+          }
+          return false;
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+          child: child,
+        ),
       ),
       bottomNavigationBar: _buildBottomNav(context, isLoggedIn),
     );
@@ -45,7 +57,6 @@ class MasterScreen extends StatelessWidget {
     actions.add(Spacer());
 
     if (isLoggedIn) {
-      app_user.User? user = context.watch<AuthProvider>().currentUser;
       Candidate? candidate = context.watch<AuthProvider>().currentCandidate;
       actions.add(
         PopupMenuButton<String>(
@@ -142,13 +153,17 @@ class MasterScreen extends StatelessWidget {
       if (index == selectedIndex) return;
       
       String route;
+      Map<String, dynamic>? arguments;
+      
       if (isLoggedIn) {
         switch (index) {
           case 0:
             route = AppRouter.homeRoute;
+            arguments = {'isGuest': false};
             break;
           case 1:
-            route = AppRouter.searchRoute;
+            route = AppRouter.jobListRoute;
+            arguments = {'isGuest': false};
             break;
           case 2:
             route = AppRouter.companiesRoute;
@@ -158,14 +173,17 @@ class MasterScreen extends StatelessWidget {
             break;
           default:
             route = AppRouter.homeRoute;
+            arguments = {'isGuest': false};
         }
       } else {
         switch (index) {
           case 0:
             route = AppRouter.homeRoute;
+            arguments = {'isGuest': true};
             break;
           case 1:
-            route = AppRouter.searchRoute;
+            route = AppRouter.jobListRoute;
+            arguments = {'isGuest': true};
             break;
           case 2:
             route = AppRouter.companiesRoute;
@@ -175,9 +193,10 @@ class MasterScreen extends StatelessWidget {
             break;
           default:
             route = AppRouter.homeRoute;
+            arguments = {'isGuest': true};
         }
       }
-      Navigator.pushReplacementNamed(context, route);
+      Navigator.pushReplacementNamed(context, route, arguments: arguments);
     }
 
     final items = _getCandidateNavItems(isLoggedIn);

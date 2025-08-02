@@ -32,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isInitialLoading = true;
   List<JobPosting> _jobs = [];
   List<JobPosting> _filteredJobs = [];
-  final Map<int, Employer> _employerCache = {};
+  // ignore: prefer_final_fields
+  Map<int, Employer> _employerCache = {};
   String? _errorMessage;
   Candidate? _currentCandidate;
 
@@ -241,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Search jobs, companies, skills...',
+          hintText: 'Search jobs...',
           hintStyle: TextStyle(color: Colors.grey[400]),
           prefixIcon: const Icon(Icons.search, color: AppTheme.primaryColor),
           suffixIcon: _searchController.text.isNotEmpty
@@ -339,15 +340,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? 'Job postings'
                   : 'Recommended for You',
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textColor,
               ),
             ),
             if (_filteredJobs.length > 5)
               TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRouter.searchRoute);
+                onPressed: () {    
+                  Navigator.pushNamed(
+                    context, 
+                    AppRouter.jobListRoute, 
+                    arguments: {
+                      'isGuest': widget.isGuest,
+                      'searchQuery': null,
+                      'filters': null,
+                    },
+                  );
                 },
                 child: const Text(
                   'View All',
@@ -394,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Center(
             child: OutlinedButton(
               onPressed: () {
-                Navigator.pushNamed(context, AppRouter.searchRoute);
+                Navigator.pushNamed(context, AppRouter.jobListRoute);
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryColor,
@@ -503,15 +512,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _performSearch() {
-    var query = "";
+    String? searchQuery;
+    Map<String, dynamic>? filters;
+    
     if (_searchController.text.isNotEmpty) {
-      query = _searchController.text.toLowerCase().trim();
-    }
-    else if (_selectedFilters.isNotEmpty) {
-      query = _selectedFilters.join(" ");
+      searchQuery = _searchController.text.trim();
     }
     
-    Navigator.pushNamed(context, AppRouter.searchRoute, arguments: {'query': query});
+    if (_selectedFilters.isNotEmpty) {
+      filters = {};
+      searchQuery = _selectedFilters.join(" ");
+    }
+    
+    Navigator.pushNamed(
+      context, 
+      AppRouter.jobListRoute, 
+      arguments: {
+        'isGuest': widget.isGuest,
+        'searchQuery': searchQuery,
+        'filters': filters,
+      },
+    );
   }
 
   Future<void> _initializeData() async {
