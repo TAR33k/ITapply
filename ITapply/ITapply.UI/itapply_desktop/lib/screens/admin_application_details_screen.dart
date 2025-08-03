@@ -178,10 +178,29 @@ class _AdminApplicationDetailsScreenState
           if (_skills.isNotEmpty) ...[ _buildSkillsSection(), const SizedBox(height: 24)],
           if (_cvDocument != null) ...[ _buildCVSection(), const SizedBox(height: 24)],
           if (_application.coverLetter?.isNotEmpty == true) ...[ _buildCoverLetter(), const SizedBox(height: 24)],
+          _buildApplicationInfo(),
+          const SizedBox(height: 24),
           if (_workExperiences.isNotEmpty) ...[ _buildWorkExperienceSection(), const SizedBox(height: 24)],
           if (_educations.isNotEmpty) ...[ _buildEducationSection(), const SizedBox(height: 24)],
           if (_preferences != null) _buildPreferencesSection(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildApplicationInfo() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Application Information", style: Theme.of(context).textTheme.headlineSmall),
+            const Divider(height: 24),
+            _buildInfoRow("Application Date", DateFormat.yMMMd().format(_application.applicationDate)),
+            _buildInfoRow("Availability", _application.availability.toString()),
+          ],
+        ),
       ),
     );
   }

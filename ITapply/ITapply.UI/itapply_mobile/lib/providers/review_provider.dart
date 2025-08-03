@@ -29,4 +29,32 @@ class ReviewProvider extends BaseProvider<Review,
       throw Exception("Failed to update moderation status");
     }
   }
+
+  Future<List<Review>> getByEmployerId(int employerId) async {
+    var url = "$baseUrl$endpoint/employer/$employerId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return (data as List).map((e) => fromJson(e)).toList();
+    } else {
+      throw Exception("Failed to get reviews by employer id");
+    }
+  }
+
+  Future<double> getAverageRatingForEmployer(int employerId) async {
+    var url = "$baseUrl$endpoint/employer/$employerId/rating";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return data as double;
+    } else {
+      throw Exception("Failed to get average rating for employer");
+    }
+  }
 }

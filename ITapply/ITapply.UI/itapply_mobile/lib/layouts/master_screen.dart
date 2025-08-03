@@ -166,7 +166,7 @@ class MasterScreen extends StatelessWidget {
             arguments = {'isGuest': false};
             break;
           case 2:
-            route = AppRouter.companiesRoute;
+            route = AppRouter.employerListRoute;
             break;
           case 3:
             route = AppRouter.profileRoute;
@@ -186,7 +186,7 @@ class MasterScreen extends StatelessWidget {
             arguments = {'isGuest': true};
             break;
           case 2:
-            route = AppRouter.companiesRoute;
+            route = AppRouter.employerListRoute;
             break;
           case 3:
             route = AppRouter.loginRoute;

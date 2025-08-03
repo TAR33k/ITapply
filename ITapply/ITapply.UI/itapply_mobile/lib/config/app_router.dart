@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:itapply_mobile/layouts/master_screen.dart';
 import 'package:itapply_mobile/screens/home_screen.dart';
 import 'package:itapply_mobile/screens/job_list_screen.dart';
+import 'package:itapply_mobile/screens/employer_list_screen.dart';
 import 'package:itapply_mobile/screens/login_screen.dart';
 import 'package:itapply_mobile/screens/registration_screen.dart';
 import 'package:itapply_mobile/screens/wrong_role_screen.dart';
@@ -14,7 +15,8 @@ class AppRouter {
   static const String homeRoute = '/home';
   static const String jobListRoute = '/job-list';
   static const String jobDetailsRoute = '/job-details';
-  static const String companiesRoute = '/companies';
+  static const String employerListRoute = '/employer-list';
+  static const String employerDetailsRoute = '/employer-details';
   static const String profileRoute = '/profile';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -38,6 +40,15 @@ class AppRouter {
         final args = settings.arguments as Map<String, dynamic>? ?? {};
         return MaterialPageRoute(
           builder: (context) => JobListScreen(
+            isGuest: args['isGuest'] ?? false,
+            initialSearchQuery: args['searchQuery'],
+            initialFilters: args['filters'],
+          ),
+        );
+      case employerListRoute:
+        final args = settings.arguments as Map<String, dynamic>? ?? {};
+        return MaterialPageRoute(
+          builder: (context) => EmployerListScreen(
             isGuest: args['isGuest'] ?? false,
             initialSearchQuery: args['searchQuery'],
             initialFilters: args['filters'],
