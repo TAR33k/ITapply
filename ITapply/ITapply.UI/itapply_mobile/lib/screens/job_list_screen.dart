@@ -643,12 +643,22 @@ class _JobListScreenState extends State<JobListScreen> {
             deadlineDate: job.applicationDeadline,
             skills: job.skills.map((s) => s.skillName ?? 'Unknown Skill').toList(),
             isGuest: widget.isGuest,
-            onTap: () {
-              Navigator.pushNamed(
+            onTap: () async {
+              final result = await Navigator.pushNamed(
                 context,
                 AppRouter.jobDetailsRoute,
-                arguments: job.id,
+                arguments: {'jobId': job.id, 'selectedIndex': 1},
               );
+
+              if (result == true && mounted) {
+                _loadJobs(reset: true);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Application submitted successfully!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
             },
           ),
         );

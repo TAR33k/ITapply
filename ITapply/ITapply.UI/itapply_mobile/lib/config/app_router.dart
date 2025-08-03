@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:itapply_mobile/layouts/master_screen.dart';
 import 'package:itapply_mobile/screens/home_screen.dart';
 import 'package:itapply_mobile/screens/job_list_screen.dart';
+import 'package:itapply_mobile/screens/job_details_screen.dart';
 import 'package:itapply_mobile/screens/employer_list_screen.dart';
 import 'package:itapply_mobile/screens/login_screen.dart';
 import 'package:itapply_mobile/screens/registration_screen.dart';
@@ -44,6 +45,13 @@ class AppRouter {
             initialSearchQuery: args['searchQuery'],
             initialFilters: args['filters'],
           ),
+        );
+      case jobDetailsRoute:
+        final args = settings.arguments as Map<String, int>;
+        final jobId = args['jobId'];
+        final selectedIndex = args['selectedIndex'];
+        return MaterialPageRoute(
+          builder: (context) => JobDetailsScreen(jobId: jobId!, selectedIndex: selectedIndex!),
         );
       case employerListRoute:
         final args = settings.arguments as Map<String, dynamic>? ?? {};

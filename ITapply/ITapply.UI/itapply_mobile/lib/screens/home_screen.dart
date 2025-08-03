@@ -391,9 +391,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 deadlineDate: job.applicationDeadline,
                 skills: job.skills.map((skill) => skill.skillName).whereType<String>().toList(),
                 isGuest: widget.isGuest,
-                onTap: () {
-                  _navigateToJobDetails(job.id);
-                },
+                onTap: () async {
+                    final result = await Navigator.pushNamed(
+                    context,
+                    AppRouter.jobDetailsRoute,
+                    arguments: {'jobId': job.id, 'selectedIndex': 0},
+                  );
+
+                  if (result == true && mounted) {
+                    _initializeData();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Application submitted successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                }
               ),
             );
           },
@@ -615,9 +629,5 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     }
-  }
-
-  void _navigateToJobDetails(int jobId) {
-    Navigator.pushNamed(context, AppRouter.jobDetailsRoute, arguments: jobId);
   }
 }

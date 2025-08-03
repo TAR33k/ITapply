@@ -51,10 +51,14 @@ class MasterScreen extends StatelessWidget {
   AppBar _buildAppBar(BuildContext context, bool isLoggedIn) {
     List<Widget> actions = [];
 
-    actions.add(Image.asset('assets/logo.png', width: 50, height: 50));
-    actions.add(Text("IT", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primaryColor)));
-    actions.add(Text("apply", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.secondaryColor)));
-    actions.add(Spacer());
+    if (!showBackButton) {
+      actions.add(Image.asset('assets/logo.png', width: 50, height: 50));
+      actions.add(Text("IT", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primaryColor)));
+      actions.add(Text("apply", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.secondaryColor)));
+      actions.add(Spacer());
+    } else {
+      actions.add(Spacer());
+    }
 
     if (isLoggedIn) {
       Candidate? candidate = context.watch<AuthProvider>().currentCandidate;
@@ -127,10 +131,19 @@ class MasterScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 1,
       automaticallyImplyLeading: showBackButton,
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-      ),
+      title: showBackButton 
+          ? Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18, color: Colors.black),
+            )
+          : Row(
+              children: [
+                Image.asset('assets/logo.png', width: 30, height: 30),
+                const SizedBox(width: 8),
+                Text("IT", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primaryColor)),
+                Text("apply", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.secondaryColor)),
+              ],
+            ),
       actions: actions,
     );
   }
