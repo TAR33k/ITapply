@@ -62,7 +62,14 @@ namespace ITapply.Services.Services
                 Body = emailBody
             };
 
-            await _bus.PubSub.PublishAsync(payload);
+            try
+            {
+                await _bus.PubSub.PublishAsync(payload);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send notification: {ex.Message}");
+            }
         }
 
         protected override async Task AfterInsert(Application entity, ApplicationInsertRequest request)

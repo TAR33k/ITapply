@@ -111,7 +111,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           Row(
             children: List.generate(3, (index) {
               final isActive = index <= _currentStep;
-              final isCompleted = index < _currentStep;
               
               return Expanded(
                 child: Container(

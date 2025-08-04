@@ -7,6 +7,7 @@ import 'package:itapply_mobile/screens/employer_list_screen.dart';
 import 'package:itapply_mobile/screens/employer_details_screen.dart';
 import 'package:itapply_mobile/screens/employer_reviews_screen.dart';
 import 'package:itapply_mobile/screens/login_screen.dart';
+import 'package:itapply_mobile/screens/profile_screen.dart';
 import 'package:itapply_mobile/screens/registration_screen.dart';
 import 'package:itapply_mobile/screens/wrong_role_screen.dart';
 
@@ -22,6 +23,8 @@ class AppRouter {
   static const String employerDetailsRoute = '/employer-details';
   static const String employerReviewsRoute = '/employer-reviews';
   static const String profileRoute = '/profile';
+  static const String applicationsRoute = '/applications';
+  static const String cvDocumentsRoute = '/cv-documents';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -86,6 +89,22 @@ class AppRouter {
             companyName: companyName,
             isGuest: isGuest,
           ),
+        );
+      case profileRoute:
+        return MaterialPageRoute(
+          builder: (_) => ProfileScreen(),
+        );
+      case applicationsRoute:
+        final args = settings.arguments as Map<String, dynamic>;
+        final candidateId = args['candidateId'] as int;
+        return MaterialPageRoute(
+          builder: (_) => Center() //ApplicationsScreen(candidateId: candidateId),
+        );
+      case cvDocumentsRoute:
+        final args = settings.arguments as Map<String, dynamic>;
+        final candidateId = args['candidateId'] as int;
+        return MaterialPageRoute(
+          builder: (_) => Center() //CVDocumentsScreen(candidateId: candidateId),
         );
       default:
         return MaterialPageRoute(

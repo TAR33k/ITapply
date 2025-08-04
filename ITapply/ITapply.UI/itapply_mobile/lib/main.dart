@@ -47,7 +47,7 @@ void main() async {
 
         ChangeNotifierProxyProvider<CandidateProvider, AuthProvider>(
           create: (context) => AuthProvider(context.read<CandidateProvider>()),
-          update: (context, candidateProvider, previous) => AuthProvider(candidateProvider),
+          update: (context, candidateProvider, previous) => previous ?? AuthProvider(candidateProvider),
         ),
 
         ChangeNotifierProxyProvider3<UserProvider, CandidateProvider, RoleProvider, CandidateRegistrationProvider>(

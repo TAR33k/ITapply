@@ -225,19 +225,16 @@ class _EmployerListScreenState extends State<EmployerListScreen> {
           final skillsResult = await employerSkillProvider.get(filter: EmployerSkillSearchObject(EmployerId: employer.id));
           _employerSkillsCache[employer.id] = skillsResult.items ?? [];
 
-          // Load reviews and filter only approved ones
           try {
             final allReviews = await reviewProvider.getByEmployerId(employer.id);
             final approvedReviews = allReviews.where((review) => review.moderationStatus == ModerationStatus.approved).toList();
             _employerReviewCountsCache[employer.id] = approvedReviews.length;
             
-            // Load average rating
             if (approvedReviews.isNotEmpty) {
               try {
                 final rating = await reviewProvider.getAverageRatingForEmployer(employer.id);
                 _employerRatingsCache[employer.id] = rating;
               } catch (e) {
-                // If API call fails, calculate average from filtered reviews
                 _employerRatingsCache[employer.id] = approvedReviews.map((r) => r.rating).reduce((a, b) => a + b) / approvedReviews.length;
               }
             } else {
@@ -647,7 +644,6 @@ class _EmployerListScreenState extends State<EmployerListScreen> {
               );
               if (result == true) {
                 setState(() {
-                  // Clear cached data to force refresh
                   _employerRatingsCache.clear();
                   _employerReviewCountsCache.clear();
                   _employerSkillsCache.clear();
