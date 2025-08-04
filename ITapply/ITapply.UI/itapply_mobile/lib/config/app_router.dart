@@ -4,6 +4,8 @@ import 'package:itapply_mobile/screens/home_screen.dart';
 import 'package:itapply_mobile/screens/job_list_screen.dart';
 import 'package:itapply_mobile/screens/job_details_screen.dart';
 import 'package:itapply_mobile/screens/employer_list_screen.dart';
+import 'package:itapply_mobile/screens/employer_details_screen.dart';
+import 'package:itapply_mobile/screens/employer_reviews_screen.dart';
 import 'package:itapply_mobile/screens/login_screen.dart';
 import 'package:itapply_mobile/screens/registration_screen.dart';
 import 'package:itapply_mobile/screens/wrong_role_screen.dart';
@@ -18,6 +20,7 @@ class AppRouter {
   static const String jobDetailsRoute = '/job-details';
   static const String employerListRoute = '/employer-list';
   static const String employerDetailsRoute = '/employer-details';
+  static const String employerReviewsRoute = '/employer-reviews';
   static const String profileRoute = '/profile';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -60,6 +63,28 @@ class AppRouter {
             isGuest: args['isGuest'] ?? false,
             initialSearchQuery: args['searchQuery'],
             initialFilters: args['filters'],
+          ),
+        );
+      case employerDetailsRoute:
+        final args = settings.arguments as Map<String, dynamic>;
+        final employerId = args['employerId'] as int;
+        final isGuest = args['isGuest'] as bool? ?? false;
+        return MaterialPageRoute(
+          builder: (context) => EmployerDetailsScreen(
+            employerId: employerId,
+            isGuest: isGuest,
+          ),
+        );
+      case employerReviewsRoute:
+        final args = settings.arguments as Map<String, dynamic>;
+        final employerId = args['employerId'] as int;
+        final companyName = args['companyName'] as String;
+        final isGuest = args['isGuest'] as bool? ?? false;
+        return MaterialPageRoute(
+          builder: (context) => EmployerReviewsScreen(
+            employerId: employerId,
+            companyName: companyName,
+            isGuest: isGuest,
           ),
         );
       default:

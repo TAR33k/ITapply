@@ -262,7 +262,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
             ),
             if (_jobPosting!.minSalary != null || _jobPosting!.maxSalary != null) ...[
               const SizedBox(height: 12),
-              Row(
+              Wrap(
                 children: [
                   Text(
                     _buildSalaryRange(),

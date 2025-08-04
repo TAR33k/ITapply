@@ -157,6 +157,7 @@ class _EmployerListScreenState extends State<EmployerListScreen> {
         PageSize: _pageSize,
         CompanyName: _searchQuery.isNotEmpty ? _searchQuery : null,
         LocationId: _selectedLocationId,
+        verificationStatus: VerificationStatus.approved,
         IsActive: true,
         IncludeTotalCount: true,
       );
@@ -224,22 +225,27 @@ class _EmployerListScreenState extends State<EmployerListScreen> {
           final skillsResult = await employerSkillProvider.get(filter: EmployerSkillSearchObject(EmployerId: employer.id));
           _employerSkillsCache[employer.id] = skillsResult.items ?? [];
 
+          // Load reviews and filter only approved ones
           try {
-            final rating = await reviewProvider.getAverageRatingForEmployer(employer.id);
-            _employerRatingsCache[employer.id] = rating;
-          } catch (e) {
-            _employerRatingsCache[employer.id] = 0.0;
-          }
-
-          try {
-            final reviews = await reviewProvider.getByEmployerId(employer.id);
-            _employerReviewCountsCache[employer.id] = reviews.length;
-
-            if (reviews.length == 1) {
-              _employerRatingsCache[employer.id] = reviews.first.rating.toDouble();
+            final allReviews = await reviewProvider.getByEmployerId(employer.id);
+            final approvedReviews = allReviews.where((review) => review.moderationStatus == ModerationStatus.approved).toList();
+            _employerReviewCountsCache[employer.id] = approvedReviews.length;
+            
+            // Load average rating
+            if (approvedReviews.isNotEmpty) {
+              try {
+                final rating = await reviewProvider.getAverageRatingForEmployer(employer.id);
+                _employerRatingsCache[employer.id] = rating;
+              } catch (e) {
+                // If API call fails, calculate average from filtered reviews
+                _employerRatingsCache[employer.id] = approvedReviews.map((r) => r.rating).reduce((a, b) => a + b) / approvedReviews.length;
+              }
+            } else {
+              _employerRatingsCache[employer.id] = 0.0;
             }
           } catch (e) {
             _employerReviewCountsCache[employer.id] = 0;
+            _employerRatingsCache[employer.id] = 0.0;
           }
 
           try {
@@ -347,33 +353,70 @@ class _EmployerListScreenState extends State<EmployerListScreen> {
           ),
           
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '$_totalCount companies found',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  setState(() => _showFilters = !_showFilters);
-                },
-                icon: Icon(
-                  _showFilters ? Icons.filter_list_off : Icons.filter_list,
-                  size: 18,
-                ),
-                label: Text(_showFilters ? 'Hide Filters' : 'Filters'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _showFilters ? AppTheme.primaryColor : Colors.white,
-                  foregroundColor: _showFilters ? Colors.white : AppTheme.primaryColor,
-                  side: BorderSide(color: AppTheme.primaryColor),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 260) {
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    Text(
+                      '$_totalCount companies found',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() => _showFilters = !_showFilters);
+                      },
+                      icon: Icon(
+                        _showFilters ? Icons.filter_list_off : Icons.filter_list,
+                        size: 18,
+                      ),
+                      label: Text(_showFilters ? 'Hide Filters' : 'Filters'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _showFilters ? AppTheme.primaryColor : Colors.white,
+                        foregroundColor: _showFilters ? Colors.white : AppTheme.primaryColor,
+                        side: BorderSide(color: AppTheme.primaryColor),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                    )
+                  ]
+                );
+              }
+              else {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$_totalCount companies found',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() => _showFilters = !_showFilters);
+                      },
+                      icon: Icon(
+                        _showFilters ? Icons.filter_list_off : Icons.filter_list,
+                        size: 18,
+                      ),
+                      label: Text(_showFilters ? 'Hide Filters' : 'Filters'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _showFilters ? AppTheme.primaryColor : Colors.white,
+                        foregroundColor: _showFilters ? Colors.white : AppTheme.primaryColor,
+                        side: BorderSide(color: AppTheme.primaryColor),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                    )
+                  ]
+                );
+              }
+            }
           ),
         ],
       ),
@@ -593,12 +636,25 @@ class _EmployerListScreenState extends State<EmployerListScreen> {
             reviewCount: reviewCount,
             activeJobCount: jobCount,
             isGuest: widget.isGuest,
-            onTap: () {
-              Navigator.pushNamed(
+            onTap: () async {
+              final employerId = employer.id;
+              final companyName = employer.companyName;
+              final isGuest = widget.isGuest;
+              var result = await Navigator.pushNamed(
                 context,
                 AppRouter.employerDetailsRoute,
-                arguments: employer.id,
+                arguments: {'employerId': employerId, 'companyName': companyName, 'isGuest': isGuest},
               );
+              if (result == true) {
+                setState(() {
+                  // Clear cached data to force refresh
+                  _employerRatingsCache.clear();
+                  _employerReviewCountsCache.clear();
+                  _employerSkillsCache.clear();
+                  _employerJobCountsCache.clear();
+                  _loadEmployers();
+                });
+              }
             },
           ),
         );

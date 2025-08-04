@@ -153,6 +153,7 @@ class _JobListScreenState extends State<JobListScreen> {
         experienceLevel: _selectedExperience,
         employmentType: _selectedJobType,
         remote: _selectedRemoteWork,
+        Status: JobPostingStatus.active,
         IncludeTotalCount: true,
       );
       
@@ -298,33 +299,70 @@ class _JobListScreenState extends State<JobListScreen> {
           ),
           
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '$_totalCount jobs found',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  setState(() => _showFilters = !_showFilters);
-                },
-                icon: Icon(
-                  _showFilters ? Icons.filter_list_off : Icons.filter_list,
-                  size: 18,
-                ),
-                label: Text(_showFilters ? 'Hide Filters' : 'Filters'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _showFilters ? AppTheme.primaryColor : Colors.white,
-                  foregroundColor: _showFilters ? Colors.white : AppTheme.primaryColor,
-                  side: BorderSide(color: AppTheme.primaryColor),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 200) {
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      '$_totalCount jobs found',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() => _showFilters = !_showFilters);
+                      },
+                      icon: Icon(
+                        _showFilters ? Icons.filter_list_off : Icons.filter_list,
+                        size: 18,
+                      ),
+                      label: Text(_showFilters ? 'Hide Filters' : 'Filters'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _showFilters ? AppTheme.primaryColor : Colors.white,
+                        foregroundColor: _showFilters ? Colors.white : AppTheme.primaryColor,
+                        side: BorderSide(color: AppTheme.primaryColor),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$_totalCount jobs found',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() => _showFilters = !_showFilters);
+                      },
+                      icon: Icon(
+                        _showFilters ? Icons.filter_list_off : Icons.filter_list,
+                        size: 18,
+                      ),
+                      label: Text(_showFilters ? 'Hide Filters' : 'Filters'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _showFilters ? AppTheme.primaryColor : Colors.white,
+                        foregroundColor: _showFilters ? Colors.white : AppTheme.primaryColor,
+                        side: BorderSide(color: AppTheme.primaryColor),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
           ),
         ],
       ),
@@ -432,7 +470,7 @@ class _JobListScreenState extends State<JobListScreen> {
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
+      child: Wrap(
         children: [
           Text(
             'Showing ${_jobs.length} of $_totalCount jobs',

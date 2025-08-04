@@ -295,23 +295,6 @@ class JobCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (isGuest)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppTheme.accentColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              'Login to apply',
-              style: TextStyle(
-                fontSize: 11,
-                color: AppTheme.accentColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        const SizedBox(width: 8),
         ElevatedButton(
           onPressed: onDetailsPressed ?? onTap,
           style: ElevatedButton.styleFrom(

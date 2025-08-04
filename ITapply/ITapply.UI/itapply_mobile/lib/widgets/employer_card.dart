@@ -166,6 +166,7 @@ class EmployerCard extends StatelessWidget {
 
   Widget _buildCompanyMeta() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildMetaItem(Icons.location_on_outlined, employer.locationName ?? 'Unknown Location'),
         const SizedBox(height: 4),
@@ -207,7 +208,7 @@ class EmployerCard extends StatelessWidget {
       return _buildMetaItem(Icons.star_outline, 'No reviews yet');
     }
     
-    return Row(
+    return Wrap(
       children: [
         Icon(
           Icons.star_outline,

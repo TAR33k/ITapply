@@ -158,6 +158,13 @@ namespace ITapply.Services.Services
                 throw new UserException($"Employer with ID {request.EmployerId} not found");
             }
 
+            var existingReview = await _context.Reviews
+                .FirstOrDefaultAsync(r => r.CandidateId == request.CandidateId && r.EmployerId == request.EmployerId);
+            if (existingReview != null)
+            {
+                throw new UserException("You have already reviewed this employer");
+            }
+
             entity.ReviewDate = DateTime.Now;
             entity.ModerationStatus = ModerationStatus.Pending;
 
