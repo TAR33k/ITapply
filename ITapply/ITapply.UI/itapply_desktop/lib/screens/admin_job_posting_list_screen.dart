@@ -315,9 +315,8 @@ class _AdminJobPostingListScreenState extends State<AdminJobPostingListScreen> {
               const SizedBox(width: 12),
               OutlinedButton.icon(
                 onPressed: _isLoading ? null : _clearFilters,
-                icon: const Icon(Icons.clear_all),
-                label: const Text("Clear Filters"),
-              ),
+                icon: const Icon(Icons.clear), label: const Text("Clear")
+              )
             ]),
           ],
         ),

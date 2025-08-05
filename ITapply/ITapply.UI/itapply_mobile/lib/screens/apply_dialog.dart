@@ -249,6 +249,7 @@ class _ApplyDialogState extends State<ApplyDialog> {
                       ),
                       const SizedBox(height: 20),
                       CheckboxListTile(
+                        activeColor: AppTheme.primaryColor,
                         value: _receiveNotifications,
                         onChanged: (value) => setState(() => _receiveNotifications = value ?? true),
                         title: const Text('Receive email notifications'),
