@@ -1250,6 +1250,7 @@ Temporary Items
 *.jar
 *.rar
 *.zip
+!ITapply/env.zip
 *.gz
 *.gzip
 *.tgz

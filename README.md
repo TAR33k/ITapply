@@ -81,6 +81,9 @@ cd ITapply
 
 The entire backend (API, Database, RabbitMQ) is containerized with Docker for a seamless setup.
 
+#### Step 0: Extract the .env file
+Navigate to the project root and extract the .env file from the env.zip with the provided password.
+
 #### Step 1: Start the Backend Services
 Navigate to the project root and run Docker Compose.
 
