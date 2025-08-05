@@ -7,6 +7,7 @@ using ITapply.Services.Interfaces;
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -74,6 +75,11 @@ namespace ITapply.Services.Services
                     .Where(x => x.CandidateId == request.CandidateId)
                     .ToListAsync();
 
+            if (existingDocs.Count >= 5)
+            {
+                throw new UserException("Candidate can have maximum 5 CV documents");
+            }
+
             if (request.IsMain)
             {
                 foreach (var doc in existingDocs)
@@ -92,6 +98,14 @@ namespace ITapply.Services.Services
 
         protected override async Task BeforeUpdate(CVDocument entity, CVDocumentUpdateRequest request)
         {
+            if (request.FileName.IsNullOrEmpty())
+            {
+                request.FileName = entity.FileName;
+            }
+            if (request.FileContent == null || request.FileContent.Length == 0)
+            {
+                request.FileContent = entity.FileContent;
+            }
             if (request.IsMain.HasValue && request.IsMain.Value && !entity.IsMain)
             {
                 var candidateDocs = await _context.CVDocuments
@@ -104,6 +118,18 @@ namespace ITapply.Services.Services
                     {
                         doc.IsMain = false;
                     }
+                }
+            }
+            else if (request.IsMain.HasValue && !request.IsMain.Value && entity.IsMain)
+            {
+                var firstDoc = await _context.CVDocuments
+                    .Where(x => x.CandidateId == entity.CandidateId && x.Id != entity.Id)
+                    .OrderByDescending(x => x.UploadDate)
+                    .FirstOrDefaultAsync();
+
+                if (firstDoc != null)
+                {
+                    firstDoc.IsMain = true;
                 }
             }
 

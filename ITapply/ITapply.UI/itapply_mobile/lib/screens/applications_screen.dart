@@ -256,7 +256,6 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
       if (receiveNotifications != application.receiveNotifications) {
         final updatedApplication = await context.read<ApplicationProvider>().toggleNotifications(applicationId);
         
-        // Update the local applications list with the new notification status
         setState(() {
           final index = _applications.indexWhere((app) => app.id == applicationId);
           if (index != -1) {

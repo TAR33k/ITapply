@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:itapply_mobile/layouts/master_screen.dart';
+import 'package:itapply_mobile/screens/cv_documents_screen.dart';
 import 'package:itapply_mobile/screens/home_screen.dart';
 import 'package:itapply_mobile/screens/job_list_screen.dart';
 import 'package:itapply_mobile/screens/job_details_screen.dart';
@@ -101,7 +102,7 @@ class AppRouter {
         );
       case cvDocumentsRoute:
         return MaterialPageRoute(
-          builder: (_) => Center() //CVDocumentsScreen(candidateId: candidateId),
+          builder: (_) => CVDocumentsScreen(),
         );
       default:
         return MaterialPageRoute(
