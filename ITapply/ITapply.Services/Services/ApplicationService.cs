@@ -114,6 +114,26 @@ namespace ITapply.Services.Services
             return MapToResponse(entity);
         }
 
+        public async Task<ApplicationResponse> ToggleNotificationsAsync(int id)
+        {
+            var entity = await _context.Applications
+                    .Include(a => a.Candidate)
+                        .ThenInclude(c => c.User)
+                    .Include(a => a.JobPosting)
+                        .ThenInclude(jp => jp.Employer)
+                    .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (entity == null)
+            {
+                throw new UserException($"Application with ID {id} not found");
+            }
+
+            entity.ReceiveNotifications = !entity.ReceiveNotifications;
+            await _context.SaveChangesAsync();
+
+            return MapToResponse(entity);
+        }
+
         private bool IsValidStatusTransition(ApplicationStatus currentStatus, ApplicationStatus newStatus)
         {
             switch (currentStatus)

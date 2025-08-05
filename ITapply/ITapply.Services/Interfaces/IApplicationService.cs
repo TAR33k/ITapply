@@ -13,6 +13,7 @@ namespace ITapply.Services.Interfaces
     public interface IApplicationService : ICRUDService<ApplicationResponse, ApplicationSearchObject, ApplicationInsertRequest, ApplicationUpdateRequest>
     {
         Task<ApplicationResponse> UpdateStatusAsync(int id, ApplicationStatus status);
+        Task<ApplicationResponse> ToggleNotificationsAsync(int id);
         Task<bool> HasAppliedAsync(int candidateId, int jobPostingId);
     }
 } 

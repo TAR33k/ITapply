@@ -290,6 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildProfileCard() {
     return Card(
+      color: AppTheme.secondaryColor.withOpacity(0.02),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FormBuilder(
@@ -470,6 +471,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildAccountCard() {
     return Card(
+      color: AppTheme.secondaryColor.withOpacity(0.02),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -495,6 +497,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildPreferencesCard() {
     return Card(
+      color: AppTheme.secondaryColor.withOpacity(0.02),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -555,6 +558,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required Future<void> Function(T item) onDelete,
   }) {
     return Card(
+      color: AppTheme.secondaryColor.withOpacity(0.02),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -637,6 +641,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildSkillsSection() {
     return Card(
+      color: AppTheme.secondaryColor.withOpacity(0.02),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -684,23 +689,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       children: [
         Card(
+          color: AppTheme.secondaryColor.withOpacity(0.02),
           child: ListTile(
             leading: const Icon(Icons.article, color: AppTheme.primaryColor),
             title: const Text("My Applications"),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              Navigator.of(context).pushNamed(AppRouter.applicationsRoute, arguments: _candidate!.id);
+              Navigator.of(context).pushNamed(AppRouter.applicationsRoute);
             },
           ),
         ),
         Card(
+          color: AppTheme.secondaryColor.withOpacity(0.02),
           child: ListTile(
             leading:
                 const Icon(Icons.picture_as_pdf, color: AppTheme.primaryColor),
             title: const Text("Manage CVs"),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              Navigator.of(context).pushNamed(AppRouter.cvDocumentsRoute, arguments: _candidate!.id);
+              Navigator.of(context).pushNamed(AppRouter.cvDocumentsRoute);
             },
           ),
         ),

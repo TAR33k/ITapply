@@ -42,4 +42,19 @@ class ApplicationProvider extends BaseProvider<Application, ApplicationSearchObj
       throw Exception("Unknown error");
     }
   }
+
+  Future<Application> toggleNotifications(int id) async {
+    var url = "$baseUrl$endpoint/$id/notifications";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.put(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      notifyListeners();
+      return fromJson(data);
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
 }

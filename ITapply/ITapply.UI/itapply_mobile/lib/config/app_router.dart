@@ -10,6 +10,7 @@ import 'package:itapply_mobile/screens/login_screen.dart';
 import 'package:itapply_mobile/screens/profile_screen.dart';
 import 'package:itapply_mobile/screens/registration_screen.dart';
 import 'package:itapply_mobile/screens/wrong_role_screen.dart';
+import 'package:itapply_mobile/screens/applications_screen.dart';
 
 class AppRouter {
   static const String loginRoute = '/login';
@@ -95,14 +96,10 @@ class AppRouter {
           builder: (_) => ProfileScreen(),
         );
       case applicationsRoute:
-        final args = settings.arguments as Map<String, dynamic>;
-        final candidateId = args['candidateId'] as int;
         return MaterialPageRoute(
-          builder: (_) => Center() //ApplicationsScreen(candidateId: candidateId),
+          builder: (_) => ApplicationsScreen(),
         );
       case cvDocumentsRoute:
-        final args = settings.arguments as Map<String, dynamic>;
-        final candidateId = args['candidateId'] as int;
         return MaterialPageRoute(
           builder: (_) => Center() //CVDocumentsScreen(candidateId: candidateId),
         );

@@ -54,6 +54,13 @@ namespace ITapply.WebAPI.Controllers
             return await _applicationService.UpdateStatusAsync(id, status);
         }
 
+        [HttpPut("{id}/notifications")]
+        [Authorize(Roles = "Administrator,Candidate")]
+        public async Task<ActionResult<ApplicationResponse>> ToggleNotifications(int id)
+        {
+            return await _applicationService.ToggleNotificationsAsync(id);
+        }
+
         [HttpGet("check")]
         [Authorize(Roles = "Candidate,Employer,Administrator")]
         public async Task<ActionResult<bool>> HasApplied([FromQuery] int candidateId, [FromQuery] int jobPostingId)
