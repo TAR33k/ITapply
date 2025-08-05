@@ -1,5 +1,7 @@
 <div align="center">
 
+  <img width="100" height="100" alt="logo" src="https://github.com/user-attachments/assets/e0630dc4-e99c-4c4c-afd8-057e37732d9d" />
+
   <h1>
     <font color="#FF9800" style="font-weight: bold;">IT</font><font color="#616161" style="font-weight: bold;">apply</font>
     <br>
@@ -75,7 +77,7 @@ git clone https://github.com/TAR33k/ITapply.git
 cd ITapply
 ```
 
-### 2. Backend Setup 🌐
+### 2. Backend Setup
 
 The entire backend (API, Database, RabbitMQ) is containerized with Docker for a seamless setup.
 
