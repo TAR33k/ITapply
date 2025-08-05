@@ -1251,6 +1251,7 @@ Temporary Items
 *.rar
 *.zip
 !ITapply/env.zip
+!fit-build*
 *.gz
 *.gzip
 *.tgz
