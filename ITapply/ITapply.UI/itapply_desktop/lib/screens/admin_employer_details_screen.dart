@@ -640,7 +640,7 @@ class _AdminEmployerDetailsScreenState
           children: [
             Expanded(child: FormBuilderTextField(name: 'contactEmail', decoration: const InputDecoration(labelText: 'Public Contact Email *', prefixIcon: Icon(Icons.alternate_email)), validator: FormBuilderValidators.compose([FormBuilderValidators.required(), FormBuilderValidators.email()]))),
             const SizedBox(width: 20),
-            Expanded(child: FormBuilderTextField(name: 'contactPhone', decoration: const InputDecoration(labelText: 'Public Contact Phone *', prefixIcon: Icon(Icons.phone_outlined)), validator: FormBuilderValidators.compose([FormBuilderValidators.required(), FormBuilderValidators.match(RegExp(r'^\+?[0-9]{1,3}?[-\.\s]?(\(?\d{1,4}?\)?)?[-\.\s]?\d{1,4}[-\.\s]?\d{1,9}$'), errorText: 'Invalid phone number format.')]))),
+            Expanded(child: FormBuilderTextField(name: 'contactPhone', decoration: const InputDecoration(labelText: 'Public Contact Phone *', prefixIcon: Icon(Icons.phone_outlined)), validator: FormBuilderValidators.compose([FormBuilderValidators.required(), FormBuilderValidators.match(RegExp(r'^\+?([\d\s.-]{9,15})$'), errorText: 'Invalid phone number format.')]))),
           ],
         ),
         const SizedBox(height: 20),

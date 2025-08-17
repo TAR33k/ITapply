@@ -419,7 +419,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           decoration: const InputDecoration(labelText: "Phone Number"),
           validator: FormBuilderValidators.compose([
             FormBuilderValidators.maxLength(20, errorText: 'Phone number cannot exceed 20 characters.'),
-            FormBuilderValidators.match(RegExp(r'^\+?[0-9\s\-\(\)]+$'), errorText: 'Phone number format is invalid.')
+            FormBuilderValidators.match(RegExp(r'^\+?([\d\s.-]{9,15})$'), errorText: 'Phone number format is invalid.')
           ]),
         ),
         const SizedBox(height: 16),

@@ -647,7 +647,7 @@ class _AdminCandidateDetailsScreenState
               decoration: const InputDecoration(labelText: 'Phone Number'), 
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.maxLength(20, errorText: 'Phone number cannot exceed 20 characters.', checkNullOrEmpty: false),
-                FormBuilderValidators.match(RegExp(r'^\+?[0-9\s\-\(\)]+$'), errorText: 'Phone number format is invalid.', checkNullOrEmpty: false)
+                FormBuilderValidators.match(RegExp(r'^\+?([\d\s.-]{9,15})$'), errorText: 'Phone number format is invalid.', checkNullOrEmpty: false)
               ])
             )),
             const SizedBox(width: 20),
@@ -1143,6 +1143,14 @@ class _WorkExperienceDialogState extends State<_WorkExperienceDialog> {
                       name: 'endDate',
                       decoration: const InputDecoration(labelText: 'End Date'),
                       inputType: InputType.date,
+                      validator: (value) {
+                        if (value == null) return null;
+                        final startDate = _formKey.currentState?.fields['startDate']?.value as DateTime?;
+                        if (startDate != null && value.isBefore(startDate)) {
+                          return 'End date must be after start date.';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
@@ -1281,6 +1289,14 @@ class _EducationDialogState extends State<_EducationDialog> {
                       name: 'endDate',
                       decoration: const InputDecoration(labelText: 'End Date'),
                       inputType: InputType.date,
+                      validator: (value) {
+                        if (value == null) return null;
+                        final startDate = _formKey.currentState?.fields['startDate']?.value as DateTime?;
+                        if (startDate != null && value.isBefore(startDate)) {
+                          return 'End date must be after start date.';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],

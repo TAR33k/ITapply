@@ -19,7 +19,7 @@ namespace ITapply.Models.Requests
         public string LastName { get; set; }
 
         [StringLength(20, ErrorMessage = "Phone number cannot exceed 20 characters.")]
-        [RegularExpression(@"^\+?[0-9\s\-\(\)]+$", ErrorMessage = "Phone number format is invalid.")]
+        [RegularExpression(@"^\+?([\d\s.-]{9,15})$", ErrorMessage = "Phone number format is invalid.")]
         public string? PhoneNumber { get; set; }
 
         [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters.")]

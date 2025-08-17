@@ -41,7 +41,7 @@ namespace ITapply.Models.Requests
         public string ContactEmail { get; set; }
 
         [StringLength(20, ErrorMessage = "Contact phone cannot exceed 20 characters.")]
-        [RegularExpression(@"^\+?[0-9\s\-\(\)]+$", ErrorMessage = "Phone number format is invalid.")]
+        [RegularExpression(@"^\+?([\d\s.-]{9,15})$", ErrorMessage = "Phone number format is invalid.")]
         public string ContactPhone { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Location ID must be a positive number.")]

@@ -325,7 +325,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             validator: FormBuilderValidators.compose([
               FormBuilderValidators.required(errorText: 'Phone number is required'),
               FormBuilderValidators.match(
-                RegExp(r'^\+?[0-9]{1,3}?[-.\s]?(\(?\d{1,4}?\)?)[-.\s]?\d{1,4}[-.\s]?\d{1,9}$'),
+                RegExp(r'^\+?([\d\s.-]{9,15})$'),
                 errorText: 'Enter a valid phone number',
               ),
             ]),
